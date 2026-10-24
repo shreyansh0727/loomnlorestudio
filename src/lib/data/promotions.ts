@@ -1,9 +1,10 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import type { BuyerType, Combo, ComboItem, Coupon, OfferCard } from "@/lib/types";
 import { demoCombos, demoCoupons, demoProducts } from "@/lib/demo-data";
 import { isSupabaseConfigured } from "@/lib/env";
-import { getSupabaseServerClientSafe } from "@/lib/supabase/server";
+import { getPublicSupabaseClient } from "@/lib/supabase/public";
 
 function hydrateDemoCombo(combo: Combo): Combo {
   const items = combo.items.map((item) => {
@@ -80,89 +81,109 @@ function hydrateComboRow(row: ComboQueryRow): Combo {
   return { ...(row as Combo), items, retail_value: retailValue };
 }
 
-export async function getPublicCombos(options?: {
+type ComboOptions = {
   showInOffersOnly?: boolean;
   limit?: number;
   buyerType?: BuyerType;
-}): Promise<Combo[]> {
-  if (!isSupabaseConfigured) {
-    let combos = demoCombos.filter((combo) => combo.is_active).map(hydrateDemoCombo);
-    if (options?.showInOffersOnly) combos = combos.filter((combo) => combo.show_in_offers);
-    if (options?.buyerType) {
-      combos = combos.filter(
-        (combo) =>
-          combo.audience === "all" || combo.audience === options.buyerType,
-      );
+};
+
+const loadPublicCombos = unstable_cache(
+  async (options?: ComboOptions): Promise<Combo[]> => {
+    if (!isSupabaseConfigured) {
+      let combos = demoCombos.filter((combo) => combo.is_active).map(hydrateDemoCombo);
+      if (options?.showInOffersOnly) combos = combos.filter((combo) => combo.show_in_offers);
+      if (options?.buyerType) {
+        combos = combos.filter(
+          (combo) =>
+            combo.audience === "all" || combo.audience === options.buyerType,
+        );
+      }
+      return combos
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .slice(0, options?.limit ?? combos.length);
     }
-    return combos
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .slice(0, options?.limit ?? combos.length);
-  }
 
-  const supabase = await getSupabaseServerClientSafe();
-  if (!supabase) return [];
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return [];
 
-  let query = supabase
-    .from("combos")
-    .select(
-      "*, items:combo_items(*, variant:product_variants(id,label,sku,stock_qty,product:products(id,name,slug,images,retail_price)))",
-    )
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+    let query = supabase
+      .from("combos")
+      .select(
+        "*, items:combo_items(*, variant:product_variants(id,label,sku,stock_qty,product:products(id,name,slug,images,retail_price)))",
+      )
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
 
-  if (options?.showInOffersOnly) query = query.eq("show_in_offers", true);
-  if (options?.buyerType) {
-    query = query.in("audience", ["all", options.buyerType]);
-  }
+    if (options?.showInOffersOnly) query = query.eq("show_in_offers", true);
+    if (options?.buyerType) {
+      query = query.in("audience", ["all", options.buyerType]);
+    }
 
-  const { data, error } = await query;
-  if (error) throw new Error(`Unable to load combos: ${error.message}`);
+    const { data, error } = await query;
+    if (error) throw new Error(`Unable to load combos: ${error.message}`);
 
-  const combos = ((data ?? []) as unknown as ComboQueryRow[])
-    .map(hydrateComboRow)
-    .filter(
-      (combo) => combo.items.length > 0 && combo.items.every((item) => item.variant),
-    );
+    const combos = ((data ?? []) as unknown as ComboQueryRow[])
+      .map(hydrateComboRow)
+      .filter(
+        (combo) => combo.items.length > 0 && combo.items.every((item) => item.variant),
+      );
 
-  return typeof options?.limit === "number"
-    ? combos.slice(0, options.limit)
-    : combos;
+    return typeof options?.limit === "number"
+      ? combos.slice(0, options.limit)
+      : combos;
+  },
+  ["public-combos"],
+  { tags: ["promotions"], revalidate: 300 },
+);
+
+export function getPublicCombos(options?: ComboOptions) {
+  return loadPublicCombos(options);
 }
 
-export async function getPublicCoupons(options?: {
+type CouponOptions = {
   showInOffersOnly?: boolean;
   buyerType?: BuyerType;
-}): Promise<Coupon[]> {
-  if (!isSupabaseConfigured) {
-    let coupons = demoCoupons.filter((coupon) => coupon.is_active && coupon.is_public);
-    if (options?.showInOffersOnly) coupons = coupons.filter((coupon) => coupon.show_in_offers);
-    if (options?.buyerType) {
-      coupons = coupons.filter(
-        (coupon) =>
-          coupon.audience === "all" || coupon.audience === options.buyerType,
-      );
+};
+
+const loadPublicCoupons = unstable_cache(
+  async (options?: CouponOptions): Promise<Coupon[]> => {
+    if (!isSupabaseConfigured) {
+      let coupons = demoCoupons.filter((coupon) => coupon.is_active && coupon.is_public);
+      if (options?.showInOffersOnly) coupons = coupons.filter((coupon) => coupon.show_in_offers);
+      if (options?.buyerType) {
+        coupons = coupons.filter(
+          (coupon) =>
+            coupon.audience === "all" || coupon.audience === options.buyerType,
+        );
+      }
+      return coupons;
     }
-    return coupons;
-  }
 
-  const supabase = await getSupabaseServerClientSafe();
-  if (!supabase) return [];
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return [];
 
-  let query = supabase
-    .from("coupons")
-    .select("*")
-    .eq("is_active", true)
-    .eq("is_public", true)
-    .order("created_at", { ascending: true });
+    let query = supabase
+      .from("coupons")
+      .select("*")
+      .eq("is_active", true)
+      .eq("is_public", true)
+      .order("created_at", { ascending: true });
 
-  if (options?.showInOffersOnly) query = query.eq("show_in_offers", true);
-  if (options?.buyerType) {
-    query = query.in("audience", ["all", options.buyerType]);
-  }
+    if (options?.showInOffersOnly) query = query.eq("show_in_offers", true);
+    if (options?.buyerType) {
+      query = query.in("audience", ["all", options.buyerType]);
+    }
 
-  const { data, error } = await query;
-  if (error) return [];
-  return (data ?? []) as Coupon[];
+    const { data, error } = await query;
+    if (error) return [];
+    return (data ?? []) as Coupon[];
+  },
+  ["public-coupons"],
+  { tags: ["promotions"], revalidate: 300 },
+);
+
+export function getPublicCoupons(options?: CouponOptions) {
+  return loadPublicCoupons(options);
 }
 
 export async function getOffersForNavigation(

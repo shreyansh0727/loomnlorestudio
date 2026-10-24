@@ -23,12 +23,12 @@ export default async function AccountLayout({
   return (
     <div className="editorial-container py-10 lg:py-14">
       <header className="flex flex-col gap-6 border-b border-line pb-7 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <p className="eyebrow text-clay">Your account</p>
-          <h1 className="mt-3 font-serif text-[clamp(2.5rem,4.5vw,3.8rem)] font-light leading-[1] tracking-[-0.045em]">
+          <h1 className="mt-3 break-words font-serif text-[clamp(2.5rem,4.5vw,3.8rem)] font-light leading-[1] tracking-[-0.045em]">
             Hello, {greeting}.
           </h1>
-          <p className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted">
+          <p className="mt-3 flex min-w-0 flex-wrap items-center gap-3 break-all text-sm text-muted">
             {user.email}
             {business?.status === "approved" ? (
               <Badge tone="sage">Trade account</Badge>
@@ -42,7 +42,7 @@ export default async function AccountLayout({
             </p>
           ) : null}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/shop"
             className="text-[0.63rem] font-semibold uppercase tracking-[0.15em] text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
@@ -61,8 +61,8 @@ export default async function AccountLayout({
         </div>
       </header>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14">
-        <aside className="lg:pt-1">
+      <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-14">
+        <aside className="min-w-0 lg:pt-1">
           <AccountNav isAdmin={viewer.isAdmin} />
         </aside>
         <div className="min-w-0">{children}</div>

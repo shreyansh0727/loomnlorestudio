@@ -134,7 +134,7 @@ export default async function AccountOverviewPage({
           <h2 className="mt-4 font-serif text-3xl font-light tracking-[-0.03em]">
             Your first piece awaits.
           </h2>
-          <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted">
+          <p className="mt-3 max-w-lg break-words text-sm leading-relaxed text-muted">
             Your orders will collect here once you place one. Guest purchases made with{" "}
             {user.email} will also join your account after your email is verified.
           </p>

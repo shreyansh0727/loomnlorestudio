@@ -65,7 +65,7 @@ export function ProfileForm({
         <FormMessage message={state.message} tone="error" />
       ) : null}
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <SubmitButton pendingLabel="Saving">
           Save details
           <ArrowRight className="size-3.5" />

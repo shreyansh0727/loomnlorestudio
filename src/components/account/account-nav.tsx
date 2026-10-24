@@ -17,7 +17,7 @@ export function AccountNav({ isAdmin = false }: { isAdmin?: boolean }) {
 
   return (
     <nav aria-label="Account">
-      <ul className="no-scrollbar flex gap-1 overflow-x-auto border-b border-line pb-3 lg:flex-col lg:gap-0 lg:border-b-0 lg:pb-0">
+      <ul className="no-scrollbar grid grid-cols-2 gap-1 border-b border-line pb-3 sm:flex sm:overflow-x-auto lg:flex-col lg:gap-0 lg:border-b-0 lg:pb-0">
         {items.map((link) => {
           const active =
             link.href === "/account"
@@ -30,7 +30,7 @@ export function AccountNav({ isAdmin = false }: { isAdmin?: boolean }) {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-10 items-center whitespace-nowrap px-3 text-[0.64rem] font-semibold uppercase tracking-[0.15em] transition-colors lg:w-full lg:border-l lg:px-4",
+                  "inline-flex h-10 w-full items-center justify-center whitespace-nowrap px-3 text-[0.64rem] font-semibold uppercase tracking-[0.15em] transition-colors sm:w-auto sm:justify-start lg:w-full lg:border-l lg:px-4",
                   active
                     ? "bg-cream text-ink lg:border-clay"
                     : "text-muted hover:text-ink lg:border-line",

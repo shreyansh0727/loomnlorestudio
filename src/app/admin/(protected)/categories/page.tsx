@@ -55,7 +55,7 @@ export default async function AdminCategoriesPage({
         </div>
       ) : null}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <Panel
           title={`${categories.length} ${categories.length === 1 ? "category" : "categories"}`}
           bodyClassName="pt-4"

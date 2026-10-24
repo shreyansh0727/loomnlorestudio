@@ -1,8 +1,11 @@
 import "server-only";
 
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type { Product, ProductVariant, Category, ProductRailSource } from "@/lib/types";
 import { demoCategories, demoProducts } from "@/lib/demo-data";
 import { isSupabaseConfigured } from "@/lib/env";
+import { getPublicSupabaseClient } from "@/lib/supabase/public";
 import { getSupabaseServerClientSafe } from "@/lib/supabase/server";
 import { PAGE_SIZE } from "@/lib/constants";
 
@@ -150,7 +153,9 @@ export async function getProducts(filters: ProductFilters = {}) {
   };
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export const getProductBySlug = cache(async function getProductBySlug(
+  slug: string,
+): Promise<Product | null> {
   if (!isSupabaseConfigured) {
     const product = demoProducts.find(
       (item) => item.slug === slug && item.is_active,
@@ -177,7 +182,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (error) throw new Error(`Unable to load product: ${error.message}`);
   if (!data) return null;
   return normaliseProduct(data as Record<string, unknown>);
-}
+});
 
 export async function getRelatedProducts(
   categoryId: string,
@@ -283,21 +288,27 @@ export async function getRailProducts(
   return result.products;
 }
 
-export async function getCategories(): Promise<Category[]> {
-  if (!isSupabaseConfigured) return demoCategories.filter((item) => item.is_active);
+const loadCategories = unstable_cache(
+  async (): Promise<Category[]> => {
+    if (!isSupabaseConfigured) return demoCategories.filter((item) => item.is_active);
 
-  const supabase = await getSupabaseServerClientSafe();
-  if (!supabase) return [];
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return [];
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
 
-  if (error) throw new Error(`Unable to load categories: ${error.message}`);
-  return (data ?? []) as Category[];
-}
+    if (error) throw new Error(`Unable to load categories: ${error.message}`);
+    return (data ?? []) as Category[];
+  },
+  ["categories"],
+  { tags: ["categories"], revalidate: 300 },
+);
+
+export const getCategories = cache(loadCategories);
 
 export async function getCategoryCounts(): Promise<Record<string, number>> {
   if (!isSupabaseConfigured) {

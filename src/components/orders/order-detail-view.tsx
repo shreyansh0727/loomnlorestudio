@@ -42,7 +42,7 @@ function AddressBlock({
   phone: string;
 }) {
   return (
-    <address className="space-y-1 text-sm not-italic leading-relaxed text-ink-soft">
+    <address className="space-y-1 break-words text-sm not-italic leading-relaxed text-ink-soft">
       <p className="font-medium text-ink">{address.full_name}</p>
       <p>{address.line1}</p>
       {address.line2 ? <p>{address.line2}</p> : null}
@@ -121,7 +121,7 @@ export function OrderDetailView({
           {order.invoice_number ? (
             <Link
               href={`/invoice/${order.access_token}`}
-              className="inline-flex items-center gap-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-clay-deep underline decoration-clay/40 underline-offset-4 transition-colors hover:text-ink"
+              className="inline-flex max-w-full items-center gap-1.5 break-all text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-clay-deep underline decoration-clay/40 underline-offset-4 transition-colors hover:text-ink"
             >
               <ReceiptText className="size-3.5" aria-hidden />
               Invoice {order.invoice_number}
@@ -147,7 +147,7 @@ export function OrderDetailView({
               </p>
             </div>
           ) : showFlow ? (
-            <section aria-label="Order progress" className="border border-line bg-cream/60 p-5 sm:p-6">
+            <section aria-label="Order progress" className="overflow-hidden border border-line bg-cream/60 p-5 sm:p-6">
               <div className="flex flex-wrap gap-y-5">
                 {FLOW.map((step, index) => {
                   const complete = index <= rank;
@@ -425,7 +425,7 @@ export function OrderDetailView({
               href={`mailto:${supportEmail}?subject=${encodeURIComponent(
                 `Order ${order.order_number}`,
               )}`}
-              className="mt-4 inline-flex items-center gap-2 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-cream underline-offset-4 hover:underline"
+              className="mt-4 inline-flex max-w-full items-center gap-2 break-all text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-cream underline-offset-4 hover:underline"
             >
               <Mail className="size-3.5" />
               {supportEmail}

@@ -67,7 +67,7 @@ export default async function BusinessAccountPage({
             <BadgeCheck className="size-3" strokeWidth={2} />
             Approved trade account
           </Badge>
-          <dl className="mt-6 grid gap-5 text-sm sm:grid-cols-2">
+          <dl className="mt-6 grid break-words gap-5 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-[0.6rem] uppercase tracking-[0.13em] text-muted">
                 Legal name
@@ -127,7 +127,7 @@ export default async function BusinessAccountPage({
             </h3>
             <Badge tone="clay">Pending</Badge>
           </div>
-          <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
+          <dl className="mt-5 grid break-words gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-[0.6rem] uppercase tracking-[0.13em] text-muted">
                 Legal name
@@ -151,7 +151,7 @@ export default async function BusinessAccountPage({
               <dd className="mt-1">Manual GSTIN review</dd>
             </div>
           </dl>
-          <p className="mt-5 border-t border-line pt-4 text-xs leading-relaxed text-muted">
+          <p className="mt-5 break-words border-t border-line pt-4 text-xs leading-relaxed text-muted">
             We will email {user.email} once a decision is made. If your details need changing,
             write to{" "}
             <a href={`mailto:${settings.b2bEmail}`} className="link-underline text-ink-soft">
@@ -163,7 +163,7 @@ export default async function BusinessAccountPage({
       ) : null}
 
       {!approved && (
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <section className="border border-line bg-cream p-5 sm:p-7">
             {rejected ? (
               <div className="mb-8 border border-red-900/20 bg-red-900/5 p-4">

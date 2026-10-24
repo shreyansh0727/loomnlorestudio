@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { FormState } from "@/lib/form-state";
@@ -25,12 +25,15 @@ import type { HomepageSectionType } from "@/lib/types";
 import { HOMEPAGE_SECTION_TYPES } from "@/lib/types";
 
 function refreshHomepage() {
+  revalidateTag("homepage-sections", { expire: 0 });
+  revalidateTag("popup-offers", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/admin/content");
   revalidatePath("/admin");
 }
 
 function refreshSettings() {
+  revalidateTag("site-settings", { expire: 0 });
   revalidatePath("/", "layout");
   revalidatePath("/admin", "layout");
   revalidatePath("/admin/settings");

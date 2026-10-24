@@ -57,7 +57,7 @@ export default async function AccountOrdersPage() {
         />
       )}
 
-      <p className="mt-8 text-xs leading-relaxed text-muted">
+      <p className="mt-8 break-words text-xs leading-relaxed text-muted">
         Guest purchases made with {user.email} link to this account automatically once your
         email is verified. Need help with an older order?{" "}
         <Link href="/track" className="link-underline text-ink-soft">

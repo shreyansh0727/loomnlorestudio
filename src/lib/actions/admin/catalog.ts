@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { FormState } from "@/lib/form-state";
@@ -23,6 +23,8 @@ import { slugify } from "@/lib/utils";
 import type { ProductVariant } from "@/lib/types";
 
 function refreshCatalog() {
+  revalidateTag("categories", { expire: 0 });
+  revalidateTag("promotions", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/shop", "layout");
   revalidatePath("/offers");

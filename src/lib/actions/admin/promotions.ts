@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import type { FormState } from "@/lib/form-state";
 import {
@@ -19,6 +19,7 @@ import { comboInputSchema, couponInputSchema } from "@/lib/validation-admin";
 import { slugify } from "@/lib/utils";
 
 function refreshPromotions() {
+  revalidateTag("promotions", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/offers");
   revalidatePath("/checkout");

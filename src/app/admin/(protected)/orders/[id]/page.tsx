@@ -190,7 +190,7 @@ export default async function AdminOrderPage({
         ) : null}
       </div>
 
-      <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+      <div className="mt-7 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           <Panel
             title="Pieces"
