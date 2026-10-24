@@ -6,12 +6,14 @@ import type { CheckoutViewer } from "@/lib/checkout/types";
 import { CheckoutView } from "@/components/checkout/checkout-view";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Checkout",
-  description:
-    "Complete your Loom & Lore order. Retail and trade checkout with secure Razorpay payment.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Checkout",
+    description: `Complete your ${settings.brandName} order. Retail and trade checkout with secure Razorpay payment.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export const dynamic = "force-dynamic";
 

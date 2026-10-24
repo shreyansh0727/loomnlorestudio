@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
-import { BRAND_NAME } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/data/content";
 import { SITE_URL } from "@/lib/env";
 import "./globals.css";
 
@@ -17,26 +17,29 @@ const manrope = Manrope({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${BRAND_NAME} — Thoughtfully woven textiles`,
-    template: `%s · ${BRAND_NAME}`,
-  },
-  description:
-    "Considered fabrics, home textiles and small-batch pieces from Indian makers. Shop retail or apply for wholesale pricing.",
-  openGraph: {
-    type: "website",
-    siteName: BRAND_NAME,
-    title: `${BRAND_NAME} — Thoughtfully woven textiles`,
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${settings.brandName} — Thoughtfully woven textiles`,
+      template: `%s · ${settings.brandName}`,
+    },
     description:
-      "Considered fabrics, home textiles and small-batch pieces from Indian makers.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+      "Considered fabrics, home textiles and small-batch pieces from Indian makers. Shop retail or apply for wholesale pricing.",
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      title: `${settings.brandName} — Thoughtfully woven textiles`,
+      description:
+        "Considered fabrics, home textiles and small-batch pieces from Indian makers.",
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#f4efe5",

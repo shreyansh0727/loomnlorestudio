@@ -80,6 +80,14 @@ export function InvoiceDocument({
       <article className="invoice-sheet mx-auto max-w-[900px] border border-line bg-cream px-6 py-8 text-sm text-ink-soft shadow-[0_24px_70px_-50px_rgba(30,27,23,0.45)] sm:px-10 sm:py-12 print:border-0 print:bg-white print:p-0 print:shadow-none">
         <header className="flex flex-col gap-8 border-b border-ink/15 pb-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- logo can be any hosted asset
+              <img
+                src={settings.logoUrl}
+                alt={settings.brandName}
+                className="mb-4 h-12 w-auto max-w-[200px] object-contain"
+              />
+            ) : null}
             <p className="font-serif text-3xl font-light leading-none tracking-[-0.035em] text-ink">
               {settings.brandName}
             </p>

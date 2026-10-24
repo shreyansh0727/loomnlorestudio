@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/utils";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SignUpForm } from "@/components/auth/signup-form";
 import { FormMessage } from "@/components/ui/form";
 
-export const metadata: Metadata = {
-  title: "Create an account",
-  description:
-    "Create a Loom & Lore account to follow orders, or check out as a guest.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Create an account",
+    description: `Create a ${settings.brandName} account to follow orders, or check out as a guest.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function SignUpPage({
   searchParams,

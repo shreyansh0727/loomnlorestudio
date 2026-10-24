@@ -7,11 +7,13 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { buttonStyles } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
 
-export const metadata: Metadata = {
-  title: "Our story",
-  description:
-    "Loom & Lore works directly with weavers, printers and family-run studios across India to make textiles that last.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Our story",
+    description: `${settings.brandName} works directly with weavers, printers and family-run studios across India to make textiles that last.`,
+  };
+}
 
 const VALUES = [
   {

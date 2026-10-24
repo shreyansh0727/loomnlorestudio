@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import type { HomepageSection, PopupOffer, SiteSettings } from "@/lib/types";
 import {
   demoHomepageSections,
@@ -23,7 +24,7 @@ function mergeSettings(value: unknown): SiteSettings {
   };
 }
 
-export async function getSiteSettings(): Promise<SiteSettings> {
+export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
   if (!isSupabaseConfigured) return demoSiteSettings;
 
   const supabase = await getSupabaseServerClientSafe();
@@ -37,7 +38,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   if (error) return DEFAULT_SETTINGS;
   return mergeSettings(data?.data);
-}
+});
 
 export async function getHomepageSections(): Promise<HomepageSection[]> {
   if (!isSupabaseConfigured) return demoHomepageSections;

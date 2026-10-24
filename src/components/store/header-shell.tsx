@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import type { Category, OfferCard, SiteSettings } from "@/lib/types";
 import { useCart } from "@/components/cart/cart-provider";
-import { Wordmark } from "@/components/ui/wordmark";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { CopyCode } from "@/components/store/copy-code";
 import { cn } from "@/lib/utils";
 
@@ -124,9 +124,11 @@ export function HeaderShell({
                 <Menu className="size-5" strokeWidth={1.5} />
               </button>
               <Link href="/" aria-label={`${settings.brandName} home`} className="inline-flex">
-                <Wordmark
+                <BrandMark
                   name={settings.brandName}
-                  className="text-[1.22rem] sm:text-[1.35rem] lg:text-[1.5rem]"
+                  logoUrl={settings.logoUrl}
+                  textClassName="text-[1.22rem] sm:text-[1.35rem] lg:text-[1.5rem]"
+                  logoClassName="h-8 max-w-[8.5rem] sm:h-9 sm:max-w-[10rem]"
                 />
               </Link>
             </div>
@@ -259,7 +261,12 @@ export function HeaderShell({
             className="absolute inset-y-0 left-0 flex w-[90%] max-w-sm animate-fade-in flex-col overflow-y-auto bg-cream shadow-lift"
           >
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
-              <Wordmark name={settings.brandName} className="text-xl" />
+              <BrandMark
+                name={settings.brandName}
+                logoUrl={settings.logoUrl}
+                textClassName="text-xl"
+                logoClassName="h-8 max-w-[8.5rem]"
+              />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}

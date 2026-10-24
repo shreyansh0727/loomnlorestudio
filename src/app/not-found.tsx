@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { buttonStyles } from "@/components/ui/button";
-import { Wordmark } from "@/components/ui/wordmark";
-import { BRAND_NAME } from "@/lib/constants";
+import { BrandMark } from "@/components/ui/brand-mark";
+import { getSiteSettings } from "@/lib/data/content";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const settings = await getSiteSettings();
+
   return (
     <div className="flex min-h-dvh flex-col bg-paper">
       <header className="border-b border-line">
         <div className="editorial-container flex h-20 items-center justify-between gap-6">
-          <Link href="/" aria-label={`${BRAND_NAME} home`}>
-            <Wordmark />
+          <Link href="/" aria-label={`${settings.brandName} home`}>
+            <BrandMark name={settings.brandName} logoUrl={settings.logoUrl} />
           </Link>
           <Link
             href="/shop"

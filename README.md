@@ -79,6 +79,11 @@ or the Supabase CLI:
 2. `20261024000200_rls.sql` — row-level security policies and grants.
 3. `20261024000300_functions.sql` — stock allocation/restoration RPCs and privileged
    sequence grants.
+4. `20261024000400_invoice_prefix.sql` — reads the invoice prefix from Studio settings
+   when a new invoice number is issued.
+
+If you set up the database before this migration existed, run the fourth file once so the
+invoice prefix field in Settings takes effect. Existing invoice numbers are not rewritten.
 
 The functions are `security definer` and executable only by `service_role`. Never expose
 the service role key to the browser.

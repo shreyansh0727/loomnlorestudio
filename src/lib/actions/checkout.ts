@@ -1,7 +1,8 @@
 "use server";
 
 import { getViewer } from "@/lib/auth";
-import { BRAND_NAME, RAZORPAY_THEME_COLOR } from "@/lib/constants";
+import { RAZORPAY_THEME_COLOR } from "@/lib/constants";
+import { getSiteSettings } from "@/lib/data/content";
 import { isRazorpayConfigured, isSupabaseConfigured } from "@/lib/env";
 import {
   cancelPendingOrder,
@@ -240,6 +241,7 @@ export async function startCheckoutAction(input: {
       };
     }
 
+    const settings = await getSiteSettings();
     return {
       ok: true,
       mode: "razorpay",
@@ -248,7 +250,7 @@ export async function startCheckoutAction(input: {
         razorpayOrderId,
         amount: quote.totalAmount,
         currency: "INR",
-        name: BRAND_NAME,
+        name: settings.brandName,
         description: `${order.order_number} · ${quote.itemCount} ${
           quote.itemCount === 1 ? "piece" : "pieces"
         }`,

@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { FormMessage } from "@/components/ui/form";
 
-export const metadata: Metadata = {
-  title: "Reset your password",
-  description: "Request a secure password reset link for your Loom & Lore account.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Reset your password",
+    description: `Request a secure password reset link for your ${settings.brandName} account.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default function ForgotPasswordPage() {
   return (

@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdmin } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: {
-    default: "Studio",
-    template: "%s · Studio · Loom & Lore",
-  },
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: {
+      default: "Studio",
+      template: `%s · Studio · ${settings.brandName}`,
+    },
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function AdminProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const viewer = await requireAdmin();
+  const [viewer, settings] = await Promise.all([requireAdmin(), getSiteSettings()]);
   const demo = !isSupabaseConfigured && process.env.NODE_ENV !== "production";
   const serviceRoleMissing = isSupabaseConfigured && !process.env.SUPABASE_SERVICE_ROLE_KEY;
   const name =
@@ -32,6 +36,8 @@ export default async function AdminProtectedLayout({
       name={name}
       demo={demo}
       serviceRoleMissing={serviceRoleMissing}
+      brandName={settings.brandName}
+      logoUrl={settings.logoUrl}
     >
       {children}
     </AdminShell>

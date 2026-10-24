@@ -3,10 +3,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { getViewer } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 import { signOutAction } from "@/lib/actions/auth";
 import { safeNextPath } from "@/lib/utils";
 import { LoginForm } from "@/components/auth/login-form";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { FormMessage } from "@/components/ui/form";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +26,7 @@ export default async function AdminLoginPage({
   const params = await searchParams;
   const requested = safeNextPath(params.next, "/admin");
   const next = requested.startsWith("/admin") ? requested : "/admin";
-  const viewer = await getViewer();
+  const [viewer, settings] = await Promise.all([getViewer(), getSiteSettings()]);
   const demoMode = !isSupabaseConfigured && process.env.NODE_ENV !== "production";
 
   if (viewer.user && viewer.isAdmin) redirect(next);
@@ -41,11 +43,14 @@ export default async function AdminLoginPage({
           }}
         />
         <div className="relative">
-          <Link
-            href="/"
-            className="inline-block font-serif text-[1.9rem] font-light leading-none tracking-[-0.035em] text-cream"
-          >
-            Loom <span className="text-clay">&amp;</span> Lore
+          <Link href="/" className="inline-flex" aria-label={`${settings.brandName} storefront`}>
+            <BrandMark
+              name={settings.brandName}
+              logoUrl={settings.logoUrl}
+              textClassName="text-[1.9rem] font-light text-cream"
+              logoClassName="h-12 max-w-[13rem]"
+              frameClassName="bg-cream px-3 py-2"
+            />
           </Link>
           <p className="mt-3 flex items-center gap-2 text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-cream/40">
             <Sparkles className="size-3 text-clay" aria-hidden />

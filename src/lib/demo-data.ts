@@ -1008,7 +1008,7 @@ export const demoSiteSettings: SiteSettings = {
     country: "India",
   },
   aboutText:
-    "Loom & Lore began with a simple frustration: good cloth was getting harder to find, and the people making it were getting harder to see. We work directly with weaving clusters, block-printing studios and tailoring units across India, commissioning small runs in natural fibres. We pay for the work properly, name the makers whenever we can, and design for years of use rather than a single season.",
+    "The studio began with a simple frustration: good cloth was getting harder to find, and the people making it were getting harder to see. We work directly with weaving clusters, block-printing studios and tailoring units across India, commissioning small runs in natural fibres. We pay for the work properly, name the makers whenever we can, and design for years of use rather than a single season.",
   shippingPolicy:
     "Ready-to-ship pieces leave our Bengaluru studio in 2–4 working days. Fabric yardage is cut to order and may take 3–5 working days. Delivery is arranged manually so we can choose the right service for your parcel. Once your order is confirmed, we will email a secure Razorpay link for the exact shipping charge. Orders are dispatched only after the shipping charge is paid. Tracking details are added to your order page and emailed to you as soon as the parcel leaves us.",
   returnsPolicy:

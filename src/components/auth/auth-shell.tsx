@@ -1,6 +1,8 @@
+import { getSiteSettings } from "@/lib/data/content";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { SafeImage } from "@/components/ui/safe-image";
 
-export function AuthShell({
+export async function AuthShell({
   eyebrow,
   title,
   description,
@@ -21,6 +23,8 @@ export function AuthShell({
   footer?: React.ReactNode;
   notice?: React.ReactNode;
 }) {
+  const settings = await getSiteSettings();
+
   return (
     <div className="editorial-container py-10 lg:py-16">
       <div className="grid overflow-hidden border border-line bg-cream lg:grid-cols-[1.02fr_0.98fr]">
@@ -36,7 +40,13 @@ export function AuthShell({
             className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent"
           />
           <div className="absolute inset-x-0 bottom-0 p-10 text-cream">
-            <p className="eyebrow text-cream/60">Loom &amp; Lore</p>
+            <BrandMark
+              name={settings.brandName}
+              logoUrl={settings.logoUrl}
+              textClassName="text-[1.05rem] text-cream"
+              logoClassName="h-8 max-w-[9rem]"
+              frameClassName="bg-cream px-2.5 py-1.5"
+            />
             <p className="mt-4 max-w-md font-serif text-[1.9rem] font-light leading-[1.15] tracking-[-0.02em]">
               {quote}
             </p>

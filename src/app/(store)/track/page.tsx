@@ -6,11 +6,13 @@ import { getSiteSettings } from "@/lib/data/content";
 import { TrackOrderForm } from "@/components/orders/track-order-form";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Track an order",
-  description:
-    "Follow your Loom & Lore order with your order number and the email used at checkout.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Track an order",
+    description: `Follow your ${settings.brandName} order with your order number and the email used at checkout.`,
+  };
+}
 
 export default async function TrackPage() {
   const [settings, viewer] = await Promise.all([getSiteSettings(), getViewer()]);

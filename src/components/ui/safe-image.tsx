@@ -47,11 +47,6 @@ export function SafeImage({
               "repeating-linear-gradient(115deg, rgba(30,27,23,0.06) 0px, rgba(30,27,23,0.06) 1px, transparent 1px, transparent 7px), repeating-linear-gradient(25deg, rgba(164,84,58,0.05) 0px, rgba(164,84,58,0.05) 1px, transparent 1px, transparent 11px)",
           }}
         />
-        <div className="absolute inset-0 flex items-center justify-center p-6">
-          <span className="font-serif text-xs italic tracking-wide text-ink/35">
-            Loom &amp; Lore
-          </span>
-        </div>
       </div>
     );
   }

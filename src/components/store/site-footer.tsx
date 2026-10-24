@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import type { Category, SiteSettings } from "@/lib/types";
-import { Wordmark } from "@/components/ui/wordmark";
+import { BrandMark } from "@/components/ui/brand-mark";
 
 export function SiteFooter({
   settings,
@@ -17,7 +17,13 @@ export function SiteFooter({
       <div className="editorial-container py-16 lg:py-20">
         <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
           <div className="max-w-sm">
-            <Wordmark name={settings.brandName} className="text-[1.8rem] text-cream" />
+            <BrandMark
+              name={settings.brandName}
+              logoUrl={settings.logoUrl}
+              textClassName="text-[1.8rem] text-cream"
+              logoClassName="h-10 max-w-[12rem]"
+              frameClassName="bg-cream px-3 py-2"
+            />
             <p className="mt-5 font-serif text-xl font-light leading-snug text-cream/75">
               {settings.brandTagline}
             </p>
@@ -41,6 +47,20 @@ export function SiteFooter({
                 <Phone className="size-3.5" strokeWidth={1.5} />
                 {settings.supportPhone}
               </a>
+              <div className="border-t border-cream/12 pt-4">
+                <p className="text-[0.55rem] font-semibold uppercase tracking-[0.2em] text-cream/35">
+                  Registered address
+                </p>
+                <p className="mt-2">{settings.sellerAddress.line1}</p>
+                {settings.sellerAddress.line2 ? (
+                  <p>{settings.sellerAddress.line2}</p>
+                ) : null}
+                <p>
+                  {settings.sellerAddress.city}, {settings.sellerAddress.state}{" "}
+                  {settings.sellerAddress.pincode}
+                </p>
+                <p>{settings.sellerAddress.country}</p>
+              </div>
             </address>
 
             <div className="mt-7 flex flex-wrap gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-cream/55">

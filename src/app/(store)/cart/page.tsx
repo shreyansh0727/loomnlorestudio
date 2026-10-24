@@ -3,10 +3,13 @@ import { getSiteSettings } from "@/lib/data/content";
 import { CartView } from "@/components/cart/cart-view";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 
-export const metadata: Metadata = {
-  title: "Your bag",
-  description: "Review the pieces in your Loom & Lore bag before checkout.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Your bag",
+    description: `Review the pieces in your ${settings.brandName} bag before checkout.`,
+  };
+}
 
 export default async function CartPage() {
   const settings = await getSiteSettings();

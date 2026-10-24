@@ -4,11 +4,13 @@ import { getSiteSettings } from "@/lib/data/content";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import { formatGstin } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Policies",
-  description:
-    "Shipping, returns, terms and privacy for Loom & Lore textile orders and trade accounts.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Policies",
+    description: `Shipping, returns, terms and privacy for ${settings.brandName} textile orders and trade accounts.`,
+  };
+}
 
 const SECTIONS = [
   { id: "shipping", label: "Shipping" },

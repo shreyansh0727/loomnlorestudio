@@ -32,6 +32,7 @@ function refreshHomepage() {
 
 function refreshSettings() {
   revalidatePath("/", "layout");
+  revalidatePath("/admin", "layout");
   revalidatePath("/admin/settings");
 }
 

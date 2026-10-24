@@ -2,17 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/utils";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { FormMessage } from "@/components/ui/form";
 
-export const metadata: Metadata = {
-  title: "Sign in",
-  description: "Sign in to follow your orders at Loom & Lore.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Sign in",
+    description: `Sign in to follow your orders at ${settings.brandName}.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function LoginPage({
   searchParams,

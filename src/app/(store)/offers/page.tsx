@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Ticket, Sparkles, ArrowRight } from "lucide-react";
 import { getPublicCombos, getPublicCoupons } from "@/lib/data/promotions";
+import { getSiteSettings } from "@/lib/data/content";
 import { getViewer } from "@/lib/auth";
 import { isCouponInSchedule } from "@/lib/pricing";
 import { formatDate, formatMoney } from "@/lib/utils";
@@ -11,11 +12,13 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { EmptyState } from "@/components/ui/empty-state";
 import { buttonStyles } from "@/components/ui/button";
 
-export const metadata: Metadata = {
-  title: "Offers & combos",
-  description:
-    "Current coupon codes and fixed bundles from Loom & Lore. Retail and trade offers, applied at checkout.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Offers & combos",
+    description: `Current coupon codes and fixed bundles from ${settings.brandName}. Retail and trade offers, applied at checkout.`,
+  };
+}
 
 export default async function OffersPage() {
   const viewer = await getViewer();

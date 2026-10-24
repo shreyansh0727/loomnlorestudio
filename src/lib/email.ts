@@ -157,6 +157,12 @@ function layout({
   intro: string;
   content: string;
 }) {
+  const logoUrl = settings.logoUrl
+    ? /^https?:\/\//i.test(settings.logoUrl)
+      ? settings.logoUrl
+      : absoluteUrl(settings.logoUrl)
+    : null;
+
   return `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:0;background:${CREAM};color:${INK};font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
@@ -166,6 +172,13 @@ function layout({
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#fffdf8;border:1px solid ${LINE};">
             <tr>
               <td style="padding:26px 32px;border-bottom:1px solid ${LINE};">
+                ${
+                  logoUrl
+                    ? `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(
+                        settings.brandName,
+                      )}" style="display:block;max-height:44px;max-width:200px;margin:0 0 12px;" />`
+                    : ""
+                }
                 <div style="font-family:Georgia,'Times New Roman',serif;font-size:24px;letter-spacing:-0.02em;">${escapeHtml(
                   settings.brandName,
                 )}</div>
@@ -198,7 +211,9 @@ function layout({
                 )}" style="color:${CLAY};text-decoration:none;">${escapeHtml(
                   settings.supportEmail,
                 )}</a><br />
-                <span style="color:#9a9185;">This message was sent about a Loom &amp; Lore order. Please keep your private order link to yourself.</span>
+                <span style="color:#9a9185;">This message was sent about a ${escapeHtml(
+                  settings.brandName,
+                )} order. Please keep your private order link to yourself.</span>
               </td>
             </tr>
           </table>

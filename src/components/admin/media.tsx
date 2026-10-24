@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ImagePlus, Loader2, Upload, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Crop as CropIcon, ImagePlus, Loader2, Upload, X } from "lucide-react";
 import { uploadMediaAction } from "@/lib/actions/admin/catalog";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/form";
 import { SafeImage } from "@/components/ui/safe-image";
+import { ImageCropDialog } from "@/components/admin/image-crop-dialog";
 import { cn } from "@/lib/utils";
 
 function acceptFor(kind: "image" | "media") {
@@ -29,6 +30,7 @@ export function MediaUrlField({
   kind = "image",
   hint,
   placeholder = "https://… or upload a file",
+  crop = false,
 }: {
   label: string;
   value: string;
@@ -37,24 +39,97 @@ export function MediaUrlField({
   kind?: "image" | "media";
   hint?: string;
   placeholder?: string;
+  crop?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const objectUrlRef = useRef<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<{ src: string; fileName: string } | null>(
+    null,
+  );
+  const [cropLoading, setCropLoading] = useState(false);
 
   const isVideo = /\.(mp4|webm)(\?|$)/i.test(value);
 
-  async function handleFile(file: File | undefined) {
-    if (!file) return;
+  useEffect(
+    () => () => {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    },
+    [],
+  );
+
+  function releaseObjectUrl() {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
+  }
+
+  function openCropper(file: File) {
+    releaseObjectUrl();
+    const src = URL.createObjectURL(file);
+    objectUrlRef.current = src;
+    setError(null);
+    setCropSource({ src, fileName: file.name });
+  }
+
+  function closeCropper() {
+    releaseObjectUrl();
+    setCropSource(null);
+  }
+
+  async function openCropperFromValue() {
+    if (!value) return;
+    setCropLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(value);
+      if (!response.ok) throw new Error("image unavailable");
+      const blob = await response.blob();
+      if (!blob.type.startsWith("image/")) throw new Error("not an image");
+      releaseObjectUrl();
+      const src = URL.createObjectURL(blob);
+      objectUrlRef.current = src;
+      const extension = blob.type.split("/")[1] || "png";
+      setCropSource({ src, fileName: `logo.${extension}` });
+    } catch {
+      setError(
+        "That image could not be opened for cropping. Upload the logo file again to crop it.",
+      );
+    } finally {
+      setCropLoading(false);
+    }
+  }
+
+  async function uploadSelected(file: File) {
     setUploading(true);
     setError(null);
     const result = await uploadFile(file, folder);
     setUploading(false);
     if (!result.ok) {
       setError(result.message);
-      return;
+      return false;
     }
     onChange(result.url);
+    return true;
+  }
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    if (crop) {
+      openCropper(file);
+      return;
+    }
+    await uploadSelected(file);
+  }
+
+  async function handleCropped(file: File) {
+    const uploaded = await uploadSelected(file);
+    if (!uploaded) {
+      throw new Error("The cropped logo could not be uploaded. Please try again.");
+    }
+    closeCropper();
   }
 
   return (
@@ -92,6 +167,23 @@ export function MediaUrlField({
             )}
             {uploading ? "Uploading" : "Upload"}
           </Button>
+          {crop && value ? (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="h-11 px-4"
+              onClick={() => void openCropperFromValue()}
+              disabled={uploading || cropLoading}
+            >
+              {cropLoading ? (
+                <Loader2 className="size-3.5 animate-spin" aria-hidden />
+              ) : (
+                <CropIcon className="size-3.5" aria-hidden />
+              )}
+              {cropLoading ? "Loading" : "Crop"}
+            </Button>
+          ) : null}
           {value ? (
             <Button
               type="button"
@@ -109,7 +201,12 @@ export function MediaUrlField({
       {hint && !error ? <p className="mt-1.5 text-xs text-muted">{hint}</p> : null}
       {error ? <p className="mt-1.5 text-xs text-red-800">{error}</p> : null}
       {value ? (
-        <div className="relative mt-3 aspect-[16/9] w-full max-w-sm overflow-hidden border border-line bg-sand">
+        <div
+          className={cn(
+            "relative mt-3 w-full max-w-sm overflow-hidden border border-line",
+            crop ? "aspect-[4/1] bg-cream" : "aspect-[16/9] bg-sand",
+          )}
+        >
           {isVideo && kind === "media" ? (
             <video
               src={value}
@@ -119,9 +216,23 @@ export function MediaUrlField({
               aria-label={`${label} preview`}
             />
           ) : (
-            <SafeImage src={value} alt={`${label} preview`} sizes="360px" />
+            <SafeImage
+              src={value}
+              alt={`${label} preview`}
+              sizes="360px"
+              className={crop ? "object-contain" : undefined}
+            />
           )}
         </div>
+      ) : null}
+      {crop && cropSource ? (
+        <ImageCropDialog
+          key={cropSource.src}
+          src={cropSource.src}
+          fileName={cropSource.fileName}
+          onCancel={closeCropper}
+          onCrop={handleCropped}
+        />
       ) : null}
     </div>
   );

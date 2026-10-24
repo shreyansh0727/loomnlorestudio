@@ -8,11 +8,13 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { buttonStyles } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export const metadata: Metadata = {
-  title: "Trade accounts",
-  description:
-    "Apply for a Loom & Lore trade account: wholesale pricing, per-product minimums and GST invoices for approved businesses.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Trade accounts",
+    description: `Apply for a ${settings.brandName} trade account: wholesale pricing, per-product minimums and GST invoices for approved businesses.`,
+  };
+}
 
 const STEPS = [
   {
@@ -72,7 +74,7 @@ export default async function BusinessPage() {
               by the dozen.
             </h1>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft sm:text-base">
-              Loom &amp; Lore works with independent retailers, design studios and
+              {settings.brandName} works with independent retailers, design studios and
               hospitality teams who care about where their textiles come from. Approved
               trade accounts unlock wholesale rates, per-product minimums and GST
               invoicing.

@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { RotateCcw } from "lucide-react";
 import { Button, buttonStyles } from "@/components/ui/button";
-import { Wordmark } from "@/components/ui/wordmark";
-import { BRAND_NAME } from "@/lib/constants";
 
 export default function GlobalError({
   reset,
@@ -14,14 +12,6 @@ export default function GlobalError({
 }) {
   return (
     <div className="flex min-h-dvh flex-col bg-paper">
-      <header className="border-b border-line">
-        <div className="editorial-container flex h-20 items-center">
-          <Link href="/" aria-label={`${BRAND_NAME} home`}>
-            <Wordmark />
-          </Link>
-        </div>
-      </header>
-
       <main className="editorial-container flex flex-1 items-center py-16 lg:py-24">
         <div className="max-w-xl">
           <p className="eyebrow text-clay">Something went wrong</p>

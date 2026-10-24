@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { signOutAction } from "@/lib/actions/auth";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -71,39 +72,40 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function Wordmark() {
-  return (
-    <div>
-      <Link
-        href="/admin"
-        className="font-serif text-[1.65rem] font-light leading-none tracking-[-0.03em] text-cream"
-      >
-        Loom <span className="text-clay/90">&amp;</span> Lore
-      </Link>
-      <div className="mt-2 flex items-center gap-2 text-[0.58rem] font-semibold uppercase tracking-[0.28em] text-cream/40">
-        <Sparkles className="size-3 text-clay" aria-hidden />
-        Studio desk
-      </div>
-    </div>
-  );
-}
-
 function SidebarContent({
   pathname,
   email,
   name,
   demo,
+  brandName,
+  logoUrl,
   onNavigate,
 }: {
   pathname: string;
   email: string | null;
   name: string;
   demo: boolean;
+  brandName: string;
+  logoUrl: string | null;
   onNavigate?: () => void;
 }) {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-5 py-7">
-      <Wordmark />
+      <div>
+        <Link href="/admin" className="inline-flex" aria-label={`${brandName} studio home`}>
+          <BrandMark
+            name={brandName}
+            logoUrl={logoUrl}
+            textClassName="text-[1.65rem] font-light text-cream"
+            logoClassName="h-10 max-w-[12rem]"
+            frameClassName="bg-cream px-3 py-2"
+          />
+        </Link>
+        <div className="mt-2 flex items-center gap-2 text-[0.58rem] font-semibold uppercase tracking-[0.28em] text-cream/40">
+          <Sparkles className="size-3 text-clay" aria-hidden />
+          Studio desk
+        </div>
+      </div>
 
       <nav aria-label="Studio sections" className="mt-9 flex-1 space-y-7">
         {NAV_GROUPS.map((group) => (
@@ -192,12 +194,16 @@ export function AdminShell({
   name,
   demo,
   serviceRoleMissing,
+  brandName,
+  logoUrl,
 }: {
   children: React.ReactNode;
   email: string | null;
   name: string;
   demo: boolean;
   serviceRoleMissing: boolean;
+  brandName: string;
+  logoUrl: string | null;
 }) {
   const pathname = usePathname() || "/admin";
   const [open, setOpen] = useState(false);
@@ -217,13 +223,20 @@ export function AdminShell({
           email={email}
           name={name}
           demo={demo}
+          brandName={brandName}
+          logoUrl={logoUrl}
         />
       </aside>
 
       <div className="flex min-w-0 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b border-line bg-cream/95 px-4 py-3 backdrop-blur lg:hidden">
-          <Link href="/admin" className="font-serif text-xl tracking-[-0.03em]">
-            Loom <span className="text-clay">&amp;</span> Lore
+          <Link href="/admin" className="inline-flex items-center">
+            <BrandMark
+              name={brandName}
+              logoUrl={logoUrl}
+              textClassName="text-xl"
+              logoClassName="h-8 max-w-[8rem]"
+            />
             <span className="ml-2 text-[0.55rem] uppercase tracking-[0.2em] text-muted">
               Studio
             </span>
@@ -256,7 +269,7 @@ export function AdminShell({
         </main>
 
         <footer className="border-t border-line px-4 py-4 text-[0.6rem] uppercase tracking-[0.16em] text-muted sm:px-6 lg:px-10 xl:px-14">
-          Loom &amp; Lore studio · Internal dashboard
+          {brandName} studio · Internal dashboard
         </footer>
       </div>
 
@@ -282,6 +295,8 @@ export function AdminShell({
               email={email}
               name={name}
               demo={demo}
+              brandName={brandName}
+              logoUrl={logoUrl}
               onNavigate={() => setOpen(false)}
             />
           </div>

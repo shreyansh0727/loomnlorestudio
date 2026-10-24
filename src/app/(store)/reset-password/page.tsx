@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getViewer } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 import { FormMessage } from "@/components/ui/form";
 import { buttonStyles } from "@/components/ui/button";
 
-export const metadata: Metadata = {
-  title: "Choose a new password",
-  description: "Set a new password for your Loom & Lore account.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Choose a new password",
+    description: `Set a new password for your ${settings.brandName} account.`,
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function ResetPasswordPage() {
   const viewer = await getViewer();

@@ -17,14 +17,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [product, settings] = await Promise.all([
+    getProductBySlug(slug),
+    getSiteSettings(),
+  ]);
   if (!product) return { title: "Piece not found" };
 
   return {
     title: product.name,
     description:
       product.short_description ??
-      `Shop ${product.name} from the Loom & Lore collection.`,
+      `Shop ${product.name} from the ${settings.brandName} collection.`,
     openGraph: {
       title: product.name,
       description: product.short_description ?? undefined,
@@ -74,7 +77,7 @@ export default async function ProductPage({
           />
         </div>
 
-        <div className="mt-12 flex items-center justify-between border-t border-line pt-6">
+        <div className="mt-12 border-t border-line pt-6">
           <Link
             href="/shop"
             className="inline-flex items-center gap-2 text-[0.64rem] font-semibold uppercase tracking-[0.15em] text-ink-soft transition-colors hover:text-ink"
@@ -82,9 +85,6 @@ export default async function ProductPage({
             <ArrowLeft className="size-3.5" />
             Back to the collection
           </Link>
-          <p className="hidden text-[0.6rem] uppercase tracking-[0.14em] text-muted sm:block">
-            Cut and packed by hand · Bengaluru
-          </p>
         </div>
       </div>
 

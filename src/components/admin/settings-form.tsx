@@ -94,7 +94,8 @@ export function SettingsForm({
               value={logoUrl}
               onChange={setLogoUrl}
               folder="brand"
-              hint="Optional. A transparent SVG or PNG works best."
+              crop
+              hint="Optional. Upload a transparent PNG or WebP and crop it to fit. A wide 3:1 or 4:1 mark works best in the header."
             />
             <div className="border-t border-line pt-4">
               <Field label="Announcement text" htmlFor="announcementText">
@@ -248,7 +249,12 @@ export function SettingsForm({
               />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Invoice prefix" htmlFor="invoicePrefix" required>
+              <Field
+                label="Invoice prefix"
+                htmlFor="invoicePrefix"
+                hint="Used for new invoices after saving; existing invoice numbers stay unchanged."
+                required
+              >
                 <Input
                   id="invoicePrefix"
                   name="invoicePrefix"
