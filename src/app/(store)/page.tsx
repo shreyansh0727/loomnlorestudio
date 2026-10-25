@@ -9,9 +9,9 @@ import { SafeImage } from "@/components/ui/safe-image";
 import { buttonStyles } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Cloth with a longer memory",
+  title: "Handmade scrunchies, bows & hair accessories",
   description:
-    "Shop small-batch fabrics by the metre, home textiles and everyday wear from Indian makers. Retail and approved wholesale accounts.",
+    "Shop handmade satin scrunchies, hair bows, fashion ties and crochet accessories from Buniya, Varanasi. Retail and approved wholesale accounts.",
 };
 
 export default async function HomePage() {
@@ -24,37 +24,49 @@ export default async function HomePage() {
 
   if (!sections.length) {
     return (
-      <section className="relative isolate min-h-[calc(100svh-9rem)] overflow-hidden bg-ink">
-        <SafeImage
-          src="/images/hero/hero-loom.jpg"
-          alt=""
-          priority
-          sizes="100vw"
-          className="object-cover"
-          fallbackClassName="bg-[#57544c]"
-        />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/45 to-ink/10" />
-        <div className="editorial-container relative flex min-h-[calc(100svh-9rem)] items-center py-24 text-cream">
-          <div className="max-w-2xl">
-            <p className="eyebrow text-cream/65">{settings.brandTagline}</p>
-            <h1 className="mt-5 font-serif text-[clamp(2.8rem,7vw,6rem)] font-light leading-[0.95] tracking-[-0.045em]">
-              The collection is being prepared.
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-paper via-blush/35 to-butter/40">
+        <div className="editorial-container grid gap-12 py-16 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:py-24">
+          <div className="max-w-xl">
+            <p className="eyebrow flex items-center gap-3 text-clay">
+              {settings.brandTagline}
+            </p>
+            <h1 className="mt-5 font-serif text-[clamp(2.6rem,5.4vw,4.6rem)] font-light leading-[0.98] tracking-[-0.045em]">
+              Little things, made lovely.
             </h1>
-            <p className="mt-5 max-w-lg text-sm leading-relaxed text-cream/70 sm:text-base">
-              Our first lengths of cloth are on the loom. In the meantime, read a little
-              about how we work, or open a trade conversation with the studio.
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-ink-soft sm:text-base">
+              Our first little collection is being tied with ribbon. In the meantime,
+              read our story or start a wholesale conversation with the workroom.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/about" className={buttonStyles({ variant: "inverse", size: "lg" })}>
+              <Link href="/about" className={buttonStyles({ size: "lg" })}>
                 Our story
                 <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/business"
-                className="link-underline inline-flex items-center gap-2 px-2 text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-cream/80 hover:text-cream"
+                className="link-underline inline-flex items-center gap-2 px-2 text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-ink-soft hover:text-ink"
               >
                 Trade enquiries
               </Link>
+            </div>
+            <p className="script-label mt-8 text-2xl text-clay/85">
+              Har dhaage mein apnapan
+            </p>
+          </div>
+          <div className="relative mx-auto w-full max-w-md">
+            <div
+              aria-hidden
+              className="absolute -inset-3 rounded-[11rem_11rem_2rem_2rem] border border-dashed border-clay/25"
+            />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[10rem_10rem_1.5rem_1.5rem] bg-sand shadow-soft">
+              <SafeImage
+                src="/images/buniya/hero/ribbon-table.jpg"
+                alt="Handmade satin scrunchies and bows"
+                priority
+                sizes="(min-width: 1024px) 44vw, 90vw"
+                className="object-cover"
+                fallbackClassName="bg-blush"
+              />
             </div>
           </div>
         </div>

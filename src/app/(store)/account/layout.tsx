@@ -38,7 +38,7 @@ export default async function AccountLayout({
           </p>
           {viewer.profile?.created_at ? (
             <p className="mt-1 text-[0.6rem] uppercase tracking-[0.12em] text-muted">
-              With the studio since {formatDate(viewer.profile.created_at, { month: "long", year: "numeric" })}
+              With Buniya since {formatDate(viewer.profile.created_at, { month: "long", year: "numeric" })}
             </p>
           ) : null}
         </div>

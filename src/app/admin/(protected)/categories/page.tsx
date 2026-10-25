@@ -144,7 +144,7 @@ export default async function AdminCategoriesPage({
                 No categories yet
               </p>
               <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted">
-                Create shelves like Fabrics, Table linen or Ready-made so customers can
+                Create shelves like Scrunchies, Hair Bows or Crochet so customers can
                 browse with ease.
               </p>
             </div>

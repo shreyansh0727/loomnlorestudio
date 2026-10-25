@@ -30,7 +30,7 @@ export default async function ProfilePage({
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
           These details prefill your delivery addresses. Account changes are kept simple —
-          write to the studio if you need to change your sign-in email.
+          write to us if you need to change your sign-in email.
         </p>
       </div>
 

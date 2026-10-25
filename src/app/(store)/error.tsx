@@ -10,7 +10,7 @@ export default function StoreError({ reset }: { error: Error & { digest?: string
     <div className="editorial-container py-14 lg:py-20">
       <EmptyState
         title="We couldn't load this page"
-        description="The studio is still here. Try again, or continue browsing the collection — nothing in your bag or account has changed."
+        description="We are still here. Try again, or continue browsing the collection — nothing in your bag or account has changed."
         action={
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button type="button" onClick={reset}>

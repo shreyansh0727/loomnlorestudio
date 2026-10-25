@@ -50,7 +50,7 @@ export default async function BusinessAccountPage({
             ? "Wholesale prices and per-product minimums now apply automatically across the shop."
             : pending
               ? "Our team is checking your GST details. You can keep shopping at retail prices while you wait."
-              : "For studios, stores and makers: trade pricing, per-product minimums and a GST invoice for every order."}
+              : "For boutiques, stores and makers: trade pricing, per-product minimums and a GST invoice for every order."}
         </p>
       </div>
 

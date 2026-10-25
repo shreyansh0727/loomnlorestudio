@@ -33,9 +33,9 @@ export default async function SignUpPage({
       eyebrow="Create an account"
       title="Keep a thread to your orders."
       description="An account keeps your purchases, delivery details and trade status in one place. It is optional — you can always check out as a guest."
-      image="/images/editorial/weaving-detail.jpg"
-      imageAlt="Close view of a handloom warp and weft threads"
-      quote="A slower kind of shopping, with a record of everything you chose."
+      image="/images/buniya/editorial/ribbon-detail.jpg"
+      imageAlt="Ribbon and pearl detail on a handmade bow"
+      quote="A softer kind of shopping, with a record of everything you chose."
       notice={
         !isSupabaseConfigured ? (
           <FormMessage

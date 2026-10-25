@@ -101,7 +101,7 @@ export function OrderStatusForm({
           name="note"
           rows={3}
           maxLength={500}
-          placeholder="e.g. Packed with the indigo runner; courier pickup booked."
+          placeholder="e.g. Pearl placement checked; parcel weighed and ready for pickup."
         />
       </Field>
 

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Select } from "@/components/ui/form";
 
 const SORT_OPTIONS = [
-  { value: "featured", label: "Studio picks" },
+  { value: "featured", label: "Buniya picks" },
   { value: "newest", label: "Newest first" },
   { value: "price-asc", label: "Price: low to high" },
   { value: "price-desc", label: "Price: high to low" },

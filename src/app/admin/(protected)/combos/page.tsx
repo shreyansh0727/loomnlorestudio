@@ -155,8 +155,8 @@ export default async function AdminCombosPage({
                 No bundles yet
               </p>
               <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
-                Group pieces into a considered set — two runners and napkins, or a
-                fabric-and-thread pairing — at a single bundle price.
+                Group pieces into a little set — a scrunchie trio with a bow, or a
+                bridal pairing — at a single bundle price.
               </p>
               <Link
                 href="/admin/combos/new"

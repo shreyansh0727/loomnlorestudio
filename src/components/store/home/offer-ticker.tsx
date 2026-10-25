@@ -15,12 +15,12 @@ export function OfferTicker({ items }: { items: OfferTickerItem[] }) {
           <span aria-hidden className="size-1 shrink-0 rounded-full bg-clay" />
           <Link
             href={item.href || "/offers"}
-            className="whitespace-nowrap text-[0.63rem] font-medium uppercase tracking-[0.16em] text-cream/80 transition-colors hover:text-cream"
+            className="whitespace-nowrap text-[0.63rem] font-medium uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-clay"
           >
             {item.text}
           </Link>
           {item.coupon_code ? (
-            <CopyCode code={item.coupon_code} tone="dark" className="py-1" />
+            <CopyCode code={item.coupon_code} className="py-1" />
           ) : null}
         </div>
       ))}
@@ -28,7 +28,7 @@ export function OfferTicker({ items }: { items: OfferTickerItem[] }) {
   );
 
   return (
-    <section aria-label="Current offers" className="overflow-hidden border-y border-cream/10 bg-ink">
+    <section aria-label="Current offers" className="overflow-hidden border-y border-line bg-blush/50">
       <div className="group flex py-3 hover:[&_.marquee-track]:[animation-play-state:paused]">
         <div className="marquee-track flex w-max items-center">
           {group(false)}

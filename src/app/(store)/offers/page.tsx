@@ -35,14 +35,14 @@ export default async function OffersPage() {
       <section className="paper-edge relative overflow-hidden border-b border-line bg-cream/60">
         <div className="editorial-container relative py-14 lg:py-20">
           <div className="max-w-3xl">
-            <p className="eyebrow text-clay">Offers from the studio</p>
+            <p className="eyebrow text-clay">Offers from Buniya</p>
             <h1 className="display-title mt-4 text-[clamp(2.8rem,6vw,5.4rem)]">
-              Small kindnesses,
+              Little joys,
               <br />
-              woven in.
+              wrapped up.
             </h1>
             <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-              A welcome code for the first visit, considered bundles that cost less
+              A welcome code for your first visit, ready-to-gift bundles that cost less
               together, and wholesale terms for approved trade accounts. One code per
               order; always applied before payment.
             </p>
@@ -78,7 +78,7 @@ export default async function OffersPage() {
               <article
                 key={coupon.id}
                 id={`coupon-${coupon.code.toLowerCase()}`}
-                className="relative scroll-mt-28 overflow-hidden border border-line bg-cream p-6 sm:p-7"
+                className="relative scroll-mt-28 overflow-hidden rounded-3xl border border-line bg-cream p-6 sm:p-7"
               >
                 <div
                   aria-hidden
@@ -101,7 +101,7 @@ export default async function OffersPage() {
                         "Use this code at checkout to apply the offer to your order."}
                     </p>
                   </div>
-                  <span className="hidden rounded-full bg-ink px-3 py-1 text-[0.56rem] font-semibold uppercase tracking-[0.13em] text-cream sm:inline-flex">
+                  <span className="hidden rounded-full bg-clay px-3 py-1 text-[0.56rem] font-semibold uppercase tracking-[0.13em] text-cream sm:inline-flex">
                     {coupon.discount_type === "percentage"
                       ? `${coupon.discount_value}% off`
                       : `${formatMoney(coupon.discount_value)} off`}
@@ -129,7 +129,7 @@ export default async function OffersPage() {
             className="mt-9"
             icon={<Ticket className="size-6" strokeWidth={1.4} />}
             title="No coupon codes just now"
-            description="Bundle savings are still available below, and the studio letter announces new codes first."
+            description="Bundle savings are still available below, and our emails announce new codes first."
             action={
               <Link href="/shop" className={buttonStyles({ size: "md", variant: "secondary" })}>
                 Continue shopping
@@ -162,7 +162,7 @@ export default async function OffersPage() {
               className="mt-9"
               icon={<Sparkles className="size-6" strokeWidth={1.4} />}
               title="Bundles are being prepared"
-              description="The studio is putting together the next set. Check back soon or browse the collection."
+              description="We are putting together the next little set. Check back soon or browse the collection."
               action={
                 <Link href="/shop" className={buttonStyles({ size: "md", variant: "secondary" })}>
                   Browse the collection
@@ -183,7 +183,7 @@ export default async function OffersPage() {
               },
               {
                 title: "Shipping quoted later",
-                body: "Product payment is online. The studio quotes exact shipping separately before dispatch.",
+                body: "Product payment is online. We quote exact shipping separately before dispatch.",
               },
             ].map((item) => (
               <div key={item.title}>

@@ -1,25 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f4efe5;
-  --color-cream: #fbf8f2;
-  --color-ink: #1e1b17;
-  --color-ink-soft: #4a453e;
-  --color-muted: #776e62;
-  --color-clay: #a4543a;
-  --color-clay-deep: #7e3a26;
-  --color-sage: #69705e;
-  --color-sage-light: #e4e7dc;
-  --color-sand: #e8ddcb;
-  --color-line: #d9cebd;
-  --color-blush: #e8cbbd;
+  --color-paper: #fdf6f3;
+  --color-cream: #fffdfb;
+  --color-ink: #462f3a;
+  --color-ink-soft: #634955;
+  --color-muted: #947d86;
+  --color-clay: #c8657f;
+  --color-clay-deep: #a94e68;
+  --color-sage: #7d8f74;
+  --color-sage-light: #edf2e8;
+  --color-sand: #f8e8e2;
+  --color-line: #eedbd8;
+  --color-blush: #f6d9d6;
+  --color-butter: #fbf1d5;
+  --color-lilac: #ece4f3;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
-  --shadow-lift: 0 20px 60px -30px rgba(31, 27, 22, 0.35);
-  --shadow-soft: 0 12px 40px -24px rgba(31, 27, 22, 0.25);
+  --font-script: var(--font-caveat), "Segoe Script", cursive;
+  --shadow-lift: 0 24px 70px -34px rgba(95, 54, 70, 0.28);
+  --shadow-soft: 0 14px 44px -26px rgba(95, 54, 70, 0.22);
   --animate-marquee: marquee 34s linear infinite;
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-fade-in: fade-in 0.5s ease both;
+  --animate-float: float 7s ease-in-out infinite;
 }
 
 @keyframes marquee {
@@ -51,16 +55,34 @@
   }
 }
 
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
 :root {
   color-scheme: light;
 }
 
 html {
   scroll-behavior: smooth;
+  font-size: 106.25%;
 }
 
 body {
-  background: var(--color-paper);
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(rgba(200, 101, 127, 0.055) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 253, 251, 0.6), rgba(253, 246, 243, 0));
+  background-size:
+    22px 22px,
+    100% 100%;
+  background-attachment: fixed, fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -116,11 +138,43 @@ textarea::placeholder {
     text-transform: uppercase;
   }
 
+  .script-label {
+    color: var(--color-clay);
+    font-family: var(--font-script);
+    font-size: 1.45rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+
   .display-title {
     font-family: var(--font-serif);
     font-weight: 350;
     letter-spacing: -0.035em;
     line-height: 0.98;
+  }
+
+  .stitch-line {
+    border-top: 1px dashed color-mix(in oklab, var(--color-clay) 38%, var(--color-line));
+  }
+
+  .stitch-frame {
+    border: 1px dashed color-mix(in oklab, var(--color-clay) 32%, var(--color-line));
+  }
+
+  .soft-panel {
+    background: color-mix(in oklab, var(--color-cream) 82%, var(--color-blush));
+    border: 1px solid var(--color-line);
+    border-radius: 1.75rem;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .script-underline {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' fill='none'%3E%3Cpath d='M3 9C24 3 47 3 68 6c16 2 31 4 49 1' stroke='%23c8657f' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: 100% 0.5em;
+    padding-bottom: 0.18em;
   }
 
   .link-underline {
@@ -198,10 +252,11 @@ textarea::placeholder {
   }
 
   .paper-edge {
-    background-image:
-      linear-gradient(90deg, rgba(30, 27, 23, 0.025) 1px, transparent 1px),
-      linear-gradient(rgba(30, 27, 23, 0.02) 1px, transparent 1px);
-    background-size: 44px 44px;
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--color-clay) 13%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 19px 19px;
   }
 
   .stagger-fade > * {

@@ -395,6 +395,10 @@ export const comboRailConfigSchema = z.object({
   limit: z.number().int().min(1).max(12),
 });
 
+export const reviewsConfigSchema = z.object({
+  limit: z.number().int().min(1).max(12),
+});
+
 export const homepageSectionInputSchema = z.object({
   title: optionalText(140),
   subtitle: optionalText(300),
@@ -412,6 +416,7 @@ export const sectionConfigSchemas = {
   banner: bannerConfigSchema,
   editorial: editorialConfigSchema,
   combo_rail: comboRailConfigSchema,
+  reviews: reviewsConfigSchema,
 } satisfies Record<HomepageSectionType, z.ZodType>;
 
 export function parseSectionConfig(type: HomepageSectionType, raw: unknown) {

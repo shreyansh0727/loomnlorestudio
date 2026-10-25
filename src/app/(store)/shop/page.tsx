@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Shop the collection",
   description:
-    "Fabrics by the metre, home textiles, everyday wear and objects made in small batches with Indian makers.",
+    "Handmade scrunchies, hair bows, fashion ties, headbands and crochet accessories from Buniya, Varanasi.",
 };
 
 interface ShopSearchParams {
@@ -87,14 +87,14 @@ export default async function ShopPage({
           <div className="mt-7 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="eyebrow text-clay">
-                {search ? "Search results" : activeCategory ? "By material" : "The collection"}
+                {search ? "Search results" : activeCategory ? "By collection" : "The collection"}
               </p>
               <h1 className="display-title mt-3 text-[clamp(2.6rem,5.5vw,4.6rem)]">
-                {search ? `“${search}”` : activeCategory?.name ?? "Cloth, considered."}
+                {search ? `“${search}”` : activeCategory?.name ?? "Little things, made lovely."}
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
                 {activeCategory?.description ??
-                  "Running lengths, quiet home layers and pieces made to be used. Every price includes GST; final shipping is quoted after your order."}
+                  "Scrunchies, bows, ties and crochet keepsakes, handmade in Varanasi. Every price includes GST; final shipping is quoted after your order."}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -144,7 +144,7 @@ export default async function ShopPage({
                 type="search"
                 name="search"
                 defaultValue={search}
-                placeholder="Search the collection"
+                placeholder="Scrunchies, bows, pearls…"
                 aria-label="Search products"
                 className="field-base h-10 w-full pl-9 pr-3 text-sm"
               />
@@ -152,7 +152,7 @@ export default async function ShopPage({
 
             <div className="flex items-center gap-4">
               <p className="hidden text-[0.64rem] uppercase tracking-[0.14em] text-muted sm:block">
-                {formatNumber(total)} {total === 1 ? "piece" : "pieces"}
+                {formatNumber(total)} little {total === 1 ? "piece" : "pieces"}
               </p>
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="size-3.5 text-muted" strokeWidth={1.6} />
@@ -223,8 +223,8 @@ export default async function ShopPage({
                           className={cn(
                             "inline-flex size-8 items-center justify-center rounded-full text-xs transition-colors",
                             pageNumber === page
-                              ? "bg-ink text-cream"
-                              : "text-ink-soft hover:bg-ink/5 hover:text-ink",
+                              ? "bg-clay text-cream"
+                              : "text-ink-soft hover:bg-clay/10 hover:text-ink",
                           )}
                         >
                           {pageNumber}
@@ -252,11 +252,11 @@ export default async function ShopPage({
           <EmptyState
             className="mt-10"
             icon={<Search className="size-6" strokeWidth={1.4} />}
-            title="No pieces match this search"
+            title="No little things match this search"
             description={
               search
-                ? `We could not find anything for “${search}”. Try a material, colour or a broader term.`
-                : "This edit is still being prepared. Explore the full collection in the meantime."
+                ? `We could not find anything for “${search}”. Try a colour, a style or a broader term.`
+                : "This collection is still being prepared. Explore all our handmade pieces in the meantime."
             }
             action={
               <Link href="/shop" className={buttonStyles({ variant: "secondary", size: "md" })}>
@@ -285,8 +285,8 @@ function CategoryChip({
       className={cn(
         "rounded-full border px-3.5 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.13em] transition-colors",
         active
-          ? "border-ink bg-ink text-cream"
-          : "border-line bg-transparent text-ink-soft hover:border-ink/40 hover:text-ink",
+          ? "border-clay bg-clay text-cream"
+          : "border-line bg-transparent text-ink-soft hover:border-clay/50 hover:text-clay",
       )}
     >
       {children}

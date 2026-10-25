@@ -142,7 +142,7 @@ export async function trackOrderAction(
     return {
       status: "error",
       message:
-        "We could not find an order with that number and email. Check both details or write to the studio.",
+        "We could not find an order with that number and email. Check both details or write to us.",
     };
   }
 

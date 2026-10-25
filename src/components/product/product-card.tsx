@@ -53,7 +53,7 @@ export function ProductCard({
 
   return (
     <article className={cn("group relative flex flex-col", className)}>
-      <div className="relative aspect-[4/5] overflow-hidden bg-sand">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-t-[4.5rem] rounded-b-2xl border border-line/80 bg-sand">
         <Link
           href={`/shop/${product.slug}`}
           aria-label={product.name}
@@ -65,7 +65,7 @@ export function ProductCard({
             sizes={imageSizes}
             className="transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
           />
-          <span className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/5" />
+          <span className="absolute inset-0 bg-clay/0 transition-colors duration-500 group-hover:bg-clay/10" />
         </Link>
 
         <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
@@ -84,7 +84,7 @@ export function ProductCard({
 
         <div className="absolute inset-x-3 bottom-3 z-10 translate-y-0 opacity-100 transition-all duration-300 lg:translate-y-2 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:group-focus-within:translate-y-0 lg:group-focus-within:opacity-100">
           {totalStock === 0 ? (
-            <span className="flex h-10 items-center justify-center bg-cream/90 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-muted">
+            <span className="flex h-10 items-center justify-center rounded-full bg-cream/90 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-muted">
               Currently unavailable
             </span>
           ) : line ? (
@@ -92,7 +92,7 @@ export function ProductCard({
           ) : (
             <Link
               href={`/shop/${product.slug}`}
-              className="flex h-10 items-center justify-between bg-cream/95 px-3.5 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft backdrop-blur-sm transition-colors hover:bg-ink hover:text-cream"
+              className="flex h-10 items-center justify-between rounded-full bg-cream/95 px-4 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft backdrop-blur-sm transition-colors hover:bg-clay hover:text-cream"
             >
               Choose options
               <ArrowUpRight className="size-3.5" />
@@ -103,7 +103,7 @@ export function ProductCard({
 
       <div className="flex flex-1 flex-col pt-4">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-muted">
+          <p className="text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-clay/80">
             {product.category?.name ?? "Collection"}
           </p>
           {isB2B ? (

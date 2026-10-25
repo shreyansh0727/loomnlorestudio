@@ -15,13 +15,13 @@ export function TrackOrderForm() {
       <Field
         label="Order number"
         htmlFor="orderNumber"
-        hint="It begins with LL- and appears in your confirmation email."
+        hint="It begins with BN- and appears in your confirmation email."
         required
       >
         <Input
           id="orderNumber"
           name="orderNumber"
-          placeholder="LL-260524-01042"
+          placeholder="BN-261025-01042"
           autoComplete="off"
           spellCheck={false}
           required

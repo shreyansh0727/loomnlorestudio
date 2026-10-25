@@ -26,8 +26,8 @@ const STEPS = [
     body: "Submit your legal name, GSTIN and registered address from your account. This is used on your GST invoice.",
   },
   {
-    title: "The studio reviews",
-    body: "We check the details by hand, usually within two working days. We may ask for a short note about your business.",
+    title: "Our team reviews",
+    body: "We check the details by hand, usually within two working days. We may ask for a short note about your shop or studio.",
   },
   {
     title: "Trade pricing unlocks",
@@ -67,16 +67,16 @@ export default async function BusinessPage() {
       <section className="grid lg:grid-cols-[1.05fr_0.95fr]">
         <div className="flex items-center bg-cream px-6 py-16 sm:px-10 lg:py-24 xl:px-20">
           <div className="max-w-xl">
-            <p className="eyebrow text-clay">For shops, studios &amp; interior teams</p>
+            <p className="eyebrow text-clay">For boutiques, gifting &amp; studios</p>
             <h1 className="mt-4 font-serif text-[clamp(2.8rem,6vw,5rem)] font-light leading-[0.98] tracking-[-0.045em]">
-              Good cloth,
+              Handmade,
               <br />
               by the dozen.
             </h1>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-soft sm:text-base">
-              {settings.brandName} works with independent retailers, design studios and
-              hospitality teams who care about where their textiles come from. Approved
-              trade accounts unlock wholesale rates, per-product minimums and GST
+              {settings.brandName} works with independent boutiques, gifting studios and
+              online shops who want small-batch accessories with a real handmade finish.
+              Approved trade accounts unlock wholesale rates, small minimums and GST
               invoicing.
             </p>
 
@@ -112,8 +112,8 @@ export default async function BusinessPage() {
 
         <div className="relative min-h-[24rem] overflow-hidden bg-sand lg:min-h-[42rem]">
           <SafeImage
-            src="/images/editorial/weaving-detail.jpg"
-            alt="Folded lengths of woven cloth"
+            src="/images/buniya/banner/wholesale-flatlay.jpg"
+            alt="Handmade scrunchies, bows and clips laid out for wholesale"
             priority
             sizes="(min-width: 1024px) 45vw, 100vw"
           />
@@ -122,10 +122,10 @@ export default async function BusinessPage() {
             className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent"
           />
           <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4 text-cream sm:left-8 sm:right-8">
-            <p className="max-w-[14rem] font-serif text-xl font-light leading-snug">
-              Cloth chosen by hand, priced for the work it does.
+            <p className="max-w-[16rem] font-serif text-xl font-light leading-snug">
+              Little things, made to be sold beautifully.
             </p>
-            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-cream/70">
+            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-cream/75">
               Trade catalogue · 2026
             </p>
           </div>
@@ -177,7 +177,7 @@ export default async function BusinessPage() {
             ))}
           </ol>
 
-          <div className="mt-12 flex flex-col items-start justify-between gap-6 border border-line bg-cream p-6 sm:flex-row sm:items-center sm:p-8">
+          <div className="mt-12 flex flex-col items-start justify-between gap-6 rounded-3xl border border-line bg-cream p-6 sm:flex-row sm:items-center sm:p-8">
             <div className="flex items-start gap-4">
               <Building2 className="mt-0.5 size-5 shrink-0 text-clay" strokeWidth={1.4} />
               <div>
@@ -215,7 +215,7 @@ export default async function BusinessPage() {
               {
                 term: "Minimum quantities",
                 detail:
-                  "Each product lists its wholesale minimum. Your cart enforces the minimum for each line and the studio will confirm availability before dispatch.",
+                  "Each product lists its wholesale minimum. Your cart enforces the minimum for each line and we will confirm availability before dispatch.",
               },
               {
                 term: "Pricing & GST",
@@ -230,7 +230,7 @@ export default async function BusinessPage() {
               {
                 term: "Returns",
                 detail:
-                  "Cut yardage is final sale. Ready-made wholesale returns are agreed with the trade desk before shipping back; see the returns policy for details.",
+                  "Made-to-order and customised pieces are final sale. Ready-made wholesale returns are agreed with the trade desk before shipping back; see the returns policy for details.",
               },
               {
                 term: "Privacy",

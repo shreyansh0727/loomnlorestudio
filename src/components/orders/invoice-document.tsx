@@ -229,7 +229,7 @@ export function InvoiceDocument({
         <section className="mt-4 grid gap-8 border-t border-ink/15 pt-6 sm:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="space-y-3 text-[0.7rem] leading-relaxed text-muted">
             <p>
-              Prices are inclusive of GST. Shipping is quoted by the studio and billed
+              Prices are inclusive of GST. Shipping is quoted by us and billed
               separately at actuals.
             </p>
             {order.coupon_code ? (
@@ -239,8 +239,8 @@ export function InvoiceDocument({
               </p>
             ) : null}
             <p>
-              Cut yardage and made-to-order pieces are final sale. Returns on ready-made
-              textiles are governed by the returns policy shared on our website.
+              Custom and made-to-order pieces are final sale. Returns on ready-made
+              accessories are governed by the returns policy shared on our website.
             </p>
             <p>
               Questions about this invoice? Write to {settings.supportEmail}.
@@ -283,7 +283,7 @@ export function InvoiceDocument({
             ) : null}
             {order.shipping_payment_status === "pending" || balance > 0 ? (
               <p className="pt-2 text-[0.68rem] leading-relaxed text-clay-deep">
-                Shipping is payable through the secure Razorpay link sent by the studio.
+                Shipping is payable through the secure Razorpay link sent by us.
                 Orders are dispatched after the shipping charge is settled.
               </p>
             ) : null}
@@ -294,7 +294,7 @@ export function InvoiceDocument({
           <div>
             <p className="font-medium text-ink">Thank you for choosing {settings.brandName}.</p>
             <p className="mt-1">
-              Every piece is cut, checked and packed by hand in our studio.
+              Every piece is cut, checked and packed by hand in our workroom.
             </p>
           </div>
           <div className="sm:text-right">

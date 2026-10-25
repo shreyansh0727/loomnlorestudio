@@ -44,7 +44,7 @@ export default async function AdminProductsPage({
       <AdminPageHeader
         eyebrow="Catalog"
         title="Products"
-        description="Fabrics by the metre, home textiles and ready-made pieces. Manage pricing, variants and stock."
+        description="Scrunchies, bows, ties, headbands and crochet pieces. Manage pricing, variants and stock."
         actions={
           <>
             <Link
@@ -241,7 +241,7 @@ export default async function AdminProductsPage({
               <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
                 {hasFilters
                   ? "Adjust the filters or clear the search to see every piece."
-                  : "Add your first piece to start selling fabrics, home textiles and ready-made goods."}
+                  : "Add your first piece to start selling scrunchies, bows and little handmade gifts."}
               </p>
               <div className="mt-6 flex gap-2">
                 {hasFilters ? (

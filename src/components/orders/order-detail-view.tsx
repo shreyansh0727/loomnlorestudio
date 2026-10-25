@@ -7,6 +7,7 @@ import {
   MapPin,
   Package,
   ReceiptText,
+  Star,
   Truck,
 } from "lucide-react";
 import type { OrderWithDetails } from "@/lib/data/account";
@@ -249,6 +250,33 @@ export function OrderDetailView({
             </ul>
           </section>
 
+          {order.status === "delivered" ? (
+            <section className="border border-clay/25 bg-blush/35 p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cream text-clay">
+                  <Star className="size-4" strokeWidth={1.5} aria-hidden />
+                </span>
+                <div>
+                  <h2 className="font-serif text-xl font-light tracking-[-0.02em]">
+                    A note from you
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                    Now that your pieces have arrived, we would love to hear how they
+                    feel. Add a rating, a few words and photographs to help other
+                    customers choose.
+                  </p>
+                  <Link
+                    href={`/review/${order.access_token}`}
+                    className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-clay px-5 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-cream transition-colors hover:bg-clay-deep"
+                  >
+                    Share a review
+                    <ArrowUpRight className="size-3.5" aria-hidden />
+                  </Link>
+                </div>
+              </div>
+            </section>
+          ) : null}
+
           {order.events.length ? (
             <section className="border border-line bg-cream/60 p-5 sm:p-6">
               <h2 className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-ink-soft">
@@ -373,7 +401,7 @@ export function OrderDetailView({
               </div>
             ) : (
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                Tracking details appear here once your parcel leaves the studio.
+                Tracking details appear here once your parcel leaves our workroom.
               </p>
             )}
 
@@ -418,7 +446,7 @@ export function OrderDetailView({
               Need a hand?
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-cream/75">
-              Write to the studio with your order number and we will help with delivery,
+              Write to us with your order number and we will help with delivery,
               changes or returns.
             </p>
             <a

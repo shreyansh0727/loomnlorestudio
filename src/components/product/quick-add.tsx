@@ -21,7 +21,7 @@ export function QuickAdd({
       type="button"
       onClick={() => addLine(line)}
       className={cn(
-        "flex h-10 w-full items-center justify-between gap-3 bg-cream/95 px-3.5 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft backdrop-blur-sm transition-colors hover:bg-ink hover:text-cream",
+        "flex h-10 w-full items-center justify-between gap-3 rounded-full bg-cream/95 px-4 text-[0.61rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft backdrop-blur-sm transition-colors hover:bg-clay hover:text-cream",
         className,
       )}
     >

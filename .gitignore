@@ -26,6 +26,7 @@
 
 # local QA evidence and scratch tooling
 /artifacts/
+/vibe_images/
 /.dev-server*.log
 
 # debug

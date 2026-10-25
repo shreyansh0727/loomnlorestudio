@@ -29,7 +29,7 @@ const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
   { href: "/offers", label: "Offers" },
   { href: "/business", label: "Trade" },
-  { href: "/about", label: "Studio" },
+  { href: "/about", label: "Our story" },
 ];
 
 export function HeaderShell({
@@ -91,18 +91,18 @@ export function HeaderShell({
   return (
     <>
       {settings.announcementActive && settings.announcementText ? (
-        <div className="bg-ink text-cream">
+        <div className="border-b border-line/70 bg-blush/70 text-ink">
           <div className="editorial-container flex min-h-9 items-center justify-center gap-3 py-2 text-center">
             <span aria-hidden className="hidden size-1 shrink-0 rounded-full bg-clay sm:block" />
             {settings.announcementHref ? (
               <Link
                 href={settings.announcementHref}
-                className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-cream/85 transition-colors hover:text-cream sm:text-[0.64rem]"
+                className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-ink/75 transition-colors hover:text-ink sm:text-[0.64rem]"
               >
                 {settings.announcementText}
               </Link>
             ) : (
-              <p className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-cream/85 sm:text-[0.64rem]">
+              <p className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-ink/75 sm:text-[0.64rem]">
                 {settings.announcementText}
               </p>
             )}
@@ -126,9 +126,10 @@ export function HeaderShell({
               <Link href="/" aria-label={`${settings.brandName} home`} className="inline-flex">
                 <BrandMark
                   name={settings.brandName}
+                  subLabel="A Laxmi Collection Brand"
                   logoUrl={settings.logoUrl}
                   textClassName="text-[1.22rem] sm:text-[1.35rem] lg:text-[1.5rem]"
-                  logoClassName="h-8 max-w-[8.5rem] sm:h-9 sm:max-w-[10rem]"
+                  logoClassName="h-11 max-w-[9rem] mix-blend-multiply sm:h-14 sm:max-w-[11rem]"
                 />
               </Link>
             </div>
@@ -151,8 +152,8 @@ export function HeaderShell({
                       />
                     </Link>
                     <div className="invisible absolute left-1/2 top-full w-[23rem] -translate-x-1/2 pt-4 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                      <div className="border border-line bg-cream p-5 shadow-lift">
-                        <p className="eyebrow mb-4 text-clay">Today&apos;s offers</p>
+                      <div className="rounded-2xl border border-line bg-cream p-5 shadow-lift">
+                        <p className="eyebrow mb-4 text-clay">Today&apos;s little offers</p>
                         <div className="space-y-1">
                           {offers.length ? (
                             offers.map((offer) => (
@@ -258,14 +259,15 @@ export function HeaderShell({
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
-            className="absolute inset-y-0 left-0 flex w-[90%] max-w-sm animate-fade-in flex-col overflow-y-auto bg-cream shadow-lift"
+            className="absolute inset-y-0 left-0 flex w-[90%] max-w-sm animate-fade-in flex-col overflow-y-auto rounded-r-3xl bg-cream shadow-lift"
           >
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <BrandMark
                 name={settings.brandName}
+                subLabel="A Laxmi Collection Brand"
                 logoUrl={settings.logoUrl}
                 textClassName="text-xl"
-                logoClassName="h-8 max-w-[8.5rem]"
+                logoClassName="h-10 max-w-[9rem] mix-blend-multiply"
               />
               <button
                 type="button"
@@ -293,7 +295,7 @@ export function HeaderShell({
                 ))}
               </nav>
 
-              <p className="eyebrow mb-3 mt-8 text-muted">Shop by material</p>
+              <p className="eyebrow mb-3 mt-8 text-muted">Shop by collection</p>
               <div className="flex flex-col gap-2.5">
                 {categories.map((category) => (
                   <Link
@@ -345,7 +347,7 @@ export function HeaderShell({
                     onClick={() => setMobileOpen(false)}
                     className="mt-3 flex items-center gap-2 text-sm text-clay"
                   >
-                    Studio dashboard
+                    Admin dashboard
                   </Link>
                 ) : null}
               </div>
@@ -366,7 +368,7 @@ export function HeaderShell({
             role="dialog"
             aria-modal="true"
             aria-label="Search"
-            className="relative mx-auto mt-[12vh] w-[92%] max-w-2xl animate-fade-up border border-line bg-cream p-6 shadow-lift sm:p-8"
+            className="relative mx-auto mt-[12vh] w-[92%] max-w-2xl animate-fade-up rounded-3xl border border-line bg-cream p-6 shadow-lift sm:p-8"
           >
             <div className="flex items-center justify-between">
               <p className="eyebrow text-clay">Search the collection</p>
@@ -391,7 +393,7 @@ export function HeaderShell({
                   ref={searchInput}
                   type="search"
                   name="search"
-                  placeholder="Linen, indigo, apron…"
+                  placeholder="Scrunchies, bows, crochet…"
                   aria-label="Search products"
                   className="w-full bg-transparent py-2 font-serif text-2xl font-light tracking-[-0.02em] text-ink outline-none placeholder:text-muted/60 sm:text-3xl"
                 />
@@ -406,7 +408,7 @@ export function HeaderShell({
             </form>
             <div className="mt-5 flex flex-wrap items-center gap-2 text-[0.65rem] uppercase tracking-[0.14em] text-muted">
               <span>Try</span>
-              {["linen", "indigo", "khadi", "towels"].map((term) => (
+              {["scrunchies", "bows", "pearls", "crochet"].map((term) => (
                 <button
                   key={term}
                   type="button"

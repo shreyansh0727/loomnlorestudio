@@ -6,21 +6,32 @@ import { Wordmark } from "@/components/ui/wordmark";
 
 export function BrandMark({
   name,
+  subLabel,
   logoUrl,
   textClassName,
+  subLabelClassName,
   logoClassName,
   frameClassName,
 }: {
   name: string;
+  subLabel?: string;
   logoUrl?: string | null;
   textClassName?: string;
+  subLabelClassName?: string;
   logoClassName?: string;
   frameClassName?: string;
 }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
   if (!logoUrl || failedSrc === logoUrl) {
-    return <Wordmark name={name} className={textClassName} />;
+    return (
+      <Wordmark
+        name={name}
+        subLabel={subLabel}
+        className={textClassName}
+        subLabelClassName={subLabelClassName}
+      />
+    );
   }
 
   return (

@@ -35,7 +35,7 @@ function authErrorMessage(message: string) {
     return "Too many attempts. Please wait a few minutes and try again.";
   }
   if (value.includes("signups not allowed")) {
-    return "New accounts are paused right now. Please write to the studio.";
+    return "New accounts are paused right now. Please write to us.";
   }
   return "We could not complete that request. Please try again.";
 }

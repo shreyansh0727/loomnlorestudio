@@ -9,7 +9,7 @@ export const MAX_B2C_QUANTITY = 10;
 export const DEFAULT_GST_RATE = 5;
 export const PAGE_SIZE = 12;
 
-export const BRAND_NAME = "Loom & Lore";
+export const BRAND_NAME = "Buniya";
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: "Awaiting payment",
@@ -28,9 +28,9 @@ export const ORDER_STATUS_DESCRIPTIONS: Record<OrderStatus, string> = {
   pending_payment: "Payment has not been completed yet.",
   payment_review: "Payment was received, but stock needs manual review.",
   confirmed: "Payment received and the order is in our queue.",
-  processing: "We are preparing the textiles for your order.",
+  processing: "We are preparing your pieces by hand.",
   packed: "Your order is packed and awaiting dispatch.",
-  shipped: "The parcel has left our studio.",
+  shipped: "The parcel has left our workroom.",
   delivered: "The parcel has been delivered.",
   cancelled: "This order was cancelled.",
   refund_requested: "A refund is being reviewed.",
@@ -56,6 +56,7 @@ export const HOMEPAGE_SECTION_LABELS: Record<HomepageSectionType, string> = {
   banner: "Full-width banner",
   editorial: "Editorial story",
   combo_rail: "Combo rail",
+  reviews: "Customer reviews",
 };
 
 export const BUYER_TYPE_LABELS: Record<BuyerType, string> = {
@@ -112,37 +113,37 @@ export const PRODUCT_UNITS = [
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   brandName: BRAND_NAME,
-  brandTagline: "Textiles with a sense of place",
+  brandTagline: "Crafted with Care. Made to Inspire.",
   logoUrl: null,
   announcementText:
-    "Complimentary design advice · Thoughtfully sourced natural fibres · Made in small batches",
+    "Handmade in Varanasi · Korean pastel palettes · Retail & wholesale",
   announcementHref: "/shop",
   announcementActive: true,
-  supportEmail: "hello@loomandlore.example",
-  supportPhone: "+91 98765 43210",
-  whatsapp: "+91 98765 43210",
-  sellerLegalName: "Loom & Lore Textiles",
-  sellerGstin: "",
+  supportEmail: "laxmigroup04@gmail.com",
+  supportPhone: "+91 9569534462",
+  whatsapp: "+91 7617810344",
+  sellerLegalName: "Laxmi Creation",
+  sellerGstin: "09EIVPP8259M1ZU",
   sellerAddress: {
-    line1: "14, Design Quarter",
-    line2: "Indiranagar",
-    city: "Bengaluru",
-    state: "Karnataka",
-    pincode: "560038",
+    line1: "D65/462-C-2, Amla Nagar",
+    line2: "Lahartara Chauraha (Near Tata Motors Service Center)",
+    city: "Varanasi",
+    state: "Uttar Pradesh",
+    pincode: "221106",
     country: "India",
   },
   gstRate: DEFAULT_GST_RATE,
-  invoicePrefix: "LL",
-  b2bEmail: "trade@loomandlore.example",
+  invoicePrefix: "LC",
+  b2bEmail: "laxmigroup04@gmail.com",
   instagramUrl: "https://instagram.com",
   facebookUrl: "https://facebook.com",
   pinterestUrl: "https://pinterest.com",
   aboutText:
-    "We work with weavers, printers and family-run studios across India to create textiles that are tactile, useful and made to last. Every collection begins with the material.",
+    "Buniya is a small handmade accessories workroom in Varanasi, a Laxmi Collection brand. We cut, stitch and finish every scrunchie, bow, tie and headband by hand in soft satins, cottons and Korean pastels. Runs stay small, finishes stay personal, and every piece is checked by the same hands that made it.",
   shippingPolicy:
-    "Orders are prepared by hand in 2–4 business days. Final shipping is quoted after your order is confirmed because textiles are packed and dispatched manually. We will email a secure shipping payment link before dispatch.",
+    "Every piece is made and packed by hand in Varanasi and leaves our workroom in 2–4 working days. Shipping is arranged manually so we can choose the right service for your parcel. Once your order is confirmed, we will email a secure Razorpay link for the exact shipping charge. Orders are dispatched after the shipping charge is paid, and tracking details appear on your private order page.",
   returnsPolicy:
-    "Cut fabric and made-to-order pieces are final sale. Ready-made items can be returned unused within 7 days of delivery. Refunds are recorded after the returned goods pass inspection.",
+    "Ready-made accessories can be returned unused and in their original packaging within 7 days of delivery. Custom and made-to-order pieces are final sale. Write to us with your order number to start a return; refunds are recorded after the piece passes inspection. Wholesale returns are agreed with our trade team before shipping back.",
 };
 
-export const RAZORPAY_THEME_COLOR = "#a4543a";
+export const RAZORPAY_THEME_COLOR = "#c8657f";

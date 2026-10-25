@@ -10,7 +10,7 @@ import { CopyCode } from "@/components/store/copy-code";
 import { buttonStyles } from "@/components/ui/button";
 
 function storageKey(id: string) {
-  return `loom-and-lore:popup:${id}`;
+  return `buniya:popup:${id}`;
 }
 
 function today() {
@@ -83,7 +83,7 @@ export function OfferPopup({ offer }: { offer: PopupOffer }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="offer-popup-headline"
-        className="relative grid w-full max-w-3xl animate-fade-up overflow-hidden border border-line bg-cream shadow-lift sm:grid-cols-[0.9fr_1.1fr]"
+        className="relative grid w-full max-w-3xl animate-fade-up overflow-hidden rounded-3xl border border-line bg-cream shadow-lift sm:grid-cols-[0.9fr_1.1fr]"
       >
         <div className="relative hidden min-h-[26rem] sm:block">
           <SafeImage
@@ -94,7 +94,7 @@ export function OfferPopup({ offer }: { offer: PopupOffer }) {
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-clay/15 via-transparent to-transparent"
           />
         </div>
 
@@ -108,7 +108,7 @@ export function OfferPopup({ offer }: { offer: PopupOffer }) {
             <X className="size-4" strokeWidth={1.5} />
           </button>
 
-          <p className="eyebrow text-clay">A note from the studio</p>
+          <p className="eyebrow text-clay">A little note from Buniya</p>
           <h2
             id="offer-popup-headline"
             className="mt-4 font-serif text-[clamp(1.9rem,4vw,2.7rem)] font-light leading-[1.02] tracking-[-0.035em]"

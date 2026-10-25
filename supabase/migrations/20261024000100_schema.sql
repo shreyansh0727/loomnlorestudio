@@ -26,7 +26,7 @@ returns text
 language sql
 volatile
 as $$
-  select 'LL-' || to_char(now() at time zone 'Asia/Kolkata', 'YYMMDD') || '-' || lpad(nextval('public.order_number_seq')::text, 5, '0');
+  select 'BN-' || to_char(now() at time zone 'Asia/Kolkata', 'YYMMDD') || '-' || lpad(nextval('public.order_number_seq')::text, 5, '0');
 $$;
 
 create or replace function public.next_invoice_number()

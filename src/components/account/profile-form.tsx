@@ -49,7 +49,7 @@ export function ProfileForm({
       <Field
         label="Email address"
         htmlFor="accountEmail"
-        hint="This is your verified sign-in email and cannot be changed here. Write to the studio if it needs updating."
+        hint="This is your verified sign-in email and cannot be changed here. Write to us if it needs updating."
       >
         <Input
           id="accountEmail"

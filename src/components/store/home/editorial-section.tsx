@@ -23,20 +23,23 @@ export function EditorialSection({
           <div className="relative">
             <div
               aria-hidden
-              className={`absolute -bottom-4 hidden size-full border border-line lg:block ${
+              className={`absolute -bottom-4 hidden size-full rounded-[9rem_9rem_2rem_2rem] border border-dashed border-clay/25 lg:block ${
                 config.image_position === "right" ? "-left-4" : "-right-4"
               }`}
             />
-            <div className="relative aspect-[4/5] overflow-hidden bg-sand">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[8.5rem_8.5rem_1.5rem_1.5rem] bg-sand">
               <SafeImage
                 src={config.image_url}
-                alt={config.heading || title || "Inside the studio"}
+                alt={config.heading || title || "Inside the workroom"}
                 sizes="(min-width: 1024px) 44vw, 100vw"
               />
             </div>
-            <p className="absolute bottom-4 left-4 bg-cream/90 px-3 py-1.5 text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-ink-soft backdrop-blur-sm">
-              Bengaluru studio · Est. 2026
+            <p className="absolute bottom-4 left-4 rounded-full bg-cream/90 px-3.5 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.16em] text-ink-soft backdrop-blur-sm">
+              Varanasi workroom · Est. 2026
             </p>
+            <span className="script-label absolute -top-3 right-4 rotate-[5deg] rounded-full bg-butter/90 px-4 py-1.5 text-lg text-clay shadow-soft">
+              made by hand
+            </span>
           </div>
         </div>
 
@@ -62,21 +65,21 @@ export function EditorialSection({
 
           <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-line pt-6">
             <div>
-              <p className="font-serif text-2xl font-light">40+</p>
+              <p className="font-serif text-2xl font-light">100%</p>
               <p className="mt-1 text-[0.58rem] uppercase tracking-[0.15em] text-muted">
-                Maker partners
+                Hand-finished
               </p>
             </div>
             <div>
               <p className="font-serif text-2xl font-light">6</p>
               <p className="mt-1 text-[0.58rem] uppercase tracking-[0.15em] text-muted">
-                Weaving clusters
+                Little collections
               </p>
             </div>
             <div>
-              <p className="font-serif text-2xl font-light">100%</p>
+              <p className="font-serif text-2xl font-light">2–4</p>
               <p className="mt-1 text-[0.58rem] uppercase tracking-[0.15em] text-muted">
-                Natural fibres
+                Days to dispatch
               </p>
             </div>
           </div>

@@ -85,7 +85,7 @@ export function SignUpForm({ next }: { next: string }) {
 
       <Checkbox
         name="terms"
-        label="I agree to the terms, privacy policy and the way cut fabric is handled."
+        label="I agree to the terms, privacy policy and the way handmade pieces are made to order."
         required
       />
 

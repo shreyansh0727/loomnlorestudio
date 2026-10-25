@@ -16,7 +16,7 @@ export default function GlobalError({
         <div className="max-w-xl">
           <p className="eyebrow text-clay">Something went wrong</p>
           <h1 className="mt-4 font-serif text-[clamp(2.4rem,5vw,3.8rem)] font-light leading-[1] tracking-[-0.04em]">
-            The loom stopped mid-thread.
+            A little thread slipped loose.
           </h1>
           <p className="mt-5 text-sm leading-relaxed text-muted">
             This page could not be loaded. No payment details were changed. Try once

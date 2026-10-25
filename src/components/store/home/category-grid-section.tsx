@@ -30,55 +30,54 @@ export async function CategoryGridSection({
     <section className="py-16 lg:py-24">
       <div className="editorial-container">
         <SectionHeading
-          eyebrow="The collection"
-          title={title ?? "Begin with the material"}
+          eyebrow="Our little collections"
+          title={title ?? "Find your little favourite"}
           description={subtitle ?? undefined}
           href="/shop"
           linkLabel="Shop all"
         />
 
-        <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:pb-12">
+        <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:mt-14 lg:grid-cols-3 lg:gap-x-7 lg:pb-12">
           {selected.map((category, index) => {
             const count = counts[category.id] ?? 0;
             return (
               <Link
                 key={category.id}
                 href={`/shop?category=${category.slug}`}
-                className={`group relative block overflow-hidden bg-sand ${
-                  index % 2 === 1 ? "lg:mt-12" : ""
-                } ${index === selected.length - 1 && selected.length % 2 === 1 ? "lg:mt-24" : ""}`}
+                className={`group block ${
+                  index % 3 === 1 ? "lg:mt-12" : ""
+                } ${index % 3 === 2 ? "lg:mt-24" : ""}`}
               >
-                <div className="relative aspect-[3/4] overflow-hidden">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-t-[6.5rem] rounded-b-2xl border border-line bg-sand">
                   <SafeImage
                     src={category.image_url}
                     alt={category.name}
-                    sizes="(min-width: 1024px) 24vw, 50vw"
+                    sizes="(min-width: 1024px) 30vw, 50vw"
                     className="transition-transform duration-[1100ms] ease-out group-hover:scale-[1.045]"
                   />
                   <div
                     aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-ink/5 transition-opacity duration-500 group-hover:from-ink/85"
+                    className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
                   />
-
-                  <span className="absolute left-4 top-4 font-serif text-sm italic text-cream/70">
+                  <span className="absolute left-4 top-4 inline-flex size-8 items-center justify-center rounded-full bg-cream/85 font-serif text-[0.7rem] italic text-clay backdrop-blur-sm">
                     {String(index + 1).padStart(2, "0")}
                   </span>
+                </div>
 
-                  <div className="absolute inset-x-0 bottom-0 p-4 text-cream sm:p-5">
-                    <h3 className="font-serif text-[1.35rem] font-light leading-tight tracking-[-0.02em] sm:text-2xl">
-                      {category.name}
-                    </h3>
-                    {category.description ? (
-                      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-cream/65">
-                        {category.description}
-                      </p>
-                    ) : null}
-                    <div className="mt-4 flex items-center justify-between border-t border-cream/20 pt-3 text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-cream/70">
-                      <span>
-                        {count} {pluralise(count, "piece")}
-                      </span>
-                      <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </div>
+                <div className="px-1 pt-4">
+                  <h3 className="font-serif text-lg font-light leading-tight tracking-[-0.02em] text-ink sm:text-[1.35rem]">
+                    {category.name}
+                  </h3>
+                  {category.description ? (
+                    <p className="mt-1.5 line-clamp-2 text-[0.72rem] leading-relaxed text-muted sm:text-xs">
+                      {category.description}
+                    </p>
+                  ) : null}
+                  <div className="mt-3 flex items-center justify-between border-t border-line pt-3 text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                    <span>
+                      {count} {pluralise(count, "little piece")}
+                    </span>
+                    <ArrowUpRight className="size-3.5 text-clay transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </div>
                 </div>
               </Link>

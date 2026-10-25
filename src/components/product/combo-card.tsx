@@ -25,7 +25,7 @@ export function ComboCard({
 
   return (
     <article className={`group flex flex-col ${className ?? ""}`}>
-      <div className="relative aspect-[5/4] overflow-hidden bg-sand">
+      <div className="relative aspect-[5/4] overflow-hidden rounded-t-[3.5rem] border border-b-0 border-line bg-sand">
         <Link href={`/offers#combo-${combo.slug}`} aria-label={combo.title} className="absolute inset-0">
           <SafeImage
             src={combo.image_url}
@@ -33,20 +33,20 @@ export function ComboCard({
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
           />
-          <span className="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/10" />
+          <span className="absolute inset-0 bg-clay/0 transition-colors duration-500 group-hover:bg-clay/10" />
         </Link>
         <div className="absolute left-3 top-3 flex gap-1.5">
-          <Badge tone="dark">Combo</Badge>
+          <Badge tone="clay">Combo</Badge>
           {savings > 0 ? (
             <Badge tone="sand">Save {formatMoney(savings)}</Badge>
           ) : null}
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col border-x border-b border-line bg-cream p-5">
+      <div className="flex flex-1 flex-col rounded-b-2xl border-x border-b border-line bg-cream p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="eyebrow text-clay">A considered set</p>
+            <p className="eyebrow text-clay">A little set</p>
             <h3 className="mt-2 font-serif text-xl font-normal leading-tight tracking-[-0.02em]">
               <Link href={`/offers#combo-${combo.slug}`} className="link-underline">
                 {combo.title}
@@ -56,7 +56,7 @@ export function ComboCard({
           <Link
             href={`/offers#combo-${combo.slug}`}
             aria-label={`View ${combo.title}`}
-            className="mt-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-line text-ink-soft transition-colors group-hover:border-ink group-hover:text-ink"
+            className="mt-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-line text-ink-soft transition-colors group-hover:border-clay group-hover:text-clay"
           >
             <ArrowUpRight className="size-3.5" />
           </Link>

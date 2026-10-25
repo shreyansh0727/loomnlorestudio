@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Caveat, Fraunces, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { getSiteSettings } from "@/lib/data/content";
 import { SITE_URL } from "@/lib/env";
@@ -17,22 +17,28 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default: `${settings.brandName} — Thoughtfully woven textiles`,
+      default: `${settings.brandName} — Handmade hair accessories`,
       template: `%s · ${settings.brandName}`,
     },
     description:
-      "Considered fabrics, home textiles and small-batch pieces from Indian makers. Shop retail or apply for wholesale pricing.",
+      "Handmade scrunchies, hair bows, fashion ties, headbands and crochet accessories, crafted in Varanasi. Soft pastel palettes for retail and wholesale.",
     openGraph: {
       type: "website",
       siteName: settings.brandName,
-      title: `${settings.brandName} — Thoughtfully woven textiles`,
+      title: `${settings.brandName} — Handmade hair accessories`,
       description:
-        "Considered fabrics, home textiles and small-batch pieces from Indian makers.",
+        "Handmade scrunchies, bows, ties and crochet accessories crafted with care in Varanasi.",
     },
     robots: {
       index: true,
@@ -42,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#f4efe5",
+  themeColor: "#fdf6f3",
   colorScheme: "light",
 };
 
@@ -50,7 +56,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${manrope.variable} ${caveat.variable}`}
+    >
       <body>
         {children}
         <Toaster
@@ -58,10 +67,10 @@ export default function RootLayout({
           closeButton
           toastOptions={{
             style: {
-              background: "#fbf8f2",
-              color: "#1e1b17",
-              border: "1px solid #d9cebd",
-              borderRadius: "0.375rem",
+              background: "#fffdfb",
+              color: "#462f3a",
+              border: "1px solid #eedbd8",
+              borderRadius: "1rem",
               fontFamily: "var(--font-manrope)",
             },
           }}

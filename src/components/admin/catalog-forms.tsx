@@ -169,7 +169,7 @@ export function ProductEditor({
                   name="name"
                   defaultValue={product?.name ?? ""}
                   maxLength={140}
-                  placeholder="Handwoven linen throw"
+                  placeholder="Rose Garden Scrunchie"
                   required
                 />
               </Field>
@@ -182,7 +182,7 @@ export function ProductEditor({
                   id="slug"
                   name="slug"
                   defaultValue={product?.slug ?? ""}
-                  placeholder="handwoven-linen-throw"
+                  placeholder="rose-garden-scrunchie"
                 />
               </Field>
               <Field label="Category" htmlFor="categoryId" required>
@@ -291,7 +291,7 @@ export function ProductEditor({
                       id={`variant-sku-${index}`}
                       value={variant.sku}
                       onChange={(event) => updateVariant(index, { sku: event.target.value })}
-                      placeholder="LL-LIN-NAT"
+                      placeholder="SCR-ROSE-PRL"
                       maxLength={60}
                     />
                   </Field>

@@ -17,6 +17,7 @@ import type {
   OfferTickerConfig,
   PopupOffer,
   ProductRailSource,
+  ReviewsConfig,
 } from "@/lib/types";
 import { HOMEPAGE_SECTION_TYPES } from "@/lib/types";
 import { HOMEPAGE_SECTION_LABELS } from "@/lib/constants";
@@ -43,6 +44,7 @@ export const SECTION_TYPE_DESCRIPTIONS: Record<SectionType, string> = {
   banner: "A wide promotional image with copy and a single call to action.",
   editorial: "An image-and-story block for provenance, process or a collection note.",
   combo_rail: "A rail of fixed bundles and gift-ready sets.",
+  reviews: "Verified customer notes and photos from delivered orders.",
 };
 
 const TYPE_ICONS = HOMEPAGE_SECTION_TYPES;function newSlide(): HeroSlide {
@@ -69,10 +71,10 @@ function defaultHeroSlides(): HeroSlide[] {
     {
       ...newSlide(),
       id: "slide-1",
-      eyebrow: "The winter edit",
-      title: "Cloth with a sense of place.",
-      subtitle: "Woven slowly, in small runs, from fibres we can trace.",
-      cta_label: "Explore the collection",
+      eyebrow: "Handmade in Varanasi",
+      title: "Little things, made lovely.",
+      subtitle: "Soft scrunchies, bows and crochet keepsakes, made in small batches by hand.",
+      cta_label: "Shop the collection",
       cta_href: "/shop",
       secondary_cta_label: "Our story",
       secondary_cta_href: "/about",
@@ -144,7 +146,7 @@ function HeroConfigEditor({ initial }: { initial?: HeroSlide[] }) {
                   id={`slide-eyebrow-${index}`}
                   value={slide.eyebrow}
                   onChange={(event) => patch(index, { eyebrow: event.target.value })}
-                  placeholder="The winter edit"
+                  placeholder="Handmade in Varanasi"
                   maxLength={80}
                 />
               </Field>
@@ -153,7 +155,7 @@ function HeroConfigEditor({ initial }: { initial?: HeroSlide[] }) {
                   id={`slide-title-${index}`}
                   value={slide.title}
                   onChange={(event) => patch(index, { title: event.target.value })}
-                  placeholder="Cloth with a sense of place."
+                  placeholder="Little things, made lovely."
                   maxLength={140}
                   required
                 />
@@ -240,7 +242,7 @@ function HeroConfigEditor({ initial }: { initial?: HeroSlide[] }) {
                   id={`slide-cta-${index}`}
                   value={slide.cta_label}
                   onChange={(event) => patch(index, { cta_label: event.target.value })}
-                  placeholder="Explore the collection"
+                  placeholder="Shop the collection"
                   maxLength={60}
                 />
               </Field>
@@ -287,7 +289,7 @@ function OfferTickerEditor({ initial }: { initial?: OfferTickerConfig }) {
   const [items, setItems] = useState(
     () =>
       initial?.items ?? [
-        { id: "ticker-1", text: "Free design advice on every fabric order", coupon_code: "", href: "/shop" },
+        { id: "ticker-1", text: "Handmade in Varanasi · dispatched in 2–4 working days", coupon_code: "", href: "/shop" },
       ],
   );
 
@@ -802,6 +804,38 @@ function ComboRailEditor({ initial }: { initial?: ComboRailConfig }) {
   );
 }
 
+function ReviewsEditor({ initial }: { initial?: ReviewsConfig }) {
+  const [limit, setLimit] = useState(String(initial?.limit ?? 6));
+  const safeLimit = Math.min(12, Math.max(1, Number(limit) || 6));
+
+  return (
+    <>
+      <input type="hidden" name="config" value={JSON.stringify({ limit: safeLimit })} />
+      <Panel title="Customer reviews" bodyClassName="space-y-3">
+        <Field
+          label="Reviews shown"
+          htmlFor="reviews-limit"
+          hint="The latest published reviews appear first."
+        >
+          <Input
+            id="reviews-limit"
+            type="number"
+            min="1"
+            max="12"
+            step="1"
+            value={limit}
+            onChange={(event) => setLimit(event.target.value)}
+          />
+        </Field>
+        <p className="text-xs leading-relaxed text-muted">
+          Reviews can only be written from a delivered order, using the private link in
+          its delivery email. Customer photos are published with the review.
+        </p>
+      </Panel>
+    </>
+  );
+}
+
 export function SectionEditor({
   section,
   sectionType,
@@ -837,6 +871,8 @@ export function SectionEditor({
     sectionType === "editorial" ? (config as EditorialConfig | undefined) : undefined;
   const comboConfig =
     sectionType === "combo_rail" ? (config as ComboRailConfig | undefined) : undefined;
+  const reviewsConfig =
+    sectionType === "reviews" ? (config as ReviewsConfig | undefined) : undefined;
 
   return (
     <form action={formAction} className="mt-7">
@@ -874,6 +910,9 @@ export function SectionEditor({
           ) : null}
           {sectionType === "combo_rail" ? (
             <ComboRailEditor initial={comboConfig} />
+          ) : null}
+          {sectionType === "reviews" ? (
+            <ReviewsEditor initial={reviewsConfig} />
           ) : null}
         </div>
 

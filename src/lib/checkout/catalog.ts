@@ -345,7 +345,7 @@ export async function resolveCheckoutLines(
   const admin = getSupabaseAdminClientSafe();
   if (!admin) {
     throw new CheckoutError(
-      "The studio store is not fully connected. Add the Supabase service role key to enable checkout.",
+      "The store is not fully connected. Add the Supabase service role key to enable checkout.",
       "form",
     );
   }

@@ -32,7 +32,7 @@ export function CartView({ gstRate }: { gstRate: number }) {
         <EmptyState
           icon={<ShoppingBag className="size-7" strokeWidth={1.3} />}
           title="Your bag is empty"
-          description="Start with a length of cloth, a quiet layer for the table, or a bundle put together by the studio."
+          description="Start with a satin scrunchie, a ribbon bow, or a little bundle put together by Buniya."
           action={
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link href="/shop" className={buttonStyles({ size: "md" })}>

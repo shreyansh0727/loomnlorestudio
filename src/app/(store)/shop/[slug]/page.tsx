@@ -8,6 +8,7 @@ import { getViewer } from "@/lib/auth";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductPurchasePanel } from "@/components/product/product-purchase-panel";
 import { ProductCard } from "@/components/product/product-card";
+import { ProductReviews } from "@/components/store/product/product-reviews";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ArrowLeft } from "lucide-react";
@@ -136,6 +137,10 @@ export default async function ProductPage({
             returnsPolicy={settings.returnsPolicy}
           />
         </div>
+
+        <Suspense fallback={null}>
+          <ProductReviews productId={product.id} />
+        </Suspense>
 
         <div className="mt-12 border-t border-line pt-6">
           <Link

@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
     title: "Policies",
-    description: `Shipping, returns, terms and privacy for ${settings.brandName} textile orders and trade accounts.`,
+    description: `Shipping, returns, terms and privacy for ${settings.brandName} orders and trade accounts.`,
   };
 }
 
@@ -62,7 +62,7 @@ export default async function PoliciesPage() {
             ))}
           </ul>
           <div className="mt-8 border-t border-line pt-5 text-sm leading-relaxed text-muted">
-            <p>Studio hours</p>
+            <p>Workroom hours</p>
             <p className="mt-1 text-ink-soft">Mon–Sat · 10am–6pm IST</p>
             <p className="mt-3">
               <a href={`tel:${settings.supportPhone.replace(/[^\d+]/g, "")}`} className="hover:text-ink">
@@ -81,15 +81,14 @@ export default async function PoliciesPage() {
               ))}
               <p>
                 Product payment is collected online at checkout. Shipping is arranged
-                manually because textile parcels vary in weight and destination. Once your
-                order is confirmed, the studio emails a secure Razorpay payment link for
-                the exact shipping charge. Dispatch happens only after the shipping charge
-                is paid.
+                manually because parcel weight and destination vary. Once your order is
+                confirmed, we email a secure Razorpay payment link for the exact shipping
+                charge. Dispatch happens only after the shipping charge is paid.
               </p>
               <p>
                 Tracking details are added to your order page and emailed the moment your
-                parcel leaves the studio. For trade orders, pallet or courier
-                arrangements are confirmed with your trade contact.
+                parcel leaves our workroom. For trade orders, bulk courier arrangements are
+                confirmed with your trade contact.
               </p>
             </div>
           </section>
@@ -119,10 +118,10 @@ export default async function PoliciesPage() {
               <p>
                 By placing an order you confirm the delivery details you provided are
                 accurate and that you are authorised to use the selected payment method.
-                Orders are accepted when payment is received and the studio confirms
-                availability. If stock cannot be fulfilled after payment, the order moves
-                to manual review and we will contact you to arrange a replacement, partial
-                fulfilment or refund.
+                Orders are accepted when payment is received and we confirm availability.
+                If stock cannot be fulfilled after payment, the order moves to manual review
+                and we will contact you to arrange a replacement, partial fulfilment or
+                refund.
               </p>
               <p>
                 All retail prices are inclusive of GST. Approved B2B orders receive a GST
@@ -136,9 +135,9 @@ export default async function PoliciesPage() {
                 apply instead.
               </p>
               <p>
-                Natural textiles can vary in weave, tone and finish. These variations are
-                part of the material and are not considered defects. Cut yardage is final
-                sale.
+                Handmade pieces can vary slightly in stitch, tone and finish. These
+                variations are part of the making and are not considered defects. Custom
+                and made-to-order pieces are final sale.
               </p>
             </div>
           </section>
@@ -149,7 +148,7 @@ export default async function PoliciesPage() {
               <p>
                 We collect the name, email, phone, delivery address and business details
                 needed to process your order. Payment card information is handled directly
-                by Razorpay and is never stored by the studio.
+                by Razorpay and is never stored by us.
               </p>
               <p>
                 Order confirmation and status emails are sent through Resend. Guest orders

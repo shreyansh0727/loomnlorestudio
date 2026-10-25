@@ -496,7 +496,7 @@ export function CheckoutView({
         <EmptyState
           icon={<ShoppingBag className="size-7" strokeWidth={1.3} />}
           title="There is nothing to check out yet"
-          description="Add a length of cloth, a bundle or a quiet piece for the home, then return here to complete your order."
+          description="Add a scrunchie, a bow or a little bundle, then return here to complete your order."
           action={
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link href="/shop" className={buttonStyles({ size: "md" })}>
@@ -745,7 +745,7 @@ export function CheckoutView({
           ) : null}
 
           <section>
-            <SectionHeading step={business ? "04" : "03"} title="A note for the studio" />
+            <SectionHeading step={business ? "04" : "03"} title="A note for Buniya" />
             <div className="mt-5">
               <Field
                 label="Order note"

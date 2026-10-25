@@ -21,6 +21,8 @@ email.
 - Order tracking with a private token link, plus a manual "order number + email" lookup.
 - Printable retail invoices for B2C and GST tax invoices for approved B2B buyers.
 - Pop-up offers with scheduling, frequency and priority.
+- Verified customer reviews with ratings and photos, shown on product pages and in an
+  optional homepage section.
 
 **Studio dashboard (`/admin`)**
 
@@ -81,9 +83,11 @@ or the Supabase CLI:
    sequence grants.
 4. `20261024000400_invoice_prefix.sql` — reads the invoice prefix from Studio settings
    when a new invoice number is issued.
+5. `20261025000100_reviews.sql` — verified-purchase reviews with customer photos, public
+   read access, and the homepage `reviews` section type.
 
-If you set up the database before this migration existed, run the fourth file once so the
-invoice prefix field in Settings takes effect. Existing invoice numbers are not rewritten.
+Run any migration that was added after your original setup once. Existing invoice numbers
+are not rewritten, and existing homepage sections are kept.
 
 The functions are `security definer` and executable only by `service_role`. Never expose
 the service role key to the browser.
@@ -195,6 +199,7 @@ Emails sent:
 - Payment review notice when stock is short
 - Status changes (processing, packed, shipped, delivered, cancelled, refunded…)
 - Shipping payment request with the Razorpay link
+- Delivery email with a private review link for each piece in the order
 
 ## Business rules
 
@@ -223,6 +228,20 @@ Emails sent:
   `stock_restored_at`.
 - Shipping is quoted separately and added to the order total when paid.
 
+## Customer reviews
+
+- Reviews open only for delivered orders, through the private token link in the delivery
+  email (`/review/<token>`) or the delivered order page.
+- Each product in an order can be reviewed once. Orders made entirely of combos are
+  reviewed as bundles rather than per piece.
+- A review includes a 1–5 rating, optional title, 10–2,000 character note and up to four
+  photos (4 MB each; JPEG, PNG, WebP, GIF or AVIF). Uploads go through the service role
+  into the public `media` bucket after server-side file-signature checks.
+- Reviews publish automatically, appear on the product page, and can be placed on the
+  homepage with the **Customer reviews** section in the homepage builder.
+- Homepage and product reads are cached under the `reviews` tag and refreshed when a new
+  review is published.
+
 ## Invoices and order access
 
 - Order pages use an unguessable UUID access token: `/order/<token>`.
@@ -239,7 +258,8 @@ read-only demo:
 - `/admin` opens without authentication.
 - Every write is blocked with a clear message.
 - Demo order and invoice links work so the full customer view can be reviewed:
-  `/order/d6000000-0000-4000-8000-000000000001` (shipped retail),
+  `/order/d6000000-0000-4000-8000-000000000001` (delivered retail),
+  `/review/d6000000-0000-4000-8000-000000000001` (review invitation),
   `/order/d6000000-0000-4000-8000-000000000003` (payment review), and
   `/invoice/d6000000-0000-4000-8000-000000000002` (trade invoice).
 
@@ -260,7 +280,7 @@ npm run seed       # seed Supabase catalogue + optional admin
 ## Project structure
 
 ```text
-src/app/(store)          Storefront routes (home, shop, cart, checkout, account, orders)
+src/app/(store)          Storefront routes (home, shop, cart, checkout, account, orders, reviews)
 src/app/admin            Studio login and protected dashboard routes
 src/app/invoice          Token-protected printable invoice
 src/app/api/razorpay     Webhook endpoint

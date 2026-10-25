@@ -38,9 +38,9 @@ export default async function LoginPage({
       eyebrow="Your account"
       title="Welcome back."
       description="Sign in to follow your orders, keep your delivery details close and manage a trade account."
-      image="/images/editorial/atelier.jpg"
-      imageAlt="A quiet textile studio with cloth resting on a long wooden table"
-      quote="The pieces you keep should remember the hands that made them."
+      image="/images/buniya/hero/pastel-bows.jpg"
+      imageAlt="Pastel satin bows and scrunchies on a soft table"
+      quote="Little things, chosen with care and kept for years."
       notice={
         !isSupabaseConfigured ? (
           <FormMessage
@@ -52,7 +52,7 @@ export default async function LoginPage({
       footer={
         <div className="flex flex-col gap-3">
           <p>
-            New to the studio?{" "}
+            New to Buniya?{" "}
             <Link
               href={`/signup?next=${encodeURIComponent(next)}`}
               className="link-underline font-semibold text-ink"

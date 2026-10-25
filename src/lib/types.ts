@@ -301,6 +301,21 @@ export interface OrderEvent {
   created_at: string;
 }
 
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  order_id: string;
+  reviewer_name: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  images: string[];
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+  product?: Pick<Product, "id" | "name" | "slug" | "images"> | null;
+}
+
 export const HOMEPAGE_SECTION_TYPES = [
   "hero",
   "offer_ticker",
@@ -309,6 +324,7 @@ export const HOMEPAGE_SECTION_TYPES = [
   "banner",
   "editorial",
   "combo_rail",
+  "reviews",
 ] as const;
 
 export type HomepageSectionType = (typeof HOMEPAGE_SECTION_TYPES)[number];
@@ -382,6 +398,10 @@ export interface ComboRailConfig {
   limit: number;
 }
 
+export interface ReviewsConfig {
+  limit: number;
+}
+
 export interface HomepageConfigMap {
   hero: HeroConfig;
   offer_ticker: OfferTickerConfig;
@@ -390,6 +410,7 @@ export interface HomepageConfigMap {
   banner: BannerConfig;
   editorial: EditorialConfig;
   combo_rail: ComboRailConfig;
+  reviews: ReviewsConfig;
 }
 
 interface HomepageSectionBase {

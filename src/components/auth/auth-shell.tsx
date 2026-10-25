@@ -27,7 +27,7 @@ export async function AuthShell({
 
   return (
     <div className="editorial-container py-10 lg:py-16">
-      <div className="grid overflow-hidden border border-line bg-cream lg:grid-cols-[1.02fr_0.98fr]">
+      <div className="grid overflow-hidden rounded-3xl border border-line bg-cream lg:grid-cols-[1.02fr_0.98fr]">
         <div className="relative hidden min-h-[44rem] lg:block">
           <SafeImage
             src={image}
@@ -37,7 +37,7 @@ export async function AuthShell({
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/15 to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-clay-deep/75 via-ink/10 to-transparent"
           />
           <div className="absolute inset-x-0 bottom-0 p-10 text-cream">
             <BrandMark
@@ -45,7 +45,7 @@ export async function AuthShell({
               logoUrl={settings.logoUrl}
               textClassName="text-[1.05rem] text-cream"
               logoClassName="h-8 max-w-[9rem]"
-              frameClassName="bg-cream px-2.5 py-1.5"
+              frameClassName="rounded-xl bg-cream px-2.5 py-1.5"
             />
             <p className="mt-4 max-w-md font-serif text-[1.9rem] font-light leading-[1.15] tracking-[-0.02em]">
               {quote}

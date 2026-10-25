@@ -232,7 +232,7 @@ export async function startCheckoutAction(input: {
     if (updateError) {
       await cancelPendingOrder(
         order.id,
-        "Razorpay order created but could not be linked to the studio order.",
+        "Razorpay order created but could not be linked to the order.",
       );
       return {
         ok: false,
@@ -336,7 +336,7 @@ export async function verifyCheckoutPaymentAction(
     return {
       ok: false,
       message:
-        "We could not verify this payment. If money has left your account, write to the studio with your order number.",
+        "We could not verify this payment. If money has left your account, write to us with your order number.",
       accessToken: order.access_token,
     };
   }
@@ -365,7 +365,7 @@ export async function verifyCheckoutPaymentAction(
       return {
         ok: false,
         message:
-          "The captured amount does not match this order. Please write to the studio before retrying.",
+          "The captured amount does not match this order. Please write to us before retrying.",
         accessToken: order.access_token,
       };
     }

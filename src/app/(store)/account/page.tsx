@@ -172,7 +172,7 @@ export default async function AccountOverviewPage({
           <h2 className="font-serif text-xl">Everything in one place</h2>
           <p className="mt-1.5 text-sm leading-relaxed text-muted">
             Keep your phone and name current for smooth delivery updates. We write only about
-            your orders and the occasional studio note.
+            your orders and the occasional note from Buniya.
           </p>
           <Link
             href="/account/profile"

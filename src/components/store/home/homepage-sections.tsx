@@ -8,6 +8,7 @@ import { ProductRailSection } from "@/components/store/home/product-rail-section
 import { EditorialSection } from "@/components/store/home/editorial-section";
 import { BannerSection } from "@/components/store/home/banner-section";
 import { ComboRailSection } from "@/components/store/home/combo-rail-section";
+import { ReviewsSection } from "@/components/store/home/reviews-section";
 
 function RailSkeleton() {
   return (
@@ -21,6 +22,28 @@ function RailSkeleton() {
               <div className="aspect-[4/5] w-full animate-pulse bg-line/30" />
               <div className="mt-4 h-2.5 w-3/4 animate-pulse bg-line/40" />
               <div className="mt-2 h-2.5 w-1/3 animate-pulse bg-line/30" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ReviewsSkeleton() {
+  return (
+    <section aria-hidden className="border-y border-line bg-cream/55 py-14 lg:py-20">
+      <div className="editorial-container">
+        <div className="h-2.5 w-24 animate-pulse bg-line/60" />
+        <div className="mt-4 h-9 w-72 max-w-full animate-pulse bg-line/40" />
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="border border-line bg-cream p-6">
+              <div className="h-3 w-24 animate-pulse bg-line/50" />
+              <div className="mt-4 h-4 w-3/4 animate-pulse bg-line/40" />
+              <div className="mt-3 h-2.5 w-full animate-pulse bg-line/30" />
+              <div className="mt-2 h-2.5 w-5/6 animate-pulse bg-line/30" />
+              <div className="mt-5 h-12 w-full animate-pulse bg-line/20" />
             </div>
           ))}
         </div>
@@ -87,6 +110,16 @@ export function HomepageSections({
                     subtitle={section.subtitle}
                     limit={section.config.limit}
                     isB2B={isB2B}
+                  />
+                </Suspense>
+              );
+            case "reviews":
+              return (
+                <Suspense key={section.id} fallback={<ReviewsSkeleton />}>
+                  <ReviewsSection
+                    title={section.title}
+                    subtitle={section.subtitle}
+                    limit={section.config.limit}
                   />
                 </Suspense>
               );

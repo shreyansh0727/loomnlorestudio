@@ -29,8 +29,8 @@ export default async function ResetPasswordPage() {
           ? "Set a new password for your account. You will stay signed in on this device."
           : "Recovery links only work once and expire quickly. Request a fresh link to continue."
       }
-      image="/images/editorial/atelier.jpg"
-      imageAlt="A quiet textile studio with cloth resting on a long wooden table"
+      image="/images/buniya/hero/pastel-bows.jpg"
+      imageAlt="Pastel satin bows and scrunchies on a soft table"
       quote="Every good thing returns to order, in its own time."
       notice={
         !isSupabaseConfigured ? (

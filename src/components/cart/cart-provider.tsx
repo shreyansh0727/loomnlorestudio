@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import type { CartLine } from "@/lib/cart/types";
 import { MAX_B2C_QUANTITY } from "@/lib/constants";
 
-const STORAGE_KEY = "loom-and-lore:cart:v1";
+const STORAGE_KEY = "buniya:cart:v1";
 
 interface CartSnapshot {
   lines: CartLine[];

@@ -334,7 +334,7 @@ export async function sendOrderConfirmationEmail(orderId: string) {
     ${orderTotals(order)}
     ${shippingCard(order)}
     <p style="margin:22px 0 0;font-size:13px;line-height:1.7;color:${MUTED};">
-      Your order is being prepared by hand. Shipping is quoted separately because every parcel is packed and measured by the studio — we will email a secure Razorpay payment link before dispatch. You can follow every update on your private order page.
+      Your order is being prepared by hand. Shipping is quoted separately because every parcel is packed and measured by our team — we will email a secure Razorpay payment link before dispatch. You can follow every update on your private order page.
     </p>
     ${button("View your order", absoluteUrl(`/order/${order.access_token}`))}
     ${
@@ -360,7 +360,7 @@ export async function sendOrderConfirmationEmail(orderId: string) {
       heading: "Your order is confirmed.",
       intro: `Thank you, ${escapeHtml(
         order.customer_name.split(" ")[0] || "friend",
-      )}. We have your pieces in hand and will write again as they move through the studio.`,
+      )}. We have your pieces in hand and will write again as they move through our workroom.`,
       content,
     }),
     template: "order_confirmation",
@@ -391,6 +391,15 @@ export async function sendOrderStatusEmail(orderId: string, status: OrderStatus)
       : "";
 
   const intro = ORDER_STATUS_DESCRIPTIONS[status];
+  const reviewInvite =
+    status === "delivered"
+      ? `<div style="margin-top:26px;padding:18px;border:1px solid ${LINE};background:${CREAM};">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${CLAY};">A note from you</div>
+          <p style="margin:8px 0 0;font-size:13px;line-height:1.7;color:${MUTED};">Now that your pieces have arrived, we would love to hear how they feel. Add a rating, a few words and photographs — each piece from this order can be reviewed once.</p>
+          ${button("Share a review", absoluteUrl(`/review/${order.access_token}`))}
+        </div>`
+      : "";
+
   const content = `
     <div style="padding:18px;border:1px solid ${LINE};background:${CREAM};">
       <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${CLAY};">${escapeHtml(
@@ -406,6 +415,7 @@ export async function sendOrderStatusEmail(orderId: string, status: OrderStatus)
     )} · ${order.items.length} ${order.items.length === 1 ? "line" : "lines"} · ${formatMoney(
       order.total_amount,
     )}</p>
+    ${reviewInvite}
     ${button("View your order", absoluteUrl(`/order/${order.access_token}`))}
   `;
 
@@ -416,7 +426,7 @@ export async function sendOrderStatusEmail(orderId: string, status: OrderStatus)
       settings,
       eyebrow: "Order update",
       heading: ORDER_STATUS_LABELS[status],
-      intro: `A note from the studio about order ${escapeHtml(order.order_number)}.`,
+      intro: `A note from Buniya about order ${escapeHtml(order.order_number)}.`,
       content,
     }),
     template: `order_status_${status}`,
@@ -442,7 +452,7 @@ export async function sendShippingPaymentEmail({
   const subject = `Shipping for order ${order.order_number} · secure payment link`;
   const content = `
     <p style="margin:0;font-size:14px;line-height:1.7;color:${MUTED};">
-      Your pieces are packed and ready to leave the studio. The shipping charge for order <strong style="color:${INK};">${escapeHtml(
+      Your pieces are packed and ready to leave our workroom. The shipping charge for order <strong style="color:${INK};">${escapeHtml(
         order.order_number,
       )}</strong> is:
     </p>

@@ -19,12 +19,12 @@ function productLine(quantity: number, unitPrice: number): CheckoutQuoteLine {
     variantId: "b1000000-0000-4000-8000-000000000001",
     comboId: null,
     comboSlug: null,
-    name: "Kala cotton yardage",
-    slug: "kala-cotton-yardage",
-    variantLabel: "Natural / 44 in",
-    sku: "KALA-NAT-44",
-    imageUrl: "/images/products/kala-cotton.jpg",
-    unit: "metre",
+    name: "Rose Garden Scrunchie",
+    slug: "rose-garden-scrunchie",
+    variantLabel: "Rose garden",
+    sku: "SCR-ROSE-PRL",
+    imageUrl: "/images/buniya/products/rose-garden-scrunchie.jpg",
+    unit: "piece",
     unitPrice,
     quantity,
     lineTotal: unitPrice * quantity,
@@ -39,12 +39,12 @@ function comboLine(quantity: number, unitPrice: number): CheckoutQuoteLine {
     productId: null,
     variantId: null,
     comboId: COMBO_ID,
-    comboSlug: "the-weekend-set",
-    name: "The weekend set",
-    slug: "the-weekend-set",
+    comboSlug: "pastel-morning-set",
+    name: "Pastel morning set",
+    slug: "pastel-morning-set",
     variantLabel: null,
     sku: null,
-    imageUrl: "/images/combos/weekend-set.jpg",
+    imageUrl: "/images/buniya/products/blush-satin-scrunchie-set.jpg",
     unit: "bundle",
     unitPrice,
     quantity,
@@ -53,17 +53,17 @@ function comboLine(quantity: number, unitPrice: number): CheckoutQuoteLine {
       {
         variant_id: "b1000000-0000-4000-8000-000000000001",
         product_id: PRODUCT_ID,
-        product_name: "Kala cotton yardage",
-        variant_label: "Natural / 44 in",
-        sku: "KALA-NAT-44",
+        product_name: "Rose Garden Scrunchie",
+        variant_label: "Rose garden",
+        sku: "SCR-ROSE-PRL",
         quantity: 4,
       },
       {
-        variant_id: "b1000000-0000-4000-8000-000000000004",
-        product_id: "a1000000-0000-4000-8000-000000000002",
-        product_name: "Indigo dabu yardage",
-        variant_label: "Indigo / 44 in",
-        sku: "DABU-IND-44",
+        variant_id: "b1000000-0000-4000-8000-000000000011",
+        product_id: "a1000000-0000-4000-8000-000000000006",
+        product_name: "Pearl Embellished Headband",
+        variant_label: "Pearl ivory",
+        sku: "HEAD-PRL-IVRY",
         quantity: 2,
       },
     ],
@@ -78,8 +78,8 @@ describe("buildQuote", () => {
       gstRate: 5,
       coupon: {
         id: "coupon-1",
-        code: "FIRSTWEAVE",
-        label: "First-order welcome",
+        code: "BUNIYA10",
+        label: "A little hello",
         discountAmount: 22400,
       },
     });
@@ -90,7 +90,7 @@ describe("buildQuote", () => {
     expect(quote.taxAmount).toBe(9600);
     expect(quote.totalAmount).toBe(201600);
     expect(quote.itemCount).toBe(3);
-    expect(quote.coupon?.code).toBe("FIRSTWEAVE");
+    expect(quote.coupon?.code).toBe("BUNIYA10");
   });
 
   it("never discounts below zero", () => {
@@ -132,9 +132,9 @@ describe("buildQuote", () => {
 describe("B2C product limits", () => {
   it("counts combo components toward the retail product cap", () => {
     const usage = productUsageForB2C([productLine(2, 68000), comboLine(2, 250000)]);
-    const kala = usage.find((entry) => entry.productId === PRODUCT_ID);
+    const scrunchie = usage.find((entry) => entry.productId === PRODUCT_ID);
 
-    expect(kala?.quantity).toBe(2 + 4 * 2);
+    expect(scrunchie?.quantity).toBe(2 + 4 * 2);
   });
 
   it("flags a breach across separate product and combo lines", () => {
@@ -145,7 +145,7 @@ describe("B2C product limits", () => {
 
     expect(breach).toEqual({
       productId: PRODUCT_ID,
-      name: "Kala cotton yardage",
+      name: "Rose Garden Scrunchie",
       quantity: 12,
     });
   });

@@ -6,11 +6,11 @@ import { SectionHeading } from "@/components/ui/section-heading";
 type RailSection = Extract<HomepageSection, { section_type: "product_rail" }>;
 
 const SOURCE_LABELS: Record<string, string> = {
-  new_arrivals: "Just arrived",
-  featured: "The edit",
+  new_arrivals: "Just off the worktable",
+  featured: "Little favourites",
   best_sellers: "Loved and reordered",
-  category: "By the metre",
-  manual: "Chosen by the studio",
+  category: "From the collection",
+  manual: "Chosen by Buniya",
 };
 
 export async function ProductRailSection({
@@ -36,7 +36,7 @@ export async function ProductRailSection({
       <div className="editorial-container">
         <SectionHeading
           eyebrow={SOURCE_LABELS[section.config.source] ?? "The collection"}
-          title={section.title ?? "New & noteworthy"}
+          title={section.title ?? "Just off the worktable"}
           description={section.subtitle ?? undefined}
           href={href}
           linkLabel="View all"

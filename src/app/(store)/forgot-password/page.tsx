@@ -21,9 +21,9 @@ export default function ForgotPasswordPage() {
       eyebrow="Account recovery"
       title="A fresh key."
       description="Enter the email on your account and we will send a secure link to set a new password."
-      image="/images/texture-detail.jpg"
-      imageAlt="Closely woven natural cloth in warm light"
-      quote="Good cloth, like a good account, is worth keeping in order."
+      image="/images/buniya/editorial/ribbon-detail.jpg"
+      imageAlt="Ribbon and pearl detail on a handmade bow"
+      quote="A little patience, and everything finds its place."
       notice={
         !isSupabaseConfigured ? (
           <FormMessage

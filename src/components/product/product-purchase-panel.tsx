@@ -50,7 +50,7 @@ export function ProductPurchasePanel({
       <div className="border border-line bg-cream p-6">
         <p className="font-serif text-xl">This piece is being restocked.</p>
         <p className="mt-2 text-sm text-muted">
-          Write to the studio and we will let you know when it returns.
+          Write to us and we will let you know when it returns.
         </p>
       </div>
     );
@@ -177,7 +177,7 @@ export function ProductPurchasePanel({
             ? selected.stock_qty === 0
               ? "This option is sold out"
               : selected.stock_qty <= 5
-                ? `Only ${selected.stock_qty} left in the studio`
+                ? `Only ${selected.stock_qty} left in the workroom`
                 : "In stock · ready to pack"
             : "Select an option"}
         </p>
@@ -249,7 +249,7 @@ export function ProductPurchasePanel({
         </p>
         <p className="flex items-center gap-2">
           <Check className="size-3.5 text-sage" />
-          Packed by hand in Bengaluru · dispatch in 2–4 working days
+          Packed by hand in Varanasi · dispatch in 2–4 working days
         </p>
       </div>
 
