@@ -6,7 +6,11 @@ import {
   getOrderForPayment,
   markShippingPaid,
 } from "@/lib/checkout/server";
-import { sendOrderConfirmationEmail, sendOrderStatusEmail } from "@/lib/email";
+import {
+  sendNewOrderAdminEmail,
+  sendOrderConfirmationEmail,
+  sendOrderStatusEmail,
+} from "@/lib/email";
 import { verifyWebhookSignature } from "@/lib/razorpay";
 
 export const runtime = "nodejs";
@@ -103,6 +107,7 @@ export async function POST(request: Request) {
         } else {
           await sendOrderConfirmationEmail(order.id).catch(() => undefined);
         }
+        await sendNewOrderAdminEmail(order.id).catch(() => undefined);
       }
     } catch {
       return NextResponse.json({ error: "Could not finalize order." }, { status: 500 });

@@ -64,18 +64,19 @@ async function sendEmail({
   template,
   orderId,
 }: {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
   template: string;
   orderId: string;
 }) {
   const credentials = emailCredentials();
+  const recipient = Array.isArray(to) ? to.join(", ") : to;
 
   if (!credentials) {
     await logEmail({
       orderId,
-      recipient: to,
+      recipient,
       template,
       subject,
       status: "skipped",
@@ -95,7 +96,7 @@ async function sendEmail({
   if (error) {
     await logEmail({
       orderId,
-      recipient: to,
+      recipient,
       template,
       subject,
       status: "failed",
@@ -106,7 +107,7 @@ async function sendEmail({
 
   await logEmail({
     orderId,
-    recipient: to,
+    recipient,
     template,
     subject,
     status: "sent",
@@ -372,6 +373,164 @@ export async function sendOrderConfirmationEmail(orderId: string) {
       content,
     }),
     template: "order_confirmation",
+    orderId: order.id,
+  });
+}
+
+const ADMIN_ORDER_TEMPLATE = "admin_new_order";
+
+async function adminOrderRecipients(settings: SiteSettings) {
+  const admin = getSupabaseAdminClientSafe();
+  const emails: string[] = [];
+
+  if (admin) {
+    const { data } = await admin
+      .from("profiles")
+      .select("email")
+      .eq("role", "admin");
+    for (const row of data ?? []) {
+      if (typeof row.email === "string") emails.push(row.email);
+    }
+  }
+
+  emails.push(...(process.env.ADMIN_EMAILS ?? "").split(","));
+  emails.push(settings.supportEmail);
+
+  return [
+    ...new Set(
+      emails.map((email) => email.trim().toLowerCase()).filter(Boolean),
+    ),
+  ].slice(0, 10);
+}
+
+async function adminOrderAlreadySent(orderId: string) {
+  const admin = getSupabaseAdminClientSafe();
+  if (!admin) return false;
+
+  const { data, error } = await admin
+    .from("email_logs")
+    .select("id")
+    .eq("order_id", orderId)
+    .eq("template", ADMIN_ORDER_TEMPLATE)
+    .eq("status", "sent")
+    .limit(1)
+    .maybeSingle();
+
+  if (error) return false;
+  return Boolean(data);
+}
+
+function orderSummaryCard(order: OrderWithDetails) {
+  const rows: [string, string][] = [
+    ["Order", order.order_number],
+    ["Invoice", order.invoice_number ?? "Not issued"],
+    ["Status", ORDER_STATUS_LABELS[order.status]],
+    ["Payment", order.payment_status === "paid" ? "Paid" : order.payment_status],
+    ["Buyer", order.buyer_type === "b2b" ? "Wholesale (B2B)" : "Retail (B2C)"],
+    ["Placed", formatDate(order.created_at)],
+  ];
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;font-size:12px;color:${MUTED};">
+    ${rows
+      .map(
+        ([label, value]) => `<tr>
+          <td style="padding:6px 0;border-bottom:1px solid ${LINE};text-transform:uppercase;letter-spacing:0.1em;font-size:10px;">${escapeHtml(
+            label,
+          )}</td>
+          <td style="padding:6px 0;border-bottom:1px solid ${LINE};text-align:right;font-size:12px;color:${INK};">${escapeHtml(
+            value,
+          )}</td>
+        </tr>`,
+      )
+      .join("")}
+  </table>`;
+}
+
+function customerCard(order: OrderWithDetails) {
+  return `<div style="margin-top:26px;padding:18px;background:${CREAM};border:1px solid ${LINE};">
+    <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${MUTED};">Customer</div>
+    <div style="margin-top:8px;font-family:Georgia,'Times New Roman',serif;font-size:17px;color:${INK};">${escapeHtml(
+      order.customer_name,
+    )}</div>
+    <div style="margin-top:6px;font-size:13px;line-height:1.7;">
+      <a href="mailto:${escapeHtml(
+        order.email,
+      )}" style="color:${CLAY};text-decoration:none;">${escapeHtml(order.email)}</a><br />
+      <a href="tel:${escapeHtml(
+        order.phone,
+      )}" style="color:${INK};text-decoration:none;">${escapeHtml(order.phone)}</a>
+    </div>
+    ${
+      order.business_gstin
+        ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid ${LINE};font-size:11px;line-height:1.6;color:${MUTED};">${escapeHtml(
+            order.business_legal_name ?? "",
+          )} · GSTIN ${escapeHtml(order.business_gstin)}</div>`
+        : ""
+    }
+    ${
+      order.customer_note
+        ? `<div style="margin-top:10px;padding-top:10px;border-top:1px solid ${LINE};font-size:12px;line-height:1.7;color:${INK};">Note: ${escapeHtml(
+            order.customer_note,
+          )}</div>`
+        : ""
+    }
+  </div>`;
+}
+
+export async function sendNewOrderAdminEmail(orderId: string) {
+  if (await adminOrderAlreadySent(orderId)) {
+    return { status: "skipped" as const };
+  }
+
+  const [order, settings] = await Promise.all([
+    loadOrderWithItems(orderId),
+    getSiteSettings(),
+  ]);
+  if (!order) return { status: "skipped" as const };
+
+  const recipients = await adminOrderRecipients(settings);
+  if (!recipients.length) return { status: "skipped" as const };
+
+  const firstName = order.customer_name.split(" ")[0] || "A customer";
+  const buyerLabel = order.buyer_type === "b2b" ? "wholesale" : "retail";
+  const reviewNote =
+    order.status === "payment_review"
+      ? `<div style="margin-top:22px;padding:16px;border:1px solid ${CLAY};background:#fffaf7;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:${CLAY};">Stock review needed</div>
+          <p style="margin:8px 0 0;font-size:12px;line-height:1.7;color:${MUTED};">Payment has been received, but stock was short when the order was finalised. Review the affected variants and resolve the order before processing.</p>
+        </div>`
+      : "";
+
+  const content = `
+    ${orderSummaryCard(order)}
+    ${orderItemsTable(order)}
+    ${orderTotals(order)}
+    ${customerCard(order)}
+    ${shippingCard(order)}
+    ${reviewNote}
+    ${button("Open in studio", absoluteUrl(`/admin/orders/${order.id}`))}
+    <p style="margin:18px 0 0;font-size:11px;line-height:1.7;color:#9a9185;">Placed ${formatDate(
+      order.created_at,
+    )} · ${escapeHtml(order.items.length === 1 ? "1 line" : `${order.items.length} lines`)} · ${formatMoney(
+      order.total_amount,
+    )} ${escapeHtml(order.payment_status === "paid" ? "paid" : order.payment_status)}</p>
+  `;
+
+  return sendEmail({
+    to: recipients,
+    subject: `New ${buyerLabel} order ${order.order_number} · ${formatMoney(order.total_amount)}`,
+    html: layout({
+      settings,
+      eyebrow: "New order",
+      heading: "A new order has arrived.",
+      intro: `${escapeHtml(
+        firstName,
+      )} placed a ${buyerLabel} order for ${formatMoney(
+        order.total_amount,
+      )}. Open the studio to review stock and begin processing.`,
+      content,
+    }),
+    template: ADMIN_ORDER_TEMPLATE,
     orderId: order.id,
   });
 }

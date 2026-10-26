@@ -31,7 +31,11 @@ import {
   fetchRazorpayPayment,
   verifyPaymentSignature,
 } from "@/lib/razorpay";
-import { sendOrderConfirmationEmail, sendOrderStatusEmail } from "@/lib/email";
+import {
+  sendNewOrderAdminEmail,
+  sendOrderConfirmationEmail,
+  sendOrderStatusEmail,
+} from "@/lib/email";
 
 const CONFIG_MESSAGE =
   "Online payments are not connected yet. Add your Supabase service role key and Razorpay test keys to .env.local, then restart the app.";
@@ -40,11 +44,15 @@ async function notifyFinalizedOrder(
   orderId: string,
   status: "confirmed" | "payment_review",
 ) {
-  if (status === "payment_review") {
-    await sendOrderStatusEmail(orderId, "payment_review").catch(() => undefined);
-    return;
-  }
-  await sendOrderConfirmationEmail(orderId).catch(() => undefined);
+  const customerEmail =
+    status === "payment_review"
+      ? sendOrderStatusEmail(orderId, "payment_review")
+      : sendOrderConfirmationEmail(orderId);
+
+  await Promise.all([
+    customerEmail.catch(() => undefined),
+    sendNewOrderAdminEmail(orderId).catch(() => undefined),
+  ]);
 }
 
 function firstIssue(error: { issues: { message: string }[] }) {

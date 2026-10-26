@@ -236,6 +236,8 @@ admin order view reports that the customer was not notified.
 
 Emails sent:
 
+- New-order alert to the studio: every `profiles.role = 'admin'` email, `ADMIN_EMAILS` and the
+  configured support inbox (deduplicated, sent once per order)
 - Order confirmation (with invoice link once issued)
 - Payment review notice when stock is short
 - Status changes (processing, packed, shipped, delivered, cancelled, refunded…)
