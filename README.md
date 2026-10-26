@@ -178,6 +178,12 @@ npm run dev
 - Order tracking: `/track`
 - Health of the storefront content depends on steps 2 and 5.
 
+If the dev server exits or product pages start returning 500 after a long running
+session, the Turbopack dev cache in `.next/dev` has grown too large. Start with
+`npm run dev:clean` once; it drops that cache and recompiles from scratch.
+Turbopack garbage collection is enabled in `next.config.ts` so the cache stays
+bounded afterwards.
+
 ## Razorpay
 
 1. Add test keys to `.env.local`.
@@ -282,6 +288,7 @@ Demo mode is disabled in production even when keys are missing.
 
 ```bash
 npm run dev        # Next.js dev server
+npm run dev:clean  # drop the Turbopack dev cache, then start the dev server
 npm run build      # production build
 npm run start      # production server
 npm run lint       # ESLint

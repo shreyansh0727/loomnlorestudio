@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       dynamic: 30,
       static: 180,
     },
+    // Prunes stale Turbopack cache entries; without it the dev cache grew past
+    // 2 GB and its compaction exhausted memory, killing the dev worker processes.
+    turbopackGc: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
