@@ -105,7 +105,7 @@ export function InvoiceDocument({
               <p className="mt-2">
                 {settings.supportEmail} · {settings.supportPhone}
               </p>
-              {isTrade && settings.sellerGstin ? (
+              {settings.sellerGstin ? (
                 <p className="mt-1 font-medium text-ink">
                   GSTIN {settings.sellerGstin}
                 </p>

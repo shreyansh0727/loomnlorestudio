@@ -25,7 +25,29 @@ export async function proxy(request: NextRequest) {
       },
     });
 
-    await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { pathname } = request.nextUrl;
+    const isAdminPage =
+      (pathname === "/admin" || pathname.startsWith("/admin/")) &&
+      !pathname.startsWith("/admin/login") &&
+      !pathname.startsWith("/admin/mfa");
+
+    if (user && isAdminPage) {
+      const { data: level } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (level?.currentLevel !== "aal2") {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/admin/mfa";
+        redirectUrl.search = "";
+        redirectUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+
+        const redirectResponse = NextResponse.redirect(redirectUrl);
+        response.cookies.getAll().forEach((cookie) => redirectResponse.cookies.set(cookie));
+        return redirectResponse;
+      }
+    }
   } catch {
     // Public pages remain available if auth refresh fails.
   }

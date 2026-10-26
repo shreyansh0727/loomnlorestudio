@@ -88,9 +88,12 @@ or the Supabase CLI:
    read access, and the homepage `reviews` section type.
 6. `20261026000100_retail_shipping.sql` — accepts the shipping-inclusive retail total when
    finalizing a payment and marks the fixed shipping charge settled.
+7. `20261026000200_invoice_prefix_bn.sql` — new invoice numbers use the Studio prefix,
+   with BN as the fallback, and moves a legacy LL/LC prefix to BN. Orders already
+   numbered LL/… or LC/… are renumbered to BN as well.
 
-Run any migration that was added after your original setup once. Existing invoice numbers
-are not rewritten, and existing homepage sections are kept.
+Run any migration that was added after your original setup once. Only legacy LL/LC invoice
+numbers are rewritten; other existing invoice numbers and homepage sections are kept.
 
 The functions are `security definer` and executable only by `service_role`. Never expose
 the service role key to the browser.
@@ -123,6 +126,26 @@ If you prefer token-hash links, point the templates at:
 ```
 
 Email confirmation is required before sign-in. Guest checkout does not require an account.
+
+#### Admin two-step verification (TOTP)
+
+Studio access uses Supabase Auth's TOTP MFA; customer accounts are never asked for a
+code. TOTP is enabled by default under **Authentication → Multi-Factor Authentication**
+— keep it on for the project.
+
+After an admin signs in with a password, the studio requires an `aal2` session:
+
+- First sign-in opens `/admin/mfa` with a QR code and manual setup key to connect an
+  authenticator app.
+- Later sign-ins ask for the current 6-digit code from that app.
+- An `aal1` admin session is redirected back to `/admin/mfa` from every studio page, and
+  admin server actions re-check the assurance level before touching the service role.
+- Only accounts with `profiles.role = 'admin'` (or an email in `ADMIN_EMAILS`) are
+  challenged.
+
+If an admin loses their device, a project owner can remove the factor under
+**Authentication → Users → (select user) → Factors** in Supabase, then the admin signs
+in again to enroll a new one. There is no recovery-code path.
 
 ### 4. Environment variables
 

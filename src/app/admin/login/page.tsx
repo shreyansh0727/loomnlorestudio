@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { getViewer } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/data/content";
 import { isSupabaseConfigured } from "@/lib/env";
+import { getAdminMfaLevel, isAdminMfaSatisfied } from "@/lib/mfa";
 import { signOutAction } from "@/lib/actions/auth";
 import { safeNextPath } from "@/lib/utils";
 import { LoginForm } from "@/components/auth/login-form";
@@ -26,10 +27,20 @@ export default async function AdminLoginPage({
   const params = await searchParams;
   const requested = safeNextPath(params.next, "/admin");
   const next = requested.startsWith("/admin") ? requested : "/admin";
-  const [viewer, settings] = await Promise.all([getViewer(), getSiteSettings()]);
+  const [viewer, settings, mfaLevel] = await Promise.all([
+    getViewer(),
+    getSiteSettings(),
+    getAdminMfaLevel(),
+  ]);
   const demoMode = !isSupabaseConfigured && process.env.NODE_ENV !== "production";
 
-  if (viewer.user && viewer.isAdmin) redirect(next);
+  if (viewer.user && viewer.isAdmin) {
+    redirect(
+      isAdminMfaSatisfied(mfaLevel)
+        ? next
+        : `/admin/mfa?next=${encodeURIComponent(next)}`,
+    );
+  }
 
   return (
     <div className="deep-surface min-h-dvh bg-ink text-cream lg:grid lg:grid-cols-[1.05fr_0.95fr]">
@@ -87,7 +98,8 @@ export default async function AdminLoginPage({
             Sign in to the studio.
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-cream/50">
-            Use the email address linked to your admin account.
+            Use the email address linked to your admin account. Admin sessions also
+            ask for a 6-digit code from your authenticator app.
           </p>
 
           {demoMode ? (

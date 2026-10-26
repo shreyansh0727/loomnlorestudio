@@ -133,7 +133,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     country: "India",
   },
   gstRate: DEFAULT_GST_RATE,
-  invoicePrefix: "LC",
+  invoicePrefix: "BN",
   b2bEmail: "laxmigroup04@gmail.com",
   instagramUrl: "https://instagram.com",
   facebookUrl: "https://facebook.com",

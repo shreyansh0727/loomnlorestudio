@@ -320,7 +320,7 @@ export async function saveSettingsAction(
       country: text(formData, "sellerCountry", "India"),
     },
     gstRate: Number(gstRateRaw),
-    invoicePrefix: text(formData, "invoicePrefix", "LL"),
+    invoicePrefix: text(formData, "invoicePrefix", "BN"),
     b2bEmail: text(formData, "b2bEmail"),
     instagramUrl: text(formData, "instagramUrl"),
     facebookUrl: text(formData, "facebookUrl"),

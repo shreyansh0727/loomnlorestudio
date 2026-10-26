@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/env";
+import { getAdminMfaLevel, isAdminMfaSatisfied } from "@/lib/mfa";
 import { getSupabaseServerClientSafe } from "@/lib/supabase/server";
 import type { Business, Profile, Viewer } from "@/lib/types";
 
@@ -87,6 +88,12 @@ export async function requireAdmin(): Promise<Viewer> {
   if (!viewer.isAdmin) {
     redirect("/account?error=admin-access");
   }
+
+  const mfaLevel = await getAdminMfaLevel();
+  if (!isAdminMfaSatisfied(mfaLevel)) {
+    redirect("/admin/mfa?next=/admin");
+  }
+
   return viewer;
 }
 
@@ -95,5 +102,11 @@ export async function assertAdmin() {
   if (!viewer.user || !viewer.isAdmin) {
     throw new Error("You do not have permission to perform this action.");
   }
+
+  const mfaLevel = await getAdminMfaLevel();
+  if (!isAdminMfaSatisfied(mfaLevel)) {
+    throw new Error("Verify your authenticator code before making studio changes.");
+  }
+
   return viewer;
 }
