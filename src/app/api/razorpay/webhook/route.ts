@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
     if (
       payment.currency !== "INR" ||
-      payment.amount !== order.product_total ||
+      payment.amount !== order.total_amount ||
       (payment.status !== "captured" && payment.status !== "authorized")
     ) {
       return NextResponse.json({ received: true, ignored: "mismatch" });

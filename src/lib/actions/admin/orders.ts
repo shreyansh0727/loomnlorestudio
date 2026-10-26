@@ -210,7 +210,7 @@ export async function resolvePaymentReviewAction(
     p_order_id: orderId,
     p_payment_id: order.razorpay_payment_id ?? `review_${order.order_number}`,
     p_razorpay_order_id: order.razorpay_order_id,
-    p_amount: order.product_total,
+    p_amount: order.total_amount,
   });
   if (error) return { status: "error", message: databaseMessage(error) };
 

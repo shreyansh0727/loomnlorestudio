@@ -1,6 +1,10 @@
 import type { BuyerType } from "@/lib/types";
 import { MAX_B2C_QUANTITY } from "@/lib/constants";
 import { calculateInclusiveTax } from "@/lib/pricing";
+import {
+  retailShippingAmount,
+  type ShippingZone,
+} from "@/lib/checkout/shipping";
 import type {
   CheckoutCouponSummary,
   CheckoutQuote,
@@ -54,17 +58,21 @@ export function buildQuote({
   buyerType,
   gstRate,
   coupon,
+  shippingZone = null,
 }: {
   lines: CheckoutQuoteLine[];
   buyerType: BuyerType;
   gstRate: number;
   coupon: CheckoutCouponSummary | null;
+  shippingZone?: ShippingZone | null;
 }): CheckoutQuote {
   const subtotal = lines.reduce((total, line) => total + line.lineTotal, 0);
   const discountAmount = Math.min(coupon?.discountAmount ?? 0, subtotal);
   const productTotal = Math.max(0, subtotal - discountAmount);
   const tax = calculateInclusiveTax(productTotal, gstRate);
   const itemCount = lines.reduce((total, line) => total + line.quantity, 0);
+  const applicableZone = buyerType === "b2c" ? shippingZone : null;
+  const shippingAmount = retailShippingAmount(buyerType, applicableZone);
 
   return {
     buyerType,
@@ -73,10 +81,11 @@ export function buildQuote({
     subtotal,
     discountAmount,
     productTotal,
-    shippingAmount: 0,
+    shippingAmount,
+    shippingZone: applicableZone,
     taxRate: gstRate,
     taxAmount: tax.taxAmount,
-    totalAmount: productTotal,
+    totalAmount: productTotal + shippingAmount,
     coupon: coupon && discountAmount > 0 ? { ...coupon, discountAmount } : null,
   };
 }

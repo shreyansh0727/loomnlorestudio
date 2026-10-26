@@ -94,7 +94,7 @@ export default async function ShopPage({
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
                 {activeCategory?.description ??
-                  "Scrunchies, bows, ties and crochet keepsakes, handmade in Varanasi. Every price includes GST; final shipping is quoted after your order."}
+                  "Scrunchies, bows, ties and crochet keepsakes, handmade in Varanasi. Every price includes GST; retail shipping is a fixed ₹60–₹80 by delivery zone."}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">

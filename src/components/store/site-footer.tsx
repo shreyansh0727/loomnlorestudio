@@ -23,7 +23,7 @@ export function SiteFooter({
               logoUrl={settings.logoUrl}
               textClassName="text-[1.8rem] text-ink"
               logoClassName="h-14 max-w-[10rem]"
-              frameClassName="rounded-2xl bg-cream/80 px-3 py-2"
+              frameClassName="rounded-2xl bg-cream/80 px-3 py-2 dark:bg-white/95"
             />
             <p className="script-label mt-5 text-2xl text-clay">
               Har dhaage mein apnapan

@@ -37,9 +37,9 @@ export async function AuthShell({
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-clay-deep/75 via-ink/10 to-transparent"
+            className="deep-surface absolute inset-0 bg-gradient-to-t from-clay-deep/75 via-ink/10 to-transparent"
           />
-          <div className="absolute inset-x-0 bottom-0 p-10 text-cream">
+          <div className="deep-surface absolute inset-x-0 bottom-0 p-10 text-cream">
             <BrandMark
               name={settings.brandName}
               logoUrl={settings.logoUrl}

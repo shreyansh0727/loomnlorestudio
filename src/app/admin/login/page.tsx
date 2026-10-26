@@ -32,7 +32,7 @@ export default async function AdminLoginPage({
   if (viewer.user && viewer.isAdmin) redirect(next);
 
   return (
-    <div className="min-h-dvh bg-ink text-cream lg:grid lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="deep-surface min-h-dvh bg-ink text-cream lg:grid lg:grid-cols-[1.05fr_0.95fr]">
       <div className="relative flex flex-col justify-between overflow-hidden border-b border-cream/10 px-6 py-10 sm:px-10 lg:border-b-0 lg:border-r lg:px-16 lg:py-14">
         <div
           aria-hidden

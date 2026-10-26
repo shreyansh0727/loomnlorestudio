@@ -141,7 +141,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   aboutText:
     "Buniya is a small handmade accessories workroom in Varanasi, a Laxmi Collection brand. We cut, stitch and finish every scrunchie, bow, tie and headband by hand in soft satins, cottons and Korean pastels. Runs stay small, finishes stay personal, and every piece is checked by the same hands that made it.",
   shippingPolicy:
-    "Every piece is made and packed by hand in Varanasi and leaves our workroom in 2–4 working days. Shipping is arranged manually so we can choose the right service for your parcel. Once your order is confirmed, we will email a secure Razorpay link for the exact shipping charge. Orders are dispatched after the shipping charge is paid, and tracking details appear on your private order page.",
+    "Every piece is made and packed by hand in Varanasi and leaves our workroom in 2–4 working days. Retail shipping is fixed by delivery zone — ₹60 within Varanasi city, ₹70 elsewhere in Uttar Pradesh and ₹80 to other states — and is added to your order total at checkout. Wholesale shipping is quoted separately because parcel weight and destination vary; once your order is confirmed we email a secure Razorpay link for the exact charge. Tracking details appear on your private order page.",
   returnsPolicy:
     "Ready-made accessories can be returned unused and in their original packaging within 7 days of delivery. Custom and made-to-order pieces are final sale. Write to us with your order number to start a return; refunds are recorded after the piece passes inspection. Wholesale returns are agreed with our trade team before shipping back.",
 };

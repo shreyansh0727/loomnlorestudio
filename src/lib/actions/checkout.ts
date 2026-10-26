@@ -51,10 +51,17 @@ function firstIssue(error: { issues: { message: string }[] }) {
   return error.issues[0]?.message ?? "Check the details and try again.";
 }
 
-function quoteInputFrom(rawLines: unknown, rawCoupon: unknown) {
+function quoteInputFrom(
+  rawLines: unknown,
+  rawCoupon: unknown,
+  rawCity: unknown,
+  rawState: unknown,
+) {
   return checkoutQuoteSchema.safeParse({
     lines: rawLines,
     couponCode: typeof rawCoupon === "string" ? rawCoupon : "",
+    city: typeof rawCity === "string" ? rawCity : "",
+    state: typeof rawState === "string" ? rawState : "",
   });
 }
 
@@ -94,8 +101,10 @@ export async function quoteCheckoutAction(input: {
   lines: CheckoutLineInput[];
   couponCode?: string | null;
   email?: string | null;
+  city?: string | null;
+  state?: string | null;
 }): Promise<CheckoutQuoteResult> {
-  const parsed = quoteInputFrom(input.lines, input.couponCode);
+  const parsed = quoteInputFrom(input.lines, input.couponCode, input.city, input.state);
   if (!parsed.success) {
     return { ok: false, message: firstIssue(parsed.error), field: "lines" };
   }
@@ -161,7 +170,7 @@ export async function startCheckoutAction(input: {
 
   try {
     const { quote, couponError } = await quoteForViewer({
-      input: { lines: parsed.data.lines, couponCode: parsed.data.couponCode },
+      input: parsed.data,
       viewer,
       email: parsed.data.email,
     });
@@ -360,7 +369,7 @@ export async function verifyCheckoutPaymentAction(
     if (
       payment.order_id !== razorpayOrderId ||
       payment.currency !== "INR" ||
-      payment.amount !== order.product_total
+      payment.amount !== order.total_amount
     ) {
       return {
         ok: false,

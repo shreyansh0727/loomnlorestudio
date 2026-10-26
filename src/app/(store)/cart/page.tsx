@@ -22,8 +22,8 @@ export default async function CartPage() {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <h1 className="display-title text-[clamp(2.6rem,5vw,4rem)]">Your bag</h1>
             <p className="max-w-md text-sm leading-relaxed text-muted">
-              Take a moment with your choices. Shipping is quoted separately, and every
-              price you see includes GST.
+              Take a moment with your choices. Retail shipping is fixed at checkout by
+              delivery zone, and every price you see includes GST.
             </p>
           </div>
         </div>

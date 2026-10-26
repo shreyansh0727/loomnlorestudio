@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { signOutAction } from "@/lib/actions/auth";
 import { BrandMark } from "@/components/ui/brand-mark";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -155,6 +156,10 @@ function SidebarContent({
           </p>
         </div>
         <div className="flex flex-col gap-1">
+          <ThemeToggle
+            withLabel
+            className="px-1 py-1.5 text-[0.68rem] uppercase tracking-[0.12em] text-cream/45 hover:text-cream [&_svg]:size-3.5"
+          />
           <Link
             href="/"
             target="_blank"
@@ -217,7 +222,7 @@ export function AdminShell({
 
   return (
     <div className="min-h-screen bg-paper text-ink lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-screen border-r border-ink/10 bg-ink lg:block">
+      <aside className="deep-surface sticky top-0 hidden h-screen border-r border-ink/10 bg-ink lg:block">
         <SidebarContent
           pathname={pathname}
           email={email}
@@ -241,14 +246,17 @@ export function AdminShell({
               Studio
             </span>
           </Link>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Open studio menu"
-            className="flex size-9 items-center justify-center border border-line text-ink"
-          >
-            <Menu className="size-4" aria-hidden />
-          </button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle className="flex size-9 items-center justify-center text-ink hover:text-clay" />
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Open studio menu"
+              className="flex size-9 items-center justify-center border border-line text-ink"
+            >
+              <Menu className="size-4" aria-hidden />
+            </button>
+          </div>
         </header>
 
         {demo ? (
@@ -278,10 +286,10 @@ export function AdminShell({
           <button
             type="button"
             aria-label="Close studio menu"
-            className="absolute inset-0 bg-ink/55 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 left-0 w-[85%] max-w-xs bg-ink shadow-2xl">
+          <div className="deep-surface absolute inset-y-0 left-0 w-[85%] max-w-xs bg-ink shadow-2xl">
             <button
               type="button"
               onClick={() => setOpen(false)}

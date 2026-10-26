@@ -59,7 +59,7 @@ export function ReviewCard({
                 sizes="(min-width: 1024px) 12vw, 25vw"
                 className="transition-transform duration-500 group-hover:scale-[1.03]"
               />
-              <span className="pointer-events-none absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-ink/55 text-cream opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+              <span className="pointer-events-none absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
                 <Camera className="size-3" aria-hidden />
               </span>
             </a>

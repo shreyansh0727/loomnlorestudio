@@ -61,7 +61,7 @@ export function BusinessReviewForm({ business }: { business: Business }) {
           value="rejected"
           variant="secondary"
           size="sm"
-          className="border-red-900/30 text-red-900 hover:border-red-900 hover:bg-red-900 hover:text-white"
+          className="border-red-900/30 text-red-900 hover:border-red-900 hover:bg-red-950 hover:text-white"
           disabled={pending}
         >
           <X className="size-3.5" aria-hidden />

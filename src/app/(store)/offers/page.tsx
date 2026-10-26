@@ -182,8 +182,8 @@ export default async function OffersPage() {
                 body: "All retail prices include GST. Approved business orders receive a GST invoice.",
               },
               {
-                title: "Shipping quoted later",
-                body: "Product payment is online. We quote exact shipping separately before dispatch.",
+                title: "Fixed retail shipping",
+                body: "₹60 within Varanasi, ₹70 elsewhere in Uttar Pradesh and ₹80 to other states, added at checkout. Wholesale shipping is quoted separately.",
               },
             ].map((item) => (
               <div key={item.title}>

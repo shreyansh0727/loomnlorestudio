@@ -297,7 +297,7 @@ export function ImageListEditor({
             >
               <SafeImage src={src} alt={`Product image ${index + 1}`} sizes="200px" />
               {index === 0 ? (
-                <span className="absolute left-2 top-2 bg-ink px-1.5 py-0.5 text-[0.5rem] font-semibold uppercase tracking-[0.12em] text-cream">
+                <span className="absolute left-2 top-2 bg-black/80 px-1.5 py-0.5 text-[0.5rem] font-semibold uppercase tracking-[0.12em] text-white">
                   Cover
                 </span>
               ) : null}
@@ -305,7 +305,7 @@ export function ImageListEditor({
                 type="button"
                 onClick={() => onChange(value.filter((_, position) => position !== index))}
                 aria-label={`Remove image ${index + 1}`}
-                className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-ink/75 text-cream transition-colors hover:bg-red-900"
+                className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-black/70 text-white transition-colors hover:bg-red-950"
               >
                 <X className="size-3" aria-hidden />
               </button>

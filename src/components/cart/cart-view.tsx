@@ -216,7 +216,7 @@ export function CartView({ gstRate }: { gstRate: number }) {
             <div className="flex items-start justify-between gap-4">
               <dt className="text-muted">Shipping</dt>
               <dd className="text-right text-xs leading-relaxed text-muted">
-                Quoted after your order
+                {hasB2B ? "Quoted after your order" : "Fixed by delivery zone at checkout"}
               </dd>
             </div>
           </dl>
@@ -233,8 +233,9 @@ export function CartView({ gstRate }: { gstRate: number }) {
           <div className="mt-5 flex items-start gap-2.5 border border-line bg-paper/60 p-3.5">
             <Truck className="mt-0.5 size-4 shrink-0 text-clay" strokeWidth={1.5} />
             <p className="text-xs leading-relaxed text-muted">
-              Shipping is arranged manually. After payment, we email a secure Razorpay link
-              for the exact shipping charge before dispatch.
+              {hasB2B
+                ? "Shipping is arranged manually. After payment, we email a secure Razorpay link for the exact shipping charge before dispatch."
+                : "Retail shipping is fixed by delivery zone — ₹60 within Varanasi, ₹70 elsewhere in Uttar Pradesh and ₹80 to other states — and is added at checkout."}
             </p>
           </div>
 

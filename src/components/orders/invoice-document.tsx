@@ -229,8 +229,9 @@ export function InvoiceDocument({
         <section className="mt-4 grid gap-8 border-t border-ink/15 pt-6 sm:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="space-y-3 text-[0.7rem] leading-relaxed text-muted">
             <p>
-              Prices are inclusive of GST. Shipping is quoted by us and billed
-              separately at actuals.
+              {order.shipping_amount > 0
+                ? "Prices are inclusive of GST. Fixed retail shipping is included in the invoice total."
+                : "Prices are inclusive of GST. Shipping is quoted by us and billed separately at actuals."}
             </p>
             {order.coupon_code ? (
               <p>

@@ -298,9 +298,10 @@ export default async function AdminOrderPage({
             <p className="pt-2 text-[0.68rem] leading-relaxed text-muted">
               Prices are tax-inclusive.{" "}
               {order.buyer_type === "b2b"
-                ? "A GST invoice is issued against the buyer's GSTIN."
-                : "A retail invoice is issued for this order."}{" "}
-              Shipping is quoted and collected separately.
+                ? "A GST invoice is issued against the buyer's GSTIN. Shipping is quoted and collected separately."
+                : order.shipping_amount > 0
+                  ? "A retail invoice is issued for this order. Fixed retail shipping is included in the order total."
+                  : "A retail invoice is issued for this order."}
             </p>
           </Panel>
 
@@ -521,6 +522,11 @@ export default async function AdminOrderPage({
             {shippingPaid ? (
               <p className="text-sm leading-relaxed text-sage">
                 Shipping has been paid. The order can be dispatched.
+              </p>
+            ) : order.buyer_type === "b2c" && order.shipping_amount > 0 ? (
+              <p className="text-sm leading-relaxed text-sage">
+                Fixed retail shipping is included in the online total. No separate
+                shipping payment is needed.
               </p>
             ) : order.status === "payment_review" ? (
               <p className="text-sm leading-relaxed text-clay-deep">

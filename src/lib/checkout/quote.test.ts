@@ -5,6 +5,11 @@ import {
   productUsageForB2C,
 } from "@/lib/checkout/quote";
 import type { CheckoutQuoteLine } from "@/lib/checkout/types";
+import {
+  RETAIL_SHIPPING_RATES,
+  retailShippingAmount,
+  shippingZoneFor,
+} from "@/lib/checkout/shipping";
 import { checkoutQuoteSchema } from "@/lib/validation";
 import { MAX_B2C_QUANTITY } from "@/lib/constants";
 
@@ -129,6 +134,77 @@ describe("buildQuote", () => {
   });
 });
 
+describe("retail shipping zones", () => {
+  const origin = { originCity: "Varanasi", originState: "Uttar Pradesh" };
+
+  it("maps the delivery address to a fixed zone", () => {
+    expect(
+      shippingZoneFor({ ...origin, city: "Varanasi", state: "Uttar Pradesh" }),
+    ).toBe("local");
+    expect(
+      shippingZoneFor({ ...origin, city: "Lucknow", state: "Uttar Pradesh" }),
+    ).toBe("same_state");
+    expect(
+      shippingZoneFor({ ...origin, city: "Mumbai", state: "Maharashtra" }),
+    ).toBe("other_state");
+  });
+
+  it("ignores case and extra whitespace", () => {
+    expect(
+      shippingZoneFor({ ...origin, city: "  varanasi ", state: "uttar  pradesh" }),
+    ).toBe("local");
+  });
+
+  it("waits for a city inside the seller's state", () => {
+    expect(
+      shippingZoneFor({ ...origin, city: "", state: "Uttar Pradesh" }),
+    ).toBeNull();
+    expect(shippingZoneFor({ ...origin, city: "Varanasi", state: "" })).toBeNull();
+  });
+
+  it("charges retail orders only", () => {
+    expect(retailShippingAmount("b2c", "local")).toBe(RETAIL_SHIPPING_RATES.local);
+    expect(retailShippingAmount("b2c", "same_state")).toBe(RETAIL_SHIPPING_RATES.same_state);
+    expect(retailShippingAmount("b2c", "other_state")).toBe(RETAIL_SHIPPING_RATES.other_state);
+    expect(retailShippingAmount("b2c", null)).toBe(0);
+    expect(retailShippingAmount("b2b", "other_state")).toBe(0);
+  });
+
+  it("adds shipping to the total after the coupon without changing tax", () => {
+    const build = (shippingZone: "local" | "same_state" | "other_state" | null) =>
+      buildQuote({
+        lines: [productLine(1, 100000)],
+        buyerType: "b2c",
+        gstRate: 5,
+        coupon: null,
+        shippingZone,
+      });
+
+    const base = build(null);
+    const local = build("local");
+
+    expect(base.totalAmount).toBe(base.productTotal);
+    expect(local.shippingAmount).toBe(6000);
+    expect(local.shippingZone).toBe("local");
+    expect(local.totalAmount).toBe(base.totalAmount + 6000);
+    expect(local.taxAmount).toBe(base.taxAmount);
+  });
+
+  it("keeps wholesale totals free of shipping", () => {
+    const quote = buildQuote({
+      lines: [productLine(10, 60000)],
+      buyerType: "b2b",
+      gstRate: 5,
+      coupon: null,
+      shippingZone: "other_state",
+    });
+
+    expect(quote.shippingAmount).toBe(0);
+    expect(quote.shippingZone).toBeNull();
+    expect(quote.totalAmount).toBe(quote.productTotal);
+  });
+});
+
 describe("B2C product limits", () => {
   it("counts combo components toward the retail product cap", () => {
     const usage = productUsageForB2C([productLine(2, 68000), comboLine(2, 250000)]);
@@ -184,6 +260,20 @@ describe("checkout quantity validation", () => {
     expect(parsed.success).toBe(true);
     if (parsed.success) {
       expect(parsed.data.lines[0].quantity).toBe(MAX_B2C_QUANTITY + 1);
+    }
+  });
+
+  it("accepts an optional delivery city and state for shipping quotes", () => {
+    const parsed = checkoutQuoteSchema.safeParse({
+      lines: [line(1)],
+      city: "Varanasi",
+      state: "Uttar Pradesh",
+    });
+
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.city).toBe("Varanasi");
+      expect(parsed.data.state).toBe("Uttar Pradesh");
     }
   });
 });

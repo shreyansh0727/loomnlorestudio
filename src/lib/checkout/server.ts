@@ -9,6 +9,7 @@ import type {
 import type { CheckoutDetailsInput, CheckoutQuoteInput } from "@/lib/validation";
 import { resolveCheckoutCoupon, resolveCheckoutLines, toAddress } from "@/lib/checkout/catalog";
 import { buildQuote } from "@/lib/checkout/quote";
+import { shippingZoneFor } from "@/lib/checkout/shipping";
 import { getSupabaseAdminClientSafe } from "@/lib/supabase/admin";
 import { getSiteSettings } from "@/lib/data/content";
 
@@ -53,6 +54,15 @@ export async function quoteForViewer({
       buyerType,
       gstRate: settings.gstRate,
       coupon,
+      shippingZone:
+        buyerType === "b2c"
+          ? shippingZoneFor({
+              city: input.city,
+              state: input.state,
+              originCity: settings.sellerAddress.city,
+              originState: settings.sellerAddress.state,
+            })
+          : null,
     }),
     couponError,
   };
@@ -127,7 +137,7 @@ export async function createPendingOrder({
       shipping_payment_status: "not_required",
       subtotal: quote.subtotal,
       discount_amount: quote.discountAmount,
-      shipping_amount: 0,
+      shipping_amount: quote.shippingAmount,
       product_total: quote.productTotal,
       tax_rate: quote.taxRate,
       tax_amount: quote.taxAmount,

@@ -139,6 +139,8 @@ const checkoutLineSchema = z.object({
 export const checkoutQuoteSchema = z.object({
   lines: z.array(checkoutLineSchema).min(1, "Your bag is empty.").max(50),
   couponCode: couponCodeField.optional(),
+  city: z.string().trim().max(90, "That city name is too long.").optional(),
+  state: z.string().trim().max(90, "That state name is too long.").optional(),
 });
 
 export const checkoutDetailsSchema = checkoutQuoteSchema.extend({

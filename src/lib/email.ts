@@ -289,7 +289,11 @@ function orderTotals(order: Order) {
     }
     <tr>
       <td style="padding:4px 0;">Shipping</td>
-      <td style="padding:4px 0;text-align:right;">Quoted separately</td>
+      <td style="padding:4px 0;text-align:right;">${
+        order.shipping_amount > 0
+          ? formatMoney(order.shipping_amount)
+          : "Quoted separately"
+      }</td>
     </tr>
     <tr>
       <td style="padding:14px 0 0;border-top:1px solid ${LINE};font-size:14px;color:${INK};">Total paid</td>
@@ -334,7 +338,11 @@ export async function sendOrderConfirmationEmail(orderId: string) {
     ${orderTotals(order)}
     ${shippingCard(order)}
     <p style="margin:22px 0 0;font-size:13px;line-height:1.7;color:${MUTED};">
-      Your order is being prepared by hand. Shipping is quoted separately because every parcel is packed and measured by our team — we will email a secure Razorpay payment link before dispatch. You can follow every update on your private order page.
+      ${
+        order.shipping_amount > 0
+          ? "Your order is being prepared by hand. Fixed retail shipping is included in your payment, so there is nothing more to pay before dispatch."
+          : "Your order is being prepared by hand. Shipping is quoted separately because every parcel is packed and measured by our team — we will email a secure Razorpay payment link before dispatch."
+      } You can follow every update on your private order page.
     </p>
     ${button("View your order", absoluteUrl(`/order/${order.access_token}`))}
     ${

@@ -215,7 +215,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             ))}
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink/25 to-transparent"
+              className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/25 to-transparent"
             />
             <span className="absolute bottom-5 left-5 inline-flex items-center gap-1.5 rounded-full bg-cream/90 px-3 py-1.5 text-[0.55rem] font-semibold uppercase tracking-[0.16em] text-ink-soft backdrop-blur-sm">
               <span aria-hidden className="size-1 rounded-full bg-clay" />

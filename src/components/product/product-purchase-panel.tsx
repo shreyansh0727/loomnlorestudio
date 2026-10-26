@@ -234,7 +234,7 @@ export function ProductPurchasePanel({
         </p>
       ) : (
         <p className="mt-3 text-center text-[0.62rem] uppercase tracking-[0.13em] text-muted">
-          Retail limit: {MAX_B2C_QUANTITY} units per product · shipping quoted after checkout
+          Retail limit: {MAX_B2C_QUANTITY} units per product · fixed shipping at checkout
         </p>
       )}
 

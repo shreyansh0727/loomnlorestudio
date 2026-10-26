@@ -80,10 +80,12 @@ export default async function PoliciesPage() {
                 <p key={index}>{paragraph}</p>
               ))}
               <p>
-                Product payment is collected online at checkout. Shipping is arranged
-                manually because parcel weight and destination vary. Once your order is
-                confirmed, we email a secure Razorpay payment link for the exact shipping
-                charge. Dispatch happens only after the shipping charge is paid.
+                Retail shipping is fixed by delivery zone and paid with your order: ₹60
+                within Varanasi city, ₹70 elsewhere in Uttar Pradesh and ₹80 to other
+                states. Wholesale orders are quoted separately because parcel weight and
+                destination vary; once your trade order is confirmed, we email a secure
+                Razorpay payment link for the exact charge. Dispatch happens only after
+                that charge is paid.
               </p>
               <p>
                 Tracking details are added to your order page and emailed the moment your

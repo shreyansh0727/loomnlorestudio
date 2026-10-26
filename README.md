@@ -42,9 +42,10 @@ email.
 - Stock is allocated transactionally at payment time. If a payment lands after stock has
   gone, the order is parked in **Payment review**, never oversold. An admin can restock
   and allocate stock + issue the invoice from the order page.
-- Shipping is quoted manually after the product payment. The admin creates a Razorpay
-  payment link, which is emailed to the customer and tracked by the `payment_link.paid`
-  webhook.
+- Retail shipping is fixed by delivery zone (₹60 local, ₹70 another city in the state,
+  ₹80 another state) and paid with the order. Wholesale shipping is quoted manually:
+  the admin creates a Razorpay payment link, which is emailed to the customer and tracked
+  by the `payment_link.paid` webhook.
 - Transactional email via Resend for confirmation, status updates and shipping payments.
   Every attempt is logged; unconfigured email is recorded as `skipped`.
 
@@ -85,6 +86,8 @@ or the Supabase CLI:
    when a new invoice number is issued.
 5. `20261025000100_reviews.sql` — verified-purchase reviews with customer photos, public
    read access, and the homepage `reviews` section type.
+6. `20261026000100_retail_shipping.sql` — accepts the shipping-inclusive retail total when
+   finalizing a payment and marks the fixed shipping charge settled.
 
 Run any migration that was added after your original setup once. Existing invoice numbers
 are not rewritten, and existing homepage sections are kept.
@@ -235,7 +238,8 @@ Emails sent:
   the variants, then use **Allocate stock & issue invoice** on the order page.
 - Cancelling or refunding an order restores reserved stock once, guarded by
   `stock_restored_at`.
-- Shipping is quoted separately and added to the order total when paid.
+- Retail shipping is fixed by zone and included in the order total. Wholesale shipping is
+  quoted separately and added when its payment link is paid.
 
 ## Customer reviews
 

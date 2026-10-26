@@ -186,7 +186,7 @@ export function ReviewForm({
                 <button
                   type="button"
                   onClick={() => removePhoto(index)}
-                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-full bg-ink/70 text-cream transition-colors hover:bg-ink"
+                  className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-full bg-black/70 text-white transition-colors hover:bg-black/85"
                   aria-label={`Remove ${preview.name}`}
                 >
                   <X className="size-3" aria-hidden />

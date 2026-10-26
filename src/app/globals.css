@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-paper: #fdf6f3;
   --color-cream: #fffdfb;
@@ -15,6 +17,8 @@
   --color-blush: #f6d9d6;
   --color-butter: #fbf1d5;
   --color-lilac: #ece4f3;
+  --color-danger-solid: #8f1f1f;
+  --color-danger-solid-hover: #741717;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-script: var(--font-caveat), "Segoe Script", cursive;
@@ -69,6 +73,52 @@
   color-scheme: light;
 }
 
+.dark {
+  color-scheme: dark;
+  --color-paper: #141013;
+  --color-cream: #1e181b;
+  --color-ink: #f7efeb;
+  --color-ink-soft: #d8c7c7;
+  --color-muted: #a5929b;
+  --color-clay: #e796a9;
+  --color-clay-deep: #f2b0c0;
+  --color-sage: #aabf9d;
+  --color-sage-light: #24301f;
+  --color-sand: #2a2226;
+  --color-line: #3c3037;
+  --color-blush: #39242c;
+  --color-butter: #332c1d;
+  --color-lilac: #2c2438;
+  /* Error text and destructive accents need to glow on a dark page. */
+  --color-red-800: #f7c4c4;
+  --color-red-900: #f0a8a8;
+  --shadow-lift: 0 24px 70px -30px rgba(0, 0, 0, 0.72);
+  --shadow-soft: 0 14px 44px -24px rgba(0, 0, 0, 0.6);
+}
+
+/* Pins the light palette on permanently dark surfaces (studio, overlays). */
+.deep-surface {
+  color-scheme: dark;
+  --color-paper: #fdf6f3;
+  --color-cream: #fffdfb;
+  --color-ink: #462f3a;
+  --color-ink-soft: #634955;
+  --color-muted: #947d86;
+  --color-clay: #c8657f;
+  --color-clay-deep: #a94e68;
+  --color-sage: #7d8f74;
+  --color-sage-light: #edf2e8;
+  --color-sand: #f8e8e2;
+  --color-line: #eedbd8;
+  --color-blush: #f6d9d6;
+  --color-butter: #fbf1d5;
+  --color-lilac: #ece4f3;
+  --color-red-800: #f7c4c4;
+  --color-red-900: #f0a8a8;
+  --shadow-lift: 0 24px 70px -34px rgba(95, 54, 70, 0.28);
+  --shadow-soft: 0 14px 44px -26px rgba(95, 54, 70, 0.22);
+}
+
 html {
   scroll-behavior: smooth;
   font-size: 106.25%;
@@ -85,8 +135,17 @@ body {
   background-attachment: fixed, fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
+  transition:
+    background-color 240ms ease,
+    color 240ms ease;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(rgba(231, 150, 169, 0.07) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(30, 24, 27, 0.6), rgba(20, 16, 19, 0));
 }
 
 ::selection {
@@ -304,8 +363,31 @@ textarea::placeholder {
 }
 
 @media print {
+  :root,
+  .dark,
+  .deep-surface {
+    color-scheme: light;
+    --color-paper: #ffffff;
+    --color-cream: #ffffff;
+    --color-ink: #161616;
+    --color-ink-soft: #3b3b3b;
+    --color-muted: #555555;
+    --color-clay: #a4543a;
+    --color-clay-deep: #8a3f2c;
+    --color-sage: #5f6f5a;
+    --color-sage-light: #eef2ec;
+    --color-sand: #f6f2ec;
+    --color-line: #d9d2c7;
+    --color-blush: #f7f2ef;
+    --color-butter: #fbf7ec;
+    --color-lilac: #f3f0f5;
+    --color-red-800: #8a1f1f;
+    --color-red-900: #7f1d1d;
+  }
+
   body {
     background: white !important;
+    background-image: none !important;
     color: black !important;
   }
 

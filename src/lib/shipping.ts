@@ -58,6 +58,12 @@ export async function createShippingPaymentLink({
   if (order.shipping_payment_status === "paid") {
     return { ok: false, message: "Shipping has already been paid for this order." };
   }
+  if (order.buyer_type === "b2c" && order.shipping_amount > 0) {
+    return {
+      ok: false,
+      message: "Retail shipping is fixed and already included in the order total.",
+    };
+  }
 
   try {
     const link = await createRazorpayPaymentLink({

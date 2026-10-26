@@ -63,8 +63,8 @@ export default async function CheckoutPage() {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <h1 className="display-title text-[clamp(2.6rem,5vw,4rem)]">Checkout</h1>
             <p className="max-w-md text-sm leading-relaxed text-muted">
-              Products are paid now. Shipping is measured and quoted separately before
-              dispatch. Every price includes GST.
+              Retail shipping is fixed at ₹60–₹80 by delivery zone and added at checkout.
+              Wholesale shipping is quoted separately. Every price includes GST.
             </p>
           </div>
         </div>

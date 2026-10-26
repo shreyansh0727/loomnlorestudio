@@ -41,6 +41,7 @@ import type {
   StartCheckoutResult,
 } from "@/lib/checkout/types";
 import type { CheckoutLineInput } from "@/lib/validation";
+import { RETAIL_SHIPPING_LABELS } from "@/lib/checkout/shipping";
 import {
   quoteCheckoutAction,
   startCheckoutAction,
@@ -180,6 +181,8 @@ export function CheckoutView({
   const [couponFieldError, setCouponFieldError] = useState<string | null>(null);
   const [couponNotice, setCouponNotice] = useState<string | null>(null);
   const [quoteEmail, setQuoteEmail] = useState(viewer.email ?? "");
+  const [quoteCity, setQuoteCity] = useState(form.city.trim());
+  const [quoteDeliveryState, setQuoteDeliveryState] = useState(form.state);
   const [quoteState, setQuoteState] = useState<QuoteState | null>(null);
   const quoteSeq = useRef(0);
 
@@ -197,7 +200,7 @@ export function CheckoutView({
     )
     .sort()
     .join("|");
-  const signature = `${cartSignature}::${appliedCoupon ?? ""}::${quoteEmail}`;
+  const signature = `${cartSignature}::${appliedCoupon ?? ""}::${quoteEmail}::${quoteCity}::${quoteDeliveryState}`;
 
   const quoteIsCurrent = quoteState?.signature === signature;
   const quote = quoteIsCurrent ? quoteState.quote : null;
@@ -214,6 +217,16 @@ export function CheckoutView({
   }, [form.email, quoteEmail]);
 
   useEffect(() => {
+    const city = form.city.trim();
+    if (city === quoteCity && form.state === quoteDeliveryState) return;
+    const timer = setTimeout(() => {
+      setQuoteCity(city);
+      setQuoteDeliveryState(form.state);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [form.city, form.state, quoteCity, quoteDeliveryState]);
+
+  useEffect(() => {
     if (!hydrated || lines.length === 0) return;
 
     const seq = ++quoteSeq.current;
@@ -224,6 +237,8 @@ export function CheckoutView({
         lines: inputs,
         couponCode: appliedCoupon,
         email: quoteEmail || null,
+        city: quoteCity || null,
+        state: quoteDeliveryState || null,
       })
         .then((result) => {
           if (seq !== quoteSeq.current) return;
@@ -252,7 +267,7 @@ export function CheckoutView({
     }, 150);
 
     return () => clearTimeout(timer);
-  }, [appliedCoupon, hydrated, lines, quoteEmail, signature]);
+  }, [appliedCoupon, hydrated, lines, quoteEmail, quoteCity, quoteDeliveryState, signature]);
 
   function setField<K extends keyof CheckoutForm>(key: K, value: CheckoutForm[K]) {
     setForm((previous) => ({ ...previous, [key]: value }));
@@ -627,7 +642,11 @@ export function CheckoutView({
             <SectionHeading
               step="02"
               title="Shipping address"
-              note="Final shipping is quoted after your order."
+              note={
+                business
+                  ? "Wholesale shipping is quoted after your order."
+                  : "Retail shipping is fixed by delivery zone."
+              }
             />
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <Field
@@ -770,7 +789,11 @@ export function CheckoutView({
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
                 required
-                label="I agree to the order, shipping and returns terms, and understand that shipping is quoted separately after payment."
+                label={
+                  business
+                    ? "I agree to the order, shipping and returns terms, and understand that shipping is quoted separately after payment."
+                    : "I agree to the order, shipping and returns terms."
+                }
               />
               <p className="mt-2 pl-6 text-xs text-muted">
                 Read the full{" "}
@@ -896,9 +919,24 @@ export function CheckoutView({
                     ) : null}
                     <div className="flex items-start justify-between gap-4">
                       <dt className="text-muted">Shipping</dt>
-                      <dd className="text-right text-xs leading-relaxed text-muted">
-                        Quoted after your order
-                      </dd>
+                      {quote.buyerType === "b2b" ? (
+                        <dd className="text-right text-xs leading-relaxed text-muted">
+                          Quoted after your order
+                        </dd>
+                      ) : quote.shippingZone ? (
+                        <dd className="text-right">
+                          <span className="tabular-nums">
+                            {formatMoney(quote.shippingAmount)}
+                          </span>
+                          <span className="mt-0.5 block text-[0.58rem] uppercase tracking-[0.1em] text-muted">
+                            {RETAIL_SHIPPING_LABELS[quote.shippingZone]}
+                          </span>
+                        </dd>
+                      ) : (
+                        <dd className="text-right text-xs leading-relaxed text-muted">
+                          Enter city &amp; state
+                        </dd>
+                      )}
                     </div>
                     <div className="flex items-center justify-between gap-4 text-xs text-muted">
                       <dt>GST included ({settings.gstRate}%)</dt>
@@ -915,7 +953,7 @@ export function CheckoutView({
 
                 <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-line pt-4">
                   <span className="text-[0.6rem] font-semibold uppercase tracking-[0.15em] text-ink-soft">
-                    Products total
+                    {quote && quote.shippingAmount > 0 ? "Total payable" : "Products total"}
                   </span>
                   {quote ? (
                     <span className="font-serif text-2xl font-light tabular-nums">
@@ -930,6 +968,7 @@ export function CheckoutView({
                 </div>
                 <p className="mt-1 text-right text-[0.58rem] uppercase tracking-[0.1em] text-muted">
                   Inclusive of all taxes
+                  {quote && quote.shippingAmount > 0 ? " · shipping included" : ""}
                 </p>
               </div>
 
@@ -1005,8 +1044,9 @@ export function CheckoutView({
               <div className="mt-5 space-y-2.5 border-t border-line pt-4 text-[0.68rem] leading-relaxed text-muted">
                 <p className="flex items-start gap-2">
                   <Truck className="mt-0.5 size-3.5 shrink-0 text-clay" strokeWidth={1.5} />
-                  Shipping is arranged manually and quoted after payment. We email a secure
-                  Razorpay link before dispatch.
+                  {business
+                    ? "Shipping is arranged manually and quoted after payment. We email a secure Razorpay link before dispatch."
+                    : "Retail shipping is fixed: ₹60 within Varanasi, ₹70 elsewhere in Uttar Pradesh and ₹80 to other states, added to your total."}
                 </p>
                 <p className="flex items-start gap-2">
                   <Mail className="mt-0.5 size-3.5 shrink-0 text-clay" strokeWidth={1.5} />

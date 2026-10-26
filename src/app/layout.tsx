@@ -3,6 +3,7 @@ import { Caveat, Fraunces, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { getSiteSettings } from "@/lib/data/content";
 import { SITE_URL } from "@/lib/env";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -50,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: "#fdf6f3",
-  colorScheme: "light",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -59,18 +60,20 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${fraunces.variable} ${manrope.variable} ${caveat.variable}`}
     >
       <body>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {children}
         <Toaster
           position="bottom-center"
           closeButton
           toastOptions={{
             style: {
-              background: "#fffdfb",
-              color: "#462f3a",
-              border: "1px solid #eedbd8",
+              background: "var(--color-cream)",
+              color: "var(--color-ink)",
+              border: "1px solid var(--color-line)",
               borderRadius: "1rem",
               fontFamily: "var(--font-manrope)",
             },

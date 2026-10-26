@@ -119,9 +119,9 @@ export default async function BusinessPage() {
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent"
+            className="deep-surface absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent"
           />
-          <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4 text-cream sm:left-8 sm:right-8">
+          <div className="deep-surface absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4 text-cream sm:left-8 sm:right-8">
             <p className="max-w-[16rem] font-serif text-xl font-light leading-snug">
               Little things, made to be sold beautifully.
             </p>

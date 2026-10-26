@@ -20,7 +20,7 @@ const variants: Record<ButtonVariant, string> = {
   clay: "bg-clay text-cream hover:bg-clay-deep",
   inverse:
     "border border-cream/35 bg-cream/10 text-cream backdrop-blur-sm hover:bg-cream hover:text-ink",
-  danger: "bg-red-800 text-white hover:bg-red-900",
+  danger: "bg-danger-solid text-white hover:bg-danger-solid-hover",
 };
 
 const sizes: Record<ButtonSize, string> = {

@@ -77,7 +77,7 @@ export function OfferPopup({ offer }: { offer: PopupOffer }) {
         type="button"
         aria-label="Close offer"
         onClick={() => setOpen(false)}
-        className="absolute inset-0 bg-ink/55 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/55 backdrop-blur-sm"
       />
       <div
         role="dialog"

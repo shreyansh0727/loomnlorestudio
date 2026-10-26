@@ -57,7 +57,7 @@ export async function CategoryGridSection({
                   />
                   <div
                     aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
+                    className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
                   />
                   <span className="absolute left-4 top-4 inline-flex size-8 items-center justify-center rounded-full bg-cream/85 font-serif text-[0.7rem] italic text-clay backdrop-blur-sm">
                     {String(index + 1).padStart(2, "0")}

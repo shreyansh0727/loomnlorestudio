@@ -3,6 +3,7 @@ import type {
   BuyerType,
   OrderItemComponent,
 } from "@/lib/types";
+import type { ShippingZone } from "@/lib/checkout/shipping";
 
 export interface CheckoutLineInput {
   kind: "product" | "combo";
@@ -44,6 +45,7 @@ export interface CheckoutQuote {
   discountAmount: number;
   productTotal: number;
   shippingAmount: number;
+  shippingZone: ShippingZone | null;
   taxRate: number;
   taxAmount: number;
   totalAmount: number;

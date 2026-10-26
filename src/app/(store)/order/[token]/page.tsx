@@ -53,7 +53,9 @@ export default async function PublicOrderPage({
               {underReview
                 ? "One of the pieces needs a quick stock check. We will write to you shortly with the next step."
                 : `${formatMoney(order.total_amount)} paid securely. A receipt and tracking link are on their way to ${order.email}.`}{" "}
-              Shipping is quoted separately by email before dispatch.
+              {order.shipping_amount > 0
+                ? "Shipping is included in this total."
+                : "Shipping is quoted separately by email before dispatch."}
             </p>
           </div>
         </div>

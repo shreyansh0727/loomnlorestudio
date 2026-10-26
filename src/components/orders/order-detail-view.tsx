@@ -433,6 +433,12 @@ export function OrderDetailView({
                     </p>
                   )}
                 </div>
+              ) : order.shipping_amount > 0 && order.payment_status === "paid" ? (
+                <Badge tone="sage">Shipping included</Badge>
+              ) : order.shipping_amount > 0 ? (
+                <p className="text-xs leading-relaxed text-muted">
+                  Fixed retail shipping is included in your order total when you pay.
+                </p>
               ) : (
                 <p className="text-xs leading-relaxed text-muted">
                   Shipping is quoted after your order and sent by email before dispatch.

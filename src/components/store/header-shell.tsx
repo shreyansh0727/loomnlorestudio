@@ -16,6 +16,7 @@ import type { Category, OfferCard, SiteSettings } from "@/lib/types";
 import { useCart } from "@/components/cart/cart-provider";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { CopyCode } from "@/components/store/copy-code";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export interface HeaderViewer {
@@ -129,7 +130,8 @@ export function HeaderShell({
                   subLabel="A Laxmi Collection Brand"
                   logoUrl={settings.logoUrl}
                   textClassName="text-[1.22rem] sm:text-[1.35rem] lg:text-[1.5rem]"
-                  logoClassName="h-11 max-w-[9rem] mix-blend-multiply sm:h-14 sm:max-w-[11rem]"
+                  logoClassName="h-11 max-w-[9rem] mix-blend-multiply dark:mix-blend-normal sm:h-14 sm:max-w-[11rem]"
+                  frameClassName="dark:rounded-lg dark:bg-white/95 dark:px-1.5 dark:py-1"
                 />
               </Link>
             </div>
@@ -215,6 +217,7 @@ export function HeaderShell({
                   Trade
                 </span>
               ) : null}
+              <ThemeToggle className="inline-flex size-10 items-center justify-center text-ink hover:text-clay" />
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
@@ -253,7 +256,7 @@ export function HeaderShell({
             type="button"
             aria-label="Close menu"
             onClick={() => setMobileOpen(false)}
-            className="absolute inset-0 bg-ink/45 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
           <div
             role="dialog"
@@ -267,7 +270,8 @@ export function HeaderShell({
                 subLabel="A Laxmi Collection Brand"
                 logoUrl={settings.logoUrl}
                 textClassName="text-xl"
-                logoClassName="h-10 max-w-[9rem] mix-blend-multiply"
+                logoClassName="h-10 max-w-[9rem] mix-blend-multiply dark:mix-blend-normal"
+                frameClassName="dark:rounded-lg dark:bg-white/95 dark:px-1.5 dark:py-1"
               />
               <button
                 type="button"
@@ -341,6 +345,10 @@ export function HeaderShell({
                       : "My account"
                     : "Sign in or create an account"}
                 </Link>
+                <ThemeToggle
+                  withLabel
+                  className="mt-4 text-sm text-ink-soft hover:text-clay"
+                />
                 {viewer.isAdmin ? (
                   <Link
                     href="/admin"
@@ -362,7 +370,7 @@ export function HeaderShell({
             type="button"
             aria-label="Close search"
             onClick={() => setSearchOpen(false)}
-            className="absolute inset-0 bg-ink/45 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
           <div
             role="dialog"
