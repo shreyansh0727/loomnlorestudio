@@ -2,8 +2,10 @@ import { CartProvider } from "@/components/cart/cart-provider";
 import { OfferPopup } from "@/components/store/offer-popup";
 import { SiteFooter } from "@/components/store/site-footer";
 import { SiteHeader } from "@/components/store/site-header";
+import { StructuredData } from "@/components/seo/structured-data";
 import { getSiteSettings, getActivePopupOffer } from "@/lib/data/content";
 import { getCategories } from "@/lib/data/catalog";
+import { organizationSchema, websiteSchema } from "@/lib/seo";
 import { isScheduleActive } from "@/lib/utils";
 
 export default async function StoreLayout({
@@ -22,6 +24,7 @@ export default async function StoreLayout({
 
   return (
     <CartProvider>
+      <StructuredData data={[organizationSchema(settings), websiteSchema(settings)]} />
       <a
         href="#main"
         className="sr-only z-[100] bg-cream px-4 py-3 text-sm focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

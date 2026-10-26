@@ -11,12 +11,32 @@ import { ComboCard } from "@/components/product/combo-card";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { EmptyState } from "@/components/ui/empty-state";
 import { buttonStyles } from "@/components/ui/button";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const description = `Current coupon codes and fixed bundles from ${settings.brandName}. Retail and trade offers, applied at checkout.`;
+  const title = `Offers & combos · ${settings.brandName}`;
+
   return {
     title: "Offers & combos",
-    description: `Current coupon codes and fixed bundles from ${settings.brandName}. Retail and trade offers, applied at checkout.`,
+    description,
+    alternates: { canonical: "/offers" },
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: "/offers",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
   };
 }
 

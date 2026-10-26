@@ -10,7 +10,10 @@ import { ProductPurchasePanel } from "@/components/product/product-purchase-pane
 import { ProductCard } from "@/components/product/product-card";
 import { ProductReviews } from "@/components/store/product/product-reviews";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
+import { StructuredData } from "@/components/seo/structured-data";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { getProductReviewSummary } from "@/lib/data/reviews";
+import { breadcrumbSchema, productSchema } from "@/lib/seo";
 import { ArrowLeft } from "lucide-react";
 
 async function RelatedPieces({
@@ -83,17 +86,37 @@ export async function generateMetadata({
     getProductBySlug(slug),
     getSiteSettings(),
   ]);
-  if (!product) return { title: "Piece not found" };
+  if (!product) {
+    return {
+      title: "Piece not found",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const description =
+    product.short_description ??
+    `Shop ${product.name} from the ${settings.brandName} collection.`;
+  const canonical = `/shop/${product.slug}`;
+  const image = product.images[0];
 
   return {
     title: product.name,
-    description:
-      product.short_description ??
-      `Shop ${product.name} from the ${settings.brandName} collection.`,
+    description,
+    alternates: { canonical },
     openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: canonical,
       title: product.name,
-      description: product.short_description ?? undefined,
-      images: product.images.length ? [product.images[0]] : undefined,
+      description,
+      images: image ? [{ url: image, alt: product.name }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+      images: image ? [image] : undefined,
     },
   };
 }
@@ -113,9 +136,22 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const category = product.category;
+  const reviewSummary = await getProductReviewSummary(product.id);
 
   return (
     <>
+      <StructuredData
+        data={[
+          productSchema({ product, settings, rating: reviewSummary }),
+          breadcrumbSchema([
+            { name: "Shop", path: "/shop" },
+            ...(category
+              ? [{ name: category.name, path: `/shop?category=${category.slug}` }]
+              : []),
+            { name: product.name, path: `/shop/${product.slug}` },
+          ]),
+        ]}
+      />
       <div className="editorial-container pb-16 pt-8 lg:pb-24 lg:pt-10">
         <Breadcrumbs
           items={[

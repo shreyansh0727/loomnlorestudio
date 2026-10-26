@@ -157,7 +157,7 @@ cp .env.example .env.local
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Public origin used in Razorpay callbacks and email links, and the fallback origin for auth redirects. |
+| `NEXT_PUBLIC_SITE_URL` | Public origin used for canonical URLs, the sitemap and social images, Razorpay callbacks and email links, and the fallback origin for auth redirects. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (RLS-protected reads). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only key for orders, admin writes and storage uploads. |

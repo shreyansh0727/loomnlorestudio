@@ -3,6 +3,7 @@ import { Caveat, Fraunces, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { getSiteSettings } from "@/lib/data/content";
 import { SITE_URL } from "@/lib/env";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -29,6 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return {
     metadataBase: new URL(SITE_URL),
+    applicationName: settings.brandName,
+    category: "shopping",
     title: {
       default: `${settings.brandName} — Handmade hair accessories`,
       template: `%s · ${settings.brandName}`,
@@ -38,13 +41,29 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       siteName: settings.brandName,
+      locale: "en_IN",
       title: `${settings.brandName} — Handmade hair accessories`,
       description:
         "Handmade scrunchies, bows, ties and crochet accessories crafted with care in Varanasi.",
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${settings.brandName} — Handmade hair accessories`,
+      description:
+        "Handmade scrunchies, bows, ties and crochet accessories crafted with care in Varanasi.",
+      images: [DEFAULT_SOCIAL_IMAGE.url],
     },
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -59,7 +78,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       suppressHydrationWarning
       className={`${fraunces.variable} ${manrope.variable} ${caveat.variable}`}
     >

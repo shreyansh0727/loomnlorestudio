@@ -7,12 +7,32 @@ import { SafeImage } from "@/components/ui/safe-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { buttonStyles } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const description = `Apply for a ${settings.brandName} trade account: wholesale pricing, per-product minimums and GST invoices for approved businesses.`;
+  const title = `Trade accounts · ${settings.brandName}`;
+
   return {
     title: "Trade accounts",
-    description: `Apply for a ${settings.brandName} trade account: wholesale pricing, per-product minimums and GST invoices for approved businesses.`,
+    description,
+    alternates: { canonical: "/business" },
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: "/business",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
   };
 }
 

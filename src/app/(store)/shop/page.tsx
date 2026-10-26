@@ -2,7 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { getCategories, getProducts } from "@/lib/data/catalog";
+import { getSiteSettings } from "@/lib/data/content";
 import { getViewer } from "@/lib/auth";
+import { StructuredData } from "@/components/seo/structured-data";
+import { breadcrumbSchema, DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 import { PAGE_SIZE } from "@/lib/constants";
 import { formatNumber } from "@/lib/utils";
 import { ProductCard } from "@/components/product/product-card";
@@ -12,12 +15,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-export const metadata: Metadata = {
-  title: "Shop the collection",
-  description:
-    "Handmade scrunchies, hair bows, fashion ties, headbands and crochet accessories from Buniya, Varanasi.",
-};
 
 interface ShopSearchParams {
   category?: string | string[];
@@ -31,6 +28,59 @@ function first(value: string | string[] | undefined) {
 }
 
 const SORT_VALUES = new Set(["newest", "price-asc", "price-desc", "featured"]);
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<ShopSearchParams>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const categorySlug = first(params.category) ?? "";
+  const search = (first(params.search) ?? "").trim();
+  const page = Math.max(1, Number.parseInt(first(params.page) ?? "1", 10) || 1);
+  const [categories, settings] = await Promise.all([
+    getCategories(),
+    getSiteSettings(),
+  ]);
+  const category = categories.find((item) => item.slug === categorySlug);
+
+  const title = search
+    ? `Search: ${search}`
+    : category?.name ?? "Shop the collection";
+  const pageTitle = page > 1 ? `${title} — page ${page}` : title;
+  const description =
+    category?.description ??
+    `Handmade scrunchies, hair bows, fashion ties, headbands and crochet accessories from ${settings.brandName}, Varanasi.`;
+
+  // Sorting never changes the page's content set, so it is left out of the canonical.
+  const canonicalParams = new URLSearchParams();
+  if (category) canonicalParams.set("category", category.slug);
+  if (page > 1) canonicalParams.set("page", String(page));
+  const query = canonicalParams.toString();
+  const canonical = query ? `/shop?${query}` : "/shop";
+
+  return {
+    title: pageTitle,
+    description,
+    alternates: { canonical },
+    robots: search ? { index: false, follow: true } : undefined,
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: canonical,
+      title: pageTitle,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: pageTitle,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
+  };
+}
 
 export default async function ShopPage({
   searchParams,
@@ -77,6 +127,17 @@ export default async function ShopPage({
 
   return (
     <>
+      {activeCategory ? (
+        <StructuredData
+          data={breadcrumbSchema([
+            { name: "Shop", path: "/shop" },
+            {
+              name: activeCategory.name,
+              path: `/shop?category=${activeCategory.slug}`,
+            },
+          ])}
+        />
+      ) : null}
       <section className="paper-edge relative border-b border-line bg-cream/60">
         <div className="editorial-container py-10 lg:py-14">
           <Breadcrumbs

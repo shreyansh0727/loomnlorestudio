@@ -7,12 +7,34 @@ import { getViewer } from "@/lib/auth";
 import { HomepageSections } from "@/components/store/home/homepage-sections";
 import { SafeImage } from "@/components/ui/safe-image";
 import { buttonStyles } from "@/components/ui/button";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Handmade scrunchies, bows & hair accessories",
-  description:
-    "Shop handmade satin scrunchies, hair bows, fashion ties and crochet accessories from Buniya, Varanasi. Retail and approved wholesale accounts.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const title = "Handmade scrunchies, bows & hair accessories";
+  const description = `Shop handmade satin scrunchies, hair bows, fashion ties and crochet accessories from ${settings.brandName}, Varanasi. Retail and approved wholesale accounts.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: "/",
+      title: `${settings.brandName} — ${title}`,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${settings.brandName} — ${title}`,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
+  };
+}
 
 export default async function HomePage() {
   const [sections, categories, viewer, settings] = await Promise.all([

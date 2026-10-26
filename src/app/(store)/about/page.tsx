@@ -6,12 +6,32 @@ import { SafeImage } from "@/components/ui/safe-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { buttonStyles } from "@/components/ui/button";
 import { getViewer } from "@/lib/auth";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const description = `${settings.brandName} is a Laxmi Collection brand making handmade scrunchies, bows and crochet accessories in Varanasi.`;
+  const title = `Our story · ${settings.brandName}`;
+
   return {
     title: "Our story",
-    description: `${settings.brandName} is a Laxmi Collection brand making handmade scrunchies, bows and crochet accessories in Varanasi.`,
+    description,
+    alternates: { canonical: "/about" },
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: "/about",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
   };
 }
 

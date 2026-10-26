@@ -62,6 +62,49 @@ export async function getProductReviews(productId: string, limit = 12) {
   return loadProductReviews(productId, clampLimit(limit, 12));
 }
 
+export interface ReviewSummary {
+  average: number;
+  count: number;
+}
+
+function summariseRatings(ratings: number[]): ReviewSummary | null {
+  if (!ratings.length) return null;
+  return {
+    average: ratings.reduce((total, rating) => total + rating, 0) / ratings.length,
+    count: ratings.length,
+  };
+}
+
+const loadReviewSummary = unstable_cache(
+  async (productId: string): Promise<ReviewSummary | null> => {
+    if (!isSupabaseConfigured) {
+      return summariseRatings(
+        demoProductReviews
+          .filter((review) => review.product_id === productId && review.is_published)
+          .map((review) => review.rating),
+      );
+    }
+
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return null;
+
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("rating")
+      .eq("product_id", productId)
+      .eq("is_published", true);
+
+    if (error) return null;
+    return summariseRatings((data ?? []).map((row) => row.rating as number));
+  },
+  ["review-summary"],
+  { tags: ["reviews"], revalidate: 300 },
+);
+
+export function getProductReviewSummary(productId: string) {
+  return loadReviewSummary(productId);
+}
+
 const loadHomepageReviews = unstable_cache(
   async (limit: number): Promise<ProductReview[]> => {
     if (!isSupabaseConfigured) {

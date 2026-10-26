@@ -11,6 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Track an order",
     description: `Follow your ${settings.brandName} order with your order number and the email used at checkout.`,
+    robots: { index: false, follow: false },
   };
 }
 

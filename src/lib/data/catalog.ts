@@ -404,3 +404,46 @@ const loadCategoryCounts = unstable_cache(
 export function getCategoryCounts() {
   return loadCategoryCounts();
 }
+
+export interface SitemapProduct {
+  slug: string;
+  updated_at: string;
+  images: string[];
+}
+
+const loadSitemapProducts = unstable_cache(
+  async (): Promise<SitemapProduct[]> => {
+    if (!isSupabaseConfigured) {
+      return demoProducts
+        .filter((product) => product.is_active)
+        .map((product) => ({
+          slug: product.slug,
+          updated_at: product.updated_at,
+          images: product.images,
+        }));
+    }
+
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return [];
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("slug, updated_at, images")
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false });
+
+    if (error) return [];
+
+    return (data ?? []).map((row) => ({
+      slug: row.slug as string,
+      updated_at: row.updated_at as string,
+      images: Array.isArray(row.images) ? (row.images as string[]) : [],
+    }));
+  },
+  ["sitemap-products"],
+  { tags: ["products"], revalidate: 3600 },
+);
+
+export function getSitemapProducts() {
+  return loadSitemapProducts();
+}

@@ -3,12 +3,32 @@ import Link from "next/link";
 import { getSiteSettings } from "@/lib/data/content";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import { formatGstin } from "@/lib/utils";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const description = `Shipping, returns, terms and privacy for ${settings.brandName} orders and trade accounts.`;
+  const title = `Policies · ${settings.brandName}`;
+
   return {
     title: "Policies",
-    description: `Shipping, returns, terms and privacy for ${settings.brandName} orders and trade accounts.`,
+    description,
+    alternates: { canonical: "/policies" },
+    openGraph: {
+      type: "website",
+      siteName: settings.brandName,
+      locale: "en_IN",
+      url: "/policies",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [DEFAULT_SOCIAL_IMAGE.url],
+    },
   };
 }
 

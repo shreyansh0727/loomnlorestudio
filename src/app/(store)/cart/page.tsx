@@ -8,6 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Your bag",
     description: `Review the pieces in your ${settings.brandName} bag before checkout.`,
+    robots: { index: false, follow: false },
   };
 }
 
