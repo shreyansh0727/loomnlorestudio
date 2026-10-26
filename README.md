@@ -96,11 +96,20 @@ the service role key to the browser.
 
 In **Authentication → URL Configuration**:
 
-- Site URL: `http://localhost:3000`
-- Redirect URLs:
+- Site URL: the public HTTPS origin in production (for example
+  `https://www.buniya.co.in`). Use `http://localhost:3000` only while developing
+  locally.
+- Redirect URLs: add every origin used for signup, password reset and email
+  confirmation:
   - `http://localhost:3000/auth/callback`
   - `http://localhost:3000/auth/confirm`
-  - Add the equivalent production URLs before going live.
+  - `https://<production-origin>/auth/callback`
+  - `https://<production-origin>/auth/confirm`
+
+The app uses the origin of the request for auth email redirects and falls back to
+`NEXT_PUBLIC_SITE_URL`. Supabase only honours a redirect URL that is allowlisted;
+otherwise it sends the customer to the Auth **Site URL**. If confirmation emails land on
+localhost in production, the Site URL or Redirect URLs still point at localhost.
 
 The default Supabase confirmation and recovery templates work with `/auth/callback`.
 If you prefer token-hash links, point the templates at:
@@ -122,7 +131,7 @@ cp .env.example .env.local
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Public origin used in Razorpay callbacks, auth redirects and email links. |
+| `NEXT_PUBLIC_SITE_URL` | Public origin used in Razorpay callbacks and email links, and the fallback origin for auth redirects. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (RLS-protected reads). |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only key for orders, admin writes and storage uploads. |

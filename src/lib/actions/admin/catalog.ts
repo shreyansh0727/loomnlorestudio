@@ -23,6 +23,7 @@ import { slugify } from "@/lib/utils";
 import type { ProductVariant } from "@/lib/types";
 
 function refreshCatalog() {
+  revalidateTag("products", { expire: 0 });
   revalidateTag("categories", { expire: 0 });
   revalidateTag("promotions", { expire: 0 });
   revalidatePath("/");

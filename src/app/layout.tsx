@@ -21,6 +21,7 @@ const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
   display: "swap",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {

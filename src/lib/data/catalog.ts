@@ -6,7 +6,6 @@ import type { Product, ProductVariant, Category, ProductRailSource } from "@/lib
 import { demoCategories, demoProducts } from "@/lib/demo-data";
 import { isSupabaseConfigured } from "@/lib/env";
 import { getPublicSupabaseClient } from "@/lib/supabase/public";
-import { getSupabaseServerClientSafe } from "@/lib/supabase/server";
 import { PAGE_SIZE } from "@/lib/constants";
 
 export interface ProductFilters {
@@ -86,10 +85,25 @@ function demoFilteredProducts(filters: ProductFilters) {
   };
 }
 
-export async function getProducts(filters: ProductFilters = {}) {
+const CATALOG_CACHE_SECONDS = 300;
+
+function normaliseFilters(filters: ProductFilters): ProductFilters {
+  return {
+    categorySlug: filters.categorySlug || undefined,
+    categoryId: filters.categoryId || undefined,
+    newArrivals: Boolean(filters.newArrivals),
+    featured: Boolean(filters.featured),
+    bestSellers: Boolean(filters.bestSellers),
+    limit: filters.limit ?? PAGE_SIZE,
+    offset: filters.offset ?? 0,
+    sort: filters.sort ?? "featured",
+  };
+}
+
+async function queryProducts(filters: ProductFilters) {
   if (!isSupabaseConfigured) return demoFilteredProducts(filters);
 
-  const supabase = await getSupabaseServerClientSafe();
+  const supabase = getPublicSupabaseClient();
   if (!supabase) return demoFilteredProducts(filters);
 
   const categoryId =
@@ -153,41 +167,57 @@ export async function getProducts(filters: ProductFilters = {}) {
   };
 }
 
-export const getProductBySlug = cache(async function getProductBySlug(
-  slug: string,
-): Promise<Product | null> {
-  if (!isSupabaseConfigured) {
-    const product = demoProducts.find(
-      (item) => item.slug === slug && item.is_active,
-    );
-    if (!product) return null;
-    return {
-      ...product,
-      category: demoCategories.find((item) => item.id === product.category_id) ?? null,
-    };
-  }
+const loadProducts = unstable_cache(
+  (filters: ProductFilters) => queryProducts(filters),
+  ["products"],
+  { tags: ["products"], revalidate: CATALOG_CACHE_SECONDS },
+);
 
-  const supabase = await getSupabaseServerClientSafe();
-  if (!supabase) return null;
+export async function getProducts(filters: ProductFilters = {}) {
+  // Search terms are unbounded, so they bypass the shared cache.
+  if (filters.search) return queryProducts(filters);
+  return loadProducts(normaliseFilters(filters));
+}
 
-  const { data, error } = await supabase
-    .from("products")
-    .select(
-      "*, category:categories(id,name,slug,description,image_url,sort_order,is_active,created_at,updated_at), variants:product_variants(*)",
-    )
-    .eq("slug", slug)
-    .eq("is_active", true)
-    .maybeSingle();
+const loadProductBySlug = unstable_cache(
+  async function loadProductBySlug(slug: string): Promise<Product | null> {
+    if (!isSupabaseConfigured) {
+      const product = demoProducts.find(
+        (item) => item.slug === slug && item.is_active,
+      );
+      if (!product) return null;
+      return {
+        ...product,
+        category: demoCategories.find((item) => item.id === product.category_id) ?? null,
+      };
+    }
 
-  if (error) throw new Error(`Unable to load product: ${error.message}`);
-  if (!data) return null;
-  return normaliseProduct(data as Record<string, unknown>);
-});
+    const supabase = getPublicSupabaseClient();
+    if (!supabase) return null;
 
-export async function getRelatedProducts(
+    const { data, error } = await supabase
+      .from("products")
+      .select(
+        "*, category:categories(id,name,slug,description,image_url,sort_order,is_active,created_at,updated_at), variants:product_variants(*)",
+      )
+      .eq("slug", slug)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error) throw new Error(`Unable to load product: ${error.message}`);
+    if (!data) return null;
+    return normaliseProduct(data as Record<string, unknown>);
+  },
+  ["product-by-slug"],
+  { tags: ["products"], revalidate: CATALOG_CACHE_SECONDS },
+);
+
+export const getProductBySlug = cache(loadProductBySlug);
+
+async function queryRelatedProducts(
   categoryId: string,
   excludeProductId: string,
-  limit = 4,
+  limit: number,
 ) {
   if (!isSupabaseConfigured) {
     return demoProducts
@@ -204,7 +234,7 @@ export async function getRelatedProducts(
       }));
   }
 
-  const supabase = await getSupabaseServerClientSafe();
+  const supabase = getPublicSupabaseClient();
   if (!supabase) return [];
 
   const { data, error } = await supabase
@@ -222,9 +252,21 @@ export async function getRelatedProducts(
   return (data ?? []).map((row) => normaliseProduct(row as Record<string, unknown>));
 }
 
-export async function getProductsByIds(ids: string[]) {
-  if (!ids.length) return [] as Product[];
+const loadRelatedProducts = unstable_cache(
+  queryRelatedProducts,
+  ["related-products"],
+  { tags: ["products"], revalidate: CATALOG_CACHE_SECONDS },
+);
 
+export async function getRelatedProducts(
+  categoryId: string,
+  excludeProductId: string,
+  limit = 4,
+) {
+  return loadRelatedProducts(categoryId, excludeProductId, limit);
+}
+
+async function queryProductsByIds(ids: string[]) {
   if (!isSupabaseConfigured) {
     return ids
       .map((id) =>
@@ -237,7 +279,7 @@ export async function getProductsByIds(ids: string[]) {
       }));
   }
 
-  const supabase = await getSupabaseServerClientSafe();
+  const supabase = getPublicSupabaseClient();
   if (!supabase) return [];
 
   const { data, error } = await supabase
@@ -258,6 +300,22 @@ export async function getProductsByIds(ids: string[]) {
   );
 
   return ids.map((id) => byId.get(id)).filter((product): product is Product => Boolean(product));
+}
+
+const loadProductsByIds = unstable_cache(
+  queryProductsByIds,
+  ["products-by-ids"],
+  { tags: ["products"], revalidate: CATALOG_CACHE_SECONDS },
+);
+
+export async function getProductsByIds(ids: string[]) {
+  if (!ids.length) return [] as Product[];
+  const sortedIds = [...new Set(ids)].sort();
+  const products = await loadProductsByIds(sortedIds);
+  const byId = new Map(products.map((product) => [product.id, product]));
+  return ids
+    .map((id) => byId.get(id))
+    .filter((product): product is Product => Boolean(product));
 }
 
 export async function getRailProducts(
@@ -310,7 +368,7 @@ const loadCategories = unstable_cache(
 
 export const getCategories = cache(loadCategories);
 
-export async function getCategoryCounts(): Promise<Record<string, number>> {
+async function queryCategoryCounts(): Promise<Record<string, number>> {
   if (!isSupabaseConfigured) {
     return demoProducts.reduce<Record<string, number>>((counts, product) => {
       if (product.is_active) {
@@ -320,7 +378,7 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
     }, {});
   }
 
-  const supabase = await getSupabaseServerClientSafe();
+  const supabase = getPublicSupabaseClient();
   if (!supabase) return {};
 
   const { data, error } = await supabase
@@ -335,4 +393,14 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
     counts[categoryId] = (counts[categoryId] ?? 0) + 1;
     return counts;
   }, {});
+}
+
+const loadCategoryCounts = unstable_cache(
+  queryCategoryCounts,
+  ["category-counts"],
+  { tags: ["products", "categories"], revalidate: CATALOG_CACHE_SECONDS },
+);
+
+export function getCategoryCounts() {
+  return loadCategoryCounts();
 }

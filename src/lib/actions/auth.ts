@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { linkGuestOrdersToUser } from "@/lib/data/account";
-import { isSupabaseConfigured, SITE_URL } from "@/lib/env";
+import { authCallbackUrl } from "@/lib/auth-redirect";
+import { isSupabaseConfigured } from "@/lib/env";
 import type { FormState } from "@/lib/form-state";
 import {
   createSupabaseServerClient,
@@ -115,7 +116,7 @@ export async function signUpAction(
         full_name: parsed.data.fullName,
         phone: parsed.data.phone ?? "",
       },
-      emailRedirectTo: `${SITE_URL}/auth/callback?next=${encodeURIComponent(next)}`,
+      emailRedirectTo: await authCallbackUrl(next),
     },
   });
 
@@ -158,7 +159,7 @@ export async function requestPasswordResetAction(
 
   const supabase = await createSupabaseServerClient();
   await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${SITE_URL}/auth/callback?next=/reset-password`,
+    redirectTo: await authCallbackUrl("/reset-password"),
   });
 
   return {
