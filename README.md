@@ -89,11 +89,14 @@ or the Supabase CLI:
 6. `20261026000100_retail_shipping.sql` — accepts the shipping-inclusive retail total when
    finalizing a payment and marks the fixed shipping charge settled.
 7. `20261026000200_invoice_prefix_bn.sql` — new invoice numbers use the Studio prefix,
-   with BN as the fallback, and moves a legacy LL/LC prefix to BN. Orders already
-   numbered LL/… or LC/… are renumbered to BN as well.
+   with BN as the fallback, and moves a legacy LL/LC stored prefix and invoice numbers
+   to BN.
+8. `20261026000300_order_prefix_bn.sql` — new order numbers use the Studio prefix too,
+   and legacy LL-/LC- order numbers are renumbered to BN.
 
-Run any migration that was added after your original setup once. Only legacy LL/LC invoice
-numbers are rewritten; other existing invoice numbers and homepage sections are kept.
+Run any migration that was added after your original setup once. Only legacy LL/LC
+invoice and order numbers are rewritten; other existing numbers and homepage sections
+are kept.
 
 The functions are `security definer` and executable only by `service_role`. Never expose
 the service role key to the browser.

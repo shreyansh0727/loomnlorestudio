@@ -97,10 +97,17 @@ export async function submitBusinessAction(
     };
   }
 
+  const { legalName, tradeName, addressLine1, addressLine2, ...contact } =
+    parsed.data;
+
   const { error } = await admin.from("businesses").upsert(
     {
       owner_id: viewer.user.id,
-      ...parsed.data,
+      legal_name: legalName,
+      trade_name: tradeName,
+      address_line1: addressLine1,
+      address_line2: addressLine2,
+      ...contact,
       status: "pending",
       admin_note: null,
       reviewed_at: null,
@@ -111,6 +118,7 @@ export async function submitBusinessAction(
   );
 
   if (error) {
+    console.error("[submitBusinessAction] upsert failed", error);
     return {
       status: "error",
       message: "We could not submit your application. Please try again.",
