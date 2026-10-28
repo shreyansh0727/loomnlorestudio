@@ -238,6 +238,99 @@ export function MediaUrlField({
   );
 }
 
+export function VariantImageField({
+  id,
+  value,
+  onChange,
+  hint,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    const result = await uploadFile(file, "catalog/variants");
+    setUploading(false);
+    if (!result.ok) {
+      setError(result.message);
+      return;
+    }
+    onChange(result.url);
+  }
+
+  return (
+    <div>
+      <Label htmlFor={id}>Option image</Label>
+      <div className="flex items-center gap-2">
+        <div className="relative size-11 shrink-0 overflow-hidden border border-line bg-sand">
+          {value ? (
+            <SafeImage src={value} alt="" sizes="44px" />
+          ) : (
+            <ImagePlus
+              className="absolute inset-0 m-auto size-4 text-muted"
+              aria-hidden
+            />
+          )}
+        </div>
+        <Input
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder="Optional — https://… or upload"
+          className="h-10 min-w-0"
+        />
+        <input
+          ref={inputRef}
+          type="file"
+          accept={acceptFor("image")}
+          className="hidden"
+          onChange={(event) => {
+            void handleFile(event.target.files?.[0]);
+            event.target.value = "";
+          }}
+        />
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          className="h-10 shrink-0 px-3"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          aria-label="Upload option image"
+        >
+          {uploading ? (
+            <Loader2 className="size-3.5 animate-spin" aria-hidden />
+          ) : (
+            <Upload className="size-3.5" aria-hidden />
+          )}
+        </Button>
+        {value ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-10 shrink-0 px-2"
+            onClick={() => onChange("")}
+            aria-label="Clear option image"
+          >
+            <X className="size-4" aria-hidden />
+          </Button>
+        ) : null}
+      </div>
+      {hint && !error ? <p className="mt-1.5 text-xs text-muted">{hint}</p> : null}
+      {error ? <p className="mt-1.5 text-xs text-red-800">{error}</p> : null}
+    </div>
+  );
+}
+
 export function ImageListEditor({
   value,
   onChange,

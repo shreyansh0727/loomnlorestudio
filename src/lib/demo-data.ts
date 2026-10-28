@@ -190,7 +190,11 @@ export const demoProducts: Product[] = [
         "SCR-BLSH-PRL",
         32,
         2,
-        { colour: "Blush pink", finish: "Pearl" },
+        {
+          colour: "Blush pink",
+          finish: "Pearl",
+          image_url: "/images/buniya/editorial/ribbon-detail.jpg",
+        },
       ),
     ],
   }),

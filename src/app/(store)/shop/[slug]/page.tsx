@@ -5,8 +5,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data/catalog";
 import { getSiteSettings } from "@/lib/data/content";
 import { getViewer } from "@/lib/auth";
-import { ProductGallery } from "@/components/product/product-gallery";
-import { ProductPurchasePanel } from "@/components/product/product-purchase-panel";
+import { ProductDetail } from "@/components/product/product-detail";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductReviews } from "@/components/store/product/product-reviews";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
@@ -163,16 +162,13 @@ export default async function ProductPage({
           ]}
         />
 
-        <div className="mt-7 grid items-start gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-16 xl:gap-20">
-          <ProductGallery images={product.images} name={product.name} />
-          <ProductPurchasePanel
-            product={product}
-            isB2B={viewer.isB2B}
-            isSignedIn={Boolean(viewer.user)}
-            shippingPolicy={settings.shippingPolicy}
-            returnsPolicy={settings.returnsPolicy}
-          />
-        </div>
+        <ProductDetail
+          product={product}
+          isB2B={viewer.isB2B}
+          isSignedIn={Boolean(viewer.user)}
+          shippingPolicy={settings.shippingPolicy}
+          returnsPolicy={settings.returnsPolicy}
+        />
 
         <Suspense fallback={null}>
           <ProductReviews productId={product.id} />

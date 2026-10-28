@@ -103,6 +103,17 @@ export const adminVariantSchema = z.object({
   id: z.string().uuid().optional().nullable(),
   label: z.string().trim().min(1, "Give every variant a label.").max(80),
   sku: optionalText(60),
+  imageUrl: z
+    .string()
+    .trim()
+    .max(800, "That image link is too long.")
+    .optional()
+    .nullable()
+    .transform((value) => (value ? value : null))
+    .refine(
+      (value) => value === null || value.startsWith("/") || /^https?:\/\//i.test(value),
+      "Use a full https:// URL or a site path starting with /.",
+    ),
   stockQty: z.number().int().min(0, "Stock cannot be negative.").max(1_000_000),
   retailOverride: optionalPaiseField,
   wholesaleOverride: optionalPaiseField,

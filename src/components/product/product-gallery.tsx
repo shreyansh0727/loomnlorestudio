@@ -7,11 +7,16 @@ import { cn } from "@/lib/utils";
 export function ProductGallery({
   images,
   name,
+  variantImage,
 }: {
   images: string[];
   name: string;
+  variantImage?: string | null;
 }) {
-  const gallery = images.length ? images : [""];
+  const base = images.length ? images : [""];
+  const gallery = variantImage
+    ? [variantImage, ...base.filter((image) => image !== variantImage)]
+    : base;
   const [active, setActive] = useState(0);
 
   return (

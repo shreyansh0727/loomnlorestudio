@@ -231,6 +231,10 @@ export async function saveProductAction(
 
   for (const [index, variant] of parsed.data.variants.entries()) {
     const existing = variant.id ? existingById.get(variant.id) : undefined;
+    const attributes = { ...(existing?.attributes ?? {}) };
+    if (variant.imageUrl) attributes.image_url = variant.imageUrl;
+    else delete attributes.image_url;
+
     const variantPayload = {
       product_id: productId,
       label: variant.label,
@@ -240,6 +244,7 @@ export async function saveProductAction(
       wholesale_price_override: variant.wholesaleOverride,
       is_active: variant.isActive,
       sort_order: index,
+      attributes,
     };
 
     if (existing) {
@@ -263,7 +268,7 @@ export async function saveProductAction(
     } else {
       const { error } = await context.admin
         .from("product_variants")
-        .insert({ ...variantPayload, attributes: {} });
+        .insert(variantPayload);
       if (error) return { status: "error", message: databaseMessage(error) };
     }
   }

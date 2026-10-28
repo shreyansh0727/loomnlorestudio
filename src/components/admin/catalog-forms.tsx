@@ -11,7 +11,11 @@ import { INITIAL_FORM_STATE } from "@/lib/form-state";
 import type { Category, DraftPayload, Product } from "@/lib/types";
 import { PRODUCT_TAG_MAX_LENGTH, PRODUCT_UNITS } from "@/lib/constants";
 import { draftFlag, draftJson, draftString } from "@/lib/drafts";
-import { parseRupeesToPaise, paiseToRupeeInput } from "@/lib/utils";
+import {
+  parseRupeesToPaise,
+  paiseToRupeeInput,
+  variantImageUrl,
+} from "@/lib/utils";
 import {
   DraftStatusBar,
   useDraftAutosave,
@@ -26,7 +30,11 @@ import {
   Textarea,
 } from "@/components/ui/form";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { ImageListEditor, MediaUrlField } from "@/components/admin/media";
+import {
+  ImageListEditor,
+  MediaUrlField,
+  VariantImageField,
+} from "@/components/admin/media";
 import { Panel } from "@/components/admin/ui";
 
 interface EditorVariant {
@@ -37,6 +45,7 @@ interface EditorVariant {
   stockQty: string;
   retailOverride: string;
   wholesaleOverride: string;
+  imageUrl: string;
   isActive: boolean;
 }
 
@@ -51,6 +60,7 @@ function toEditorVariants(product?: Product | null): EditorVariant[] {
         stockQty: "0",
         retailOverride: "",
         wholesaleOverride: "",
+        imageUrl: "",
         isActive: true,
       },
     ];
@@ -65,6 +75,7 @@ function toEditorVariants(product?: Product | null): EditorVariant[] {
       stockQty: String(variant.stock_qty),
       retailOverride: paiseToRupeeInput(variant.retail_price_override),
       wholesaleOverride: paiseToRupeeInput(variant.wholesale_price_override),
+      imageUrl: variantImageUrl(variant),
       isActive: variant.is_active,
     }));
 }
@@ -75,6 +86,7 @@ interface DraftVariantPayload {
   stockQty?: unknown;
   retailOverride?: unknown;
   wholesaleOverride?: unknown;
+  imageUrl?: unknown;
   isActive?: unknown;
 }
 
@@ -93,6 +105,7 @@ function variantsFromDraft(payload: DraftPayload): EditorVariant[] {
     wholesaleOverride: paiseToRupeeInput(
       typeof variant.wholesaleOverride === "number" ? variant.wholesaleOverride : null,
     ),
+    imageUrl: typeof variant.imageUrl === "string" ? variant.imageUrl : "",
     isActive: variant.isActive !== false,
   }));
 }
@@ -154,6 +167,7 @@ export function ProductEditor({
     wholesaleOverride: variant.wholesaleOverride.trim()
       ? parseRupeesToPaise(variant.wholesaleOverride)
       : null,
+    imageUrl: variant.imageUrl.trim() || null,
     isActive: variant.isActive,
   }));
 
@@ -176,6 +190,7 @@ export function ProductEditor({
         stockQty: "0",
         retailOverride: "",
         wholesaleOverride: "",
+        imageUrl: "",
         isActive: true,
       },
     ]);
@@ -414,6 +429,15 @@ export function ProductEditor({
                       }
                     />
                   </div>
+                </div>
+
+                <div className="mt-3">
+                  <VariantImageField
+                    id={`variant-image-${index}`}
+                    value={variant.imageUrl}
+                    onChange={(imageUrl) => updateVariant(index, { imageUrl })}
+                    hint="Shown in the gallery and cart when this option is chosen."
+                  />
                 </div>
               </div>
             ))}

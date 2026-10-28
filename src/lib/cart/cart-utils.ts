@@ -1,6 +1,6 @@
 import type { BuyerType, Combo, Product, ProductVariant } from "@/lib/types";
 import { getComboStock } from "@/lib/pricing";
-import { getEffectivePrice } from "@/lib/utils";
+import { getEffectivePrice, variantImageUrl } from "@/lib/utils";
 import type { ComboCartLine, ProductCartLine } from "@/lib/cart/types";
 
 export function buildProductCartLine({
@@ -22,7 +22,7 @@ export function buildProductCartLine({
     variantLabel: variant.label,
     slug: product.slug,
     name: product.name,
-    imageUrl: product.images[0] ?? "",
+    imageUrl: variantImageUrl(variant) || product.images[0] || "",
     unitPrice: getEffectivePrice(product, variant, buyerType === "b2b"),
     quantity,
     unit: product.unit,

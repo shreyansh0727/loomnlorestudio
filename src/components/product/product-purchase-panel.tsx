@@ -10,11 +10,13 @@ import {
   formatMoney,
   getEffectivePrice,
   unitLabel,
+  variantImageUrl,
 } from "@/lib/utils";
 import { buildProductCartLine } from "@/lib/cart/cart-utils";
 import { useCart } from "@/components/cart/cart-provider";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SafeImage } from "@/components/ui/safe-image";
 import { cn } from "@/lib/utils";
 
 export function ProductPurchasePanel({
@@ -23,19 +25,20 @@ export function ProductPurchasePanel({
   isSignedIn,
   shippingPolicy,
   returnsPolicy,
+  variantId,
+  onVariantChange,
 }: {
   product: Product;
   isB2B: boolean;
   isSignedIn: boolean;
   shippingPolicy: string;
   returnsPolicy: string;
+  variantId: string;
+  onVariantChange: (variantId: string) => void;
 }) {
   const router = useRouter();
   const { addLine } = useCart();
   const variants = product.variants.filter((variant) => variant.is_active);
-  const firstAvailable =
-    variants.find((variant) => variant.stock_qty > 0) ?? variants[0];
-  const [variantId, setVariantId] = useState(firstAvailable?.id ?? "");
   const selected = variants.find((variant) => variant.id === variantId) ?? null;
   const minimum = isB2B ? Math.max(1, product.moq) : 1;
   const availableMaximum = selected
@@ -64,7 +67,7 @@ export function ProductPurchasePanel({
   const clampedQuantity = Math.min(Math.max(quantity, minimum), maxQuantity);
 
   function chooseVariant(id: string) {
-    setVariantId(id);
+    onVariantChange(id);
     const next = variants.find((variant) => variant.id === id);
     const nextMax = next
       ? isB2B
@@ -151,6 +154,7 @@ export function ProductPurchasePanel({
         <div className="mt-3 flex flex-wrap gap-2">
           {variants.map((variant) => {
             const soldOut = variant.stock_qty <= 0;
+            const image = variantImageUrl(variant);
             return (
               <button
                 key={variant.id}
@@ -159,13 +163,18 @@ export function ProductPurchasePanel({
                 onClick={() => chooseVariant(variant.id)}
                 aria-pressed={variant.id === variantId}
                 className={cn(
-                  "relative rounded-full border px-4 py-2.5 text-xs transition-colors",
+                  "relative inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs transition-colors",
                   variant.id === variantId
                     ? "border-ink bg-ink text-cream"
                     : "border-line bg-cream/50 text-ink-soft hover:border-ink/40 hover:text-ink",
                   soldOut && "cursor-not-allowed opacity-40 line-through",
                 )}
               >
+                {image ? (
+                  <span className="relative size-5 shrink-0 overflow-hidden rounded-full bg-sand">
+                    <SafeImage src={image} alt="" sizes="20px" />
+                  </span>
+                ) : null}
                 {variant.label}
                 {soldOut ? <span className="sr-only"> (sold out)</span> : null}
               </button>

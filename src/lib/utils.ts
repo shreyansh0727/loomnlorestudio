@@ -104,8 +104,15 @@ export function getEffectivePrice(
   return variant.wholesale_price_override ?? product.wholesale_price ?? retail;
 }
 
-export function getStartingPrice(product: Product, isB2B: boolean) {
-  const activeVariants = product.variants.filter((variant) => variant.is_active);
+// Variant images live in the attributes bag so existing databases need no migration.
+export function variantImageUrl(
+  variant: Pick<ProductVariant, "attributes"> | null | undefined,
+): string {
+  const value = variant?.attributes?.image_url;
+  return typeof value === "string" ? value.trim() : "";
+}
+
+export function getStartingPrice(product: Product, isB2B: boolean) {  const activeVariants = product.variants.filter((variant) => variant.is_active);
   if (!activeVariants.length) {
     return isB2B
       ? (product.wholesale_price ?? product.retail_price)

@@ -49,3 +49,26 @@ describe("productInputSchema tags", () => {
     );
   });
 });
+
+describe("productInputSchema variant images", () => {
+  const withVariantImage = (imageUrl: unknown) =>
+    productInputSchema.safeParse({
+      ...product,
+      tags: [],
+      variants: [{ ...product.variants[0], imageUrl }],
+    });
+
+  it("accepts site paths, full URLs and blanks", () => {
+    expect(withVariantImage("/images/rose.jpg").success).toBe(true);
+    expect(withVariantImage("https://cdn.example.com/rose.jpg").success).toBe(true);
+    expect(withVariantImage("").success).toBe(true);
+  });
+
+  it("rejects links that are neither a path nor a full URL", () => {
+    const result = withVariantImage("rose.jpg");
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.message).toBe(
+      "Use a full https:// URL or a site path starting with /.",
+    );
+  });
+});
