@@ -111,6 +111,8 @@ export const PRODUCT_UNITS = [
   { value: "bundle", label: "Per bundle" },
 ] as const;
 
+export const PRODUCT_TAG_MAX_LENGTH = 40;
+
 export const DEFAULT_SETTINGS: SiteSettings = {
   brandName: BRAND_NAME,
   brandTagline: "Crafted with Care. Made to Inspire.",

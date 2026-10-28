@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { INDIAN_STATES } from "@/lib/constants";
+import { INDIAN_STATES, PRODUCT_TAG_MAX_LENGTH } from "@/lib/constants";
 import { isValidGstin } from "@/lib/utils";
 import type { HomepageSectionType } from "@/lib/types";
 
@@ -123,7 +123,16 @@ export const productInputSchema = z
     moq: z.number().int().min(1, "MOQ must be at least 1.").max(10_000),
     unit: z.enum(["piece", "metre", "set", "pack", "bundle"]),
     tags: z
-      .array(z.string().trim().min(1).max(40))
+      .array(
+        z
+          .string()
+          .trim()
+          .min(1)
+          .max(
+            PRODUCT_TAG_MAX_LENGTH,
+            `Keep each tag to ${PRODUCT_TAG_MAX_LENGTH} characters or fewer.`,
+          ),
+      )
       .max(12, "Use up to 12 tags.")
       .default([]),
     images: imageList,

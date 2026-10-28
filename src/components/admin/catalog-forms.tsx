@@ -9,7 +9,7 @@ import {
 } from "@/lib/actions/admin/catalog";
 import { INITIAL_FORM_STATE } from "@/lib/form-state";
 import type { Category, DraftPayload, Product } from "@/lib/types";
-import { PRODUCT_UNITS } from "@/lib/constants";
+import { PRODUCT_TAG_MAX_LENGTH, PRODUCT_UNITS } from "@/lib/constants";
 import { draftFlag, draftJson, draftString } from "@/lib/drafts";
 import { parseRupeesToPaise, paiseToRupeeInput } from "@/lib/utils";
 import {
@@ -138,6 +138,9 @@ export function ProductEditor({
         .filter(Boolean)
         .slice(0, 12),
     ),
+  );
+  const longTags = tags.filter(
+    (tag) => tag.length > PRODUCT_TAG_MAX_LENGTH,
   );
 
   const variantsPayload = variants.map((variant) => ({
@@ -514,12 +517,23 @@ export function ProductEditor({
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="border border-line bg-paper px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.08em] text-muted"
+                    className={
+                      tag.length > PRODUCT_TAG_MAX_LENGTH
+                        ? "border border-red-900/40 bg-red-900/10 px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.08em] text-red-900"
+                        : "border border-line bg-paper px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.08em] text-muted"
+                    }
                   >
                     {tag}
                   </span>
                 ))}
               </div>
+            ) : null}
+            {longTags.length ? (
+              <p className="text-[0.64rem] leading-relaxed text-red-900">
+                {longTags.length === 1 ? "One tag is" : `${longTags.length} tags are`} longer
+                than {PRODUCT_TAG_MAX_LENGTH} characters. Shorten{" "}
+                {longTags.length === 1 ? "it" : "them"} before saving.
+              </p>
             ) : null}
             <div className="space-y-2.5 border-t border-line pt-4">
               <Checkbox
