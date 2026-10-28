@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Plus, Trash2 } from "lucide-react";
 import {
@@ -8,8 +8,9 @@ import {
   saveCouponAction,
 } from "@/lib/actions/admin/promotions";
 import { INITIAL_FORM_STATE } from "@/lib/form-state";
-import type { Coupon, Combo, CouponDiscountType } from "@/lib/types";
+import type { Coupon, Combo, CouponDiscountType, DraftPayload } from "@/lib/types";
 import type { AdminVariantOption } from "@/lib/data/admin";
+import { draftFlag, draftJson, draftString } from "@/lib/drafts";
 import {
   formatMoney,
   parseRupeesToPaise,
@@ -28,16 +29,39 @@ import {
 import { SubmitButton } from "@/components/ui/submit-button";
 import { MediaUrlField } from "@/components/admin/media";
 import { Panel } from "@/components/admin/ui";
+import {
+  DraftStatusBar,
+  useDraftAutosave,
+} from "@/components/admin/draft-autosave";
 
-export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
+export function CouponForm({
+  coupon,
+  draft,
+}: {
+  coupon?: Coupon | null;
+  draft?: { id: string; payload: DraftPayload } | null;
+}) {
   const [state, formAction] = useActionState(saveCouponAction, INITIAL_FORM_STATE);
+  const seed = draft?.payload ?? null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const seededType = draftString(seed, "discountType");
   const [discountType, setDiscountType] = useState<CouponDiscountType>(
-    coupon?.discount_type ?? "percentage",
+    seededType === "percentage" || seededType === "fixed"
+      ? seededType
+      : (coupon?.discount_type ?? "percentage"),
   );
+  const draftState = useDraftAutosave(formRef, {
+    kind: "coupon",
+    initialDraftId: draft?.id ?? null,
+    enabled: !coupon,
+  });
 
   return (
-    <form action={formAction} className="mt-7">
+    <form ref={formRef} action={formAction} className="mt-7">
       <input type="hidden" name="id" value={coupon?.id ?? ""} />
+      {draftState.draftId ? (
+        <input type="hidden" name="draftId" value={draftState.draftId} />
+      ) : null}
 
       {state.status === "error" ? (
         <div className="mb-5">
@@ -58,7 +82,7 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                 <Input
                   id="code"
                   name="code"
-                  defaultValue={coupon?.code ?? ""}
+                  defaultValue={draftString(seed, "code", coupon?.code ?? "")}
                   placeholder="WELCOME10"
                   maxLength={32}
                   required
@@ -69,7 +93,7 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                 <Input
                   id="label"
                   name="label"
-                  defaultValue={coupon?.label ?? ""}
+                  defaultValue={draftString(seed, "label", coupon?.label ?? "")}
                   placeholder="Welcome to the studio"
                   maxLength={80}
                 />
@@ -81,7 +105,7 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                 name="description"
                 rows={3}
                 maxLength={300}
-                defaultValue={coupon?.description ?? ""}
+                defaultValue={draftString(seed, "description", coupon?.description ?? "")}
                 placeholder="10% off your first order, up to ₹500."
               />
             </Field>
@@ -119,13 +143,15 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                   min="1"
                   step="1"
                   max={discountType === "percentage" ? 100 : undefined}
-                  defaultValue={
+                  defaultValue={draftString(
+                    seed,
+                    "discountValue",
                     coupon
                       ? coupon.discount_type === "percentage"
                         ? String(coupon.discount_value)
                         : paiseToRupeeInput(coupon.discount_value)
-                      : ""
-                  }
+                      : "",
+                  )}
                   required
                 />
               </Field>
@@ -141,7 +167,11 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                     id="maxDiscountAmount"
                     name="maxDiscountAmount"
                     inputMode="decimal"
-                    defaultValue={paiseToRupeeInput(coupon?.max_discount_amount)}
+                    defaultValue={draftString(
+                      seed,
+                      "maxDiscountAmount",
+                      paiseToRupeeInput(coupon?.max_discount_amount),
+                    )}
                     placeholder="Optional"
                   />
                 </Field>
@@ -151,7 +181,11 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                   id="minOrderAmount"
                   name="minOrderAmount"
                   inputMode="decimal"
-                  defaultValue={paiseToRupeeInput(coupon?.min_order_amount ?? 0)}
+                  defaultValue={draftString(
+                    seed,
+                    "minOrderAmount",
+                    paiseToRupeeInput(coupon?.min_order_amount ?? 0),
+                  )}
                   placeholder="0"
                 />
               </Field>
@@ -161,7 +195,11 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
           <Panel title="Eligibility & limits" bodyClassName="space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Audience" htmlFor="audience">
-                <Select id="audience" name="audience" defaultValue={coupon?.audience ?? "all"}>
+                <Select
+                  id="audience"
+                  name="audience"
+                  defaultValue={draftString(seed, "audience", coupon?.audience ?? "all")}
+                >
                   <option value="all">Retail & trade</option>
                   <option value="b2c">Retail only</option>
                   <option value="b2b">Trade only</option>
@@ -174,7 +212,11 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                   type="number"
                   min="1"
                   step="1"
-                  defaultValue={coupon?.usage_limit ?? ""}
+                  defaultValue={draftString(
+                    seed,
+                    "usageLimit",
+                    coupon?.usage_limit == null ? "" : String(coupon.usage_limit),
+                  )}
                   placeholder="Unlimited"
                 />
               </Field>
@@ -189,7 +231,13 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                   type="number"
                   min="1"
                   step="1"
-                  defaultValue={coupon?.per_customer_limit ?? ""}
+                  defaultValue={draftString(
+                    seed,
+                    "perCustomerLimit",
+                    coupon?.per_customer_limit == null
+                      ? ""
+                      : String(coupon.per_customer_limit),
+                  )}
                   placeholder="Unlimited"
                 />
               </Field>
@@ -198,17 +246,25 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
               <Checkbox
                 name="firstOrderOnly"
                 label="First order only"
-                defaultChecked={coupon?.first_order_only ?? false}
+                defaultChecked={draftFlag(
+                  seed,
+                  "firstOrderOnly",
+                  coupon?.first_order_only ?? false,
+                )}
               />
               <Checkbox
                 name="isPublic"
                 label="Anyone can use this code (no private gating)"
-                defaultChecked={coupon?.is_public ?? true}
+                defaultChecked={draftFlag(seed, "isPublic", coupon?.is_public ?? true)}
               />
               <Checkbox
                 name="showInOffers"
                 label="Show on the offers page and homepage ticker"
-                defaultChecked={coupon?.show_in_offers ?? true}
+                defaultChecked={draftFlag(
+                  seed,
+                  "showInOffers",
+                  coupon?.show_in_offers ?? true,
+                )}
               />
             </div>
           </Panel>
@@ -221,7 +277,11 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                 id="startsAt"
                 name="startsAt"
                 type="datetime-local"
-                defaultValue={toDateTimeInput(coupon?.starts_at)}
+                defaultValue={draftString(
+                  seed,
+                  "startsAt",
+                  toDateTimeInput(coupon?.starts_at),
+                )}
               />
             </Field>
             <Field label="Ends" htmlFor="endsAt">
@@ -229,19 +289,24 @@ export function CouponForm({ coupon }: { coupon?: Coupon | null }) {
                 id="endsAt"
                 name="endsAt"
                 type="datetime-local"
-                defaultValue={toDateTimeInput(coupon?.ends_at)}
+                defaultValue={draftString(
+                  seed,
+                  "endsAt",
+                  toDateTimeInput(coupon?.ends_at),
+                )}
               />
             </Field>
             <div className="border-t border-line pt-4">
               <Checkbox
                 name="isActive"
                 label="Coupon is active"
-                defaultChecked={coupon?.is_active ?? true}
+                defaultChecked={draftFlag(seed, "isActive", coupon?.is_active ?? true)}
               />
             </div>
           </Panel>
 
           <Panel bodyClassName="space-y-3">
+            {coupon ? null : <DraftStatusBar draft={draftState} />}
             <SubmitButton className="w-full" pendingLabel="Saving coupon">
               {coupon ? "Save coupon" : "Create coupon"}
             </SubmitButton>
@@ -278,19 +343,50 @@ function toComboDrafts(combo?: Combo | null): ComboItemDraft[] {
   }));
 }
 
+function itemsFromDraft(payload: DraftPayload): ComboItemDraft[] {
+  const raw = draftJson<{ variantId?: unknown; quantity?: unknown }[]>(
+    payload,
+    "items",
+    [],
+  );
+  if (!raw.length) return toComboDrafts(null);
+  return raw.map((item, index) => ({
+    key: `draft-${index}`,
+    variantId: typeof item.variantId === "string" ? item.variantId : "",
+    quantity: String(Number(item.quantity) || 1),
+  }));
+}
+
 export function ComboForm({
   combo,
   variants,
+  draft,
 }: {
   combo?: Combo | null;
   variants: AdminVariantOption[];
+  draft?: { id: string; payload: DraftPayload } | null;
 }) {
   const [state, formAction] = useActionState(saveComboAction, INITIAL_FORM_STATE);
-  const [imageUrl, setImageUrl] = useState(combo?.image_url ?? "");
-  const [bundlePrice, setBundlePrice] = useState(
-    combo ? paiseToRupeeInput(combo.bundle_price) : "",
+  const seed = draft?.payload ?? null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [imageUrl, setImageUrl] = useState(
+    draftString(seed, "imageUrl", combo?.image_url ?? ""),
   );
-  const [items, setItems] = useState<ComboItemDraft[]>(() => toComboDrafts(combo));
+  const [bundlePrice, setBundlePrice] = useState(() =>
+    seed
+      ? draftString(seed, "bundlePrice")
+      : combo
+        ? paiseToRupeeInput(combo.bundle_price)
+        : "",
+  );
+  const [items, setItems] = useState<ComboItemDraft[]>(() =>
+    seed ? itemsFromDraft(seed) : toComboDrafts(combo),
+  );
+  const draftState = useDraftAutosave(formRef, {
+    kind: "combo",
+    initialDraftId: draft?.id ?? null,
+    enabled: !combo,
+  });
 
   const optionsById = useMemo(
     () => new Map(variants.map((variant) => [variant.variant_id, variant])),
@@ -335,8 +431,11 @@ export function ComboForm({
   }
 
   return (
-    <form action={formAction} className="mt-7">
+    <form ref={formRef} action={formAction} className="mt-7">
       <input type="hidden" name="id" value={combo?.id ?? ""} />
+      {draftState.draftId ? (
+        <input type="hidden" name="draftId" value={draftState.draftId} />
+      ) : null}
       <input type="hidden" name="imageUrl" value={imageUrl} />
       <input type="hidden" name="items" value={JSON.stringify(itemsPayload)} />
 
@@ -354,7 +453,7 @@ export function ComboForm({
                 <Input
                   id="combo-title"
                   name="title"
-                  defaultValue={combo?.title ?? ""}
+                  defaultValue={draftString(seed, "title", combo?.title ?? "")}
                   placeholder="The quiet table set"
                   maxLength={140}
                   required
@@ -368,12 +467,16 @@ export function ComboForm({
                 <Input
                   id="combo-slug"
                   name="slug"
-                  defaultValue={combo?.slug ?? ""}
+                  defaultValue={draftString(seed, "slug", combo?.slug ?? "")}
                   placeholder="quiet-table-set"
                 />
               </Field>
               <Field label="Audience" htmlFor="combo-audience">
-                <Select id="combo-audience" name="audience" defaultValue={combo?.audience ?? "all"}>
+                <Select
+                  id="combo-audience"
+                  name="audience"
+                  defaultValue={draftString(seed, "audience", combo?.audience ?? "all")}
+                >
                   <option value="all">Retail & trade</option>
                   <option value="b2c">Retail only</option>
                   <option value="b2b">Trade only</option>
@@ -385,7 +488,7 @@ export function ComboForm({
                   name="description"
                   rows={4}
                   maxLength={600}
-                  defaultValue={combo?.description ?? ""}
+                  defaultValue={draftString(seed, "description", combo?.description ?? "")}
                   placeholder="Two runners and a set of napkins, bundled for a softer table."
                 />
               </Field>
@@ -533,7 +636,11 @@ export function ComboForm({
                   id="combo-starts"
                   name="startsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(combo?.starts_at)}
+                  defaultValue={draftString(
+                  seed,
+                  "startsAt",
+                  toDateTimeInput(combo?.starts_at),
+                )}
                 />
               </Field>
               <Field label="Ends" htmlFor="combo-ends">
@@ -541,7 +648,11 @@ export function ComboForm({
                   id="combo-ends"
                   name="endsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(combo?.ends_at)}
+                  defaultValue={draftString(
+                  seed,
+                  "endsAt",
+                  toDateTimeInput(combo?.ends_at),
+                )}
                 />
               </Field>
               <Field label="Sort order" htmlFor="combo-sort" hint="Lower numbers appear first.">
@@ -551,7 +662,7 @@ export function ComboForm({
                   type="number"
                   min="0"
                   step="1"
-                  defaultValue={combo?.sort_order ?? 0}
+                  defaultValue={draftString(seed, "sortOrder", String(combo?.sort_order ?? 0))}
                 />
               </Field>
             </div>
@@ -559,17 +670,22 @@ export function ComboForm({
               <Checkbox
                 name="isActive"
                 label="Bundle is active"
-                defaultChecked={combo?.is_active ?? true}
+                defaultChecked={draftFlag(seed, "isActive", combo?.is_active ?? true)}
               />
               <Checkbox
                 name="showInOffers"
                 label="Show on the offers page"
-                defaultChecked={combo?.show_in_offers ?? true}
+                defaultChecked={draftFlag(
+                  seed,
+                  "showInOffers",
+                  combo?.show_in_offers ?? true,
+                )}
               />
             </div>
           </Panel>
 
           <Panel bodyClassName="space-y-3">
+            {combo ? null : <DraftStatusBar draft={draftState} />}
             <SubmitButton className="w-full" pendingLabel="Saving bundle">
               {combo ? "Save bundle" : "Create bundle"}
             </SubmitButton>

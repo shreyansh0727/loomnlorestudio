@@ -21,6 +21,7 @@ import {
   siteSettingsInputSchema,
 } from "@/lib/validation-admin";
 import { getSiteSettings } from "@/lib/data/content";
+import { discardDraftAfterSave } from "@/lib/admin/drafts";
 import type { HomepageSectionType } from "@/lib/types";
 import { HOMEPAGE_SECTION_TYPES } from "@/lib/types";
 
@@ -98,6 +99,7 @@ export async function saveHomepageSectionAction(
     if (error) return { status: "error", message: databaseMessage(error) };
   }
 
+  await discardDraftAfterSave(context.admin, formData);
   refreshHomepage();
   redirect("/admin/content?saved=1");
 }
@@ -246,6 +248,7 @@ export async function savePopupAction(
     if (error) return { status: "error", message: databaseMessage(error) };
   }
 
+  await discardDraftAfterSave(context.admin, formData);
   refreshHomepage();
   redirect("/admin/content?popupSaved=1");
 }

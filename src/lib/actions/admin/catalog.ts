@@ -19,6 +19,7 @@ import {
   categoryInputSchema,
   productInputSchema,
 } from "@/lib/validation-admin";
+import { discardDraftAfterSave } from "@/lib/admin/drafts";
 import { slugify } from "@/lib/utils";
 import type { ProductVariant } from "@/lib/types";
 
@@ -278,6 +279,7 @@ export async function saveProductAction(
     if (error) return { status: "error", message: databaseMessage(error) };
   }
 
+  await discardDraftAfterSave(context.admin, formData);
   refreshCatalog();
   redirect(
     `/admin/products/${productId}?saved=${id ? "1" : "created"}`,

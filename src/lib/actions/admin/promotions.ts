@@ -16,6 +16,7 @@ import {
   text,
 } from "@/lib/admin/helpers";
 import { comboInputSchema, couponInputSchema } from "@/lib/validation-admin";
+import { discardDraftAfterSave } from "@/lib/admin/drafts";
 import { slugify } from "@/lib/utils";
 
 function refreshPromotions() {
@@ -106,6 +107,7 @@ export async function saveCouponAction(
     if (error) return { status: "error", message: databaseMessage(error) };
   }
 
+  await discardDraftAfterSave(context.admin, formData);
   refreshPromotions();
   redirect(`/admin/coupons?saved=${encodeURIComponent(parsed.data.code)}`);
 }
@@ -230,6 +232,7 @@ export async function saveComboAction(
   );
   if (itemsError) return { status: "error", message: databaseMessage(itemsError) };
 
+  await discardDraftAfterSave(context.admin, formData);
   refreshPromotions();
   redirect(`/admin/combos?saved=${encodeURIComponent(parsed.data.title)}`);
 }

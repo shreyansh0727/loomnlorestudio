@@ -93,6 +93,8 @@ or the Supabase CLI:
    to BN.
 8. `20261026000300_order_prefix_bn.sql` — new order numbers use the Studio prefix too,
    and legacy LL-/LC- order numbers are renumbered to BN.
+9. `20261027000100_admin_drafts.sql` — the private `admin_drafts` table behind automatic
+   studio drafts. It has no policies or grants, so only the service role can read it.
 
 Run any migration that was added after your original setup once. Only legacy LL/LC
 invoice and order numbers are rewritten; other existing numbers and homepage sections

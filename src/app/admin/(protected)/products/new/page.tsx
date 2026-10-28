@@ -2,20 +2,35 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getAdminCategories } from "@/lib/data/admin";
+import { getAdminDraft } from "@/lib/data/admin-drafts";
 import { AdminPageHeader } from "@/components/admin/ui";
 import { ProductEditor } from "@/components/admin/catalog-forms";
+import { FormMessage } from "@/components/ui/form";
 
 export const metadata: Metadata = { title: "New product" };
 
-export default async function NewProductPage() {
-  const categories = await getAdminCategories();
+export default async function NewProductPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ draft?: string }>;
+}) {
+  const params = await searchParams;
+  const draftId = (params.draft ?? "").trim();
+  const [categories, draft] = await Promise.all([
+    getAdminCategories(),
+    draftId ? getAdminDraft(draftId, "product") : Promise.resolve(null),
+  ]);
 
   return (
     <div>
       <AdminPageHeader
         eyebrow="Catalog"
-        title="New product"
-        description="Add the piece, its variants and pricing. It stays hidden until you mark it visible."
+        title={draft ? "Continue product draft" : "New product"}
+        description={
+          draft
+            ? "Your unfinished work is back in place. Nothing goes live until you create the product."
+            : "Add the piece, its variants and pricing. Unfinished work is kept as a draft."
+        }
         actions={
           <Link
             href="/admin/products"
@@ -26,7 +41,18 @@ export default async function NewProductPage() {
           </Link>
         }
       />
-      <ProductEditor categories={categories.filter((category) => category.is_active)} />
+      {draftId && !draft ? (
+        <div className="mt-6">
+          <FormMessage
+            tone="info"
+            message="That draft is no longer available. Starting a new product instead."
+          />
+        </div>
+      ) : null}
+      <ProductEditor
+        categories={categories.filter((category) => category.is_active)}
+        draft={draft ? { id: draft.id, payload: draft.payload } : null}
+      />
     </div>
   );
 }

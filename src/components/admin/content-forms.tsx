@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Plus, Trash2 } from "lucide-react";
 import { saveHomepageSectionAction, savePopupAction } from "@/lib/actions/admin/content";
@@ -9,6 +9,7 @@ import type {
   BannerConfig,
   Category,
   ComboRailConfig,
+  DraftPayload,
   EditorialConfig,
   HeroConfig,
   HeroSlide,
@@ -22,6 +23,7 @@ import type {
 import { HOMEPAGE_SECTION_TYPES } from "@/lib/types";
 import { HOMEPAGE_SECTION_LABELS } from "@/lib/constants";
 import type { HomepageSectionType as SectionType } from "@/lib/types";
+import { draftFlag, draftJson, draftString } from "@/lib/drafts";
 import { toDateTimeInput } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +37,10 @@ import {
 import { SubmitButton } from "@/components/ui/submit-button";
 import { MediaUrlField } from "@/components/admin/media";
 import { Panel } from "@/components/admin/ui";
+import {
+  DraftStatusBar,
+  useDraftAutosave,
+} from "@/components/admin/draft-autosave";
 
 export const SECTION_TYPE_DESCRIPTIONS: Record<SectionType, string> = {
   hero: "A full-bleed carousel of images or video with headline and calls to action.",
@@ -841,18 +847,29 @@ export function SectionEditor({
   sectionType,
   categories,
   products,
+  draft,
 }: {
   section?: HomepageSection | null;
   sectionType: HomepageSectionType;
   categories: Pick<Category, "id" | "name">[];
   products: { id: string; name: string; category_id: string }[];
+  draft?: { id: string; payload: DraftPayload } | null;
 }) {
   const [state, formAction] = useActionState(
     saveHomepageSectionAction,
     INITIAL_FORM_STATE,
   );
+  const seed = draft?.payload ?? null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const draftState = useDraftAutosave(formRef, {
+    kind: "section",
+    initialDraftId: draft?.id ?? null,
+    enabled: !section,
+  });
 
-  const config = section?.config;
+  const config = (seed
+    ? draftJson<HomepageSection["config"] | null>(seed, "config", null)
+    : section?.config) as HomepageSection["config"] | undefined;
   const heroSlides =
     sectionType === "hero" ? (config as HeroConfig | undefined)?.slides : undefined;
   const tickerConfig =
@@ -875,9 +892,12 @@ export function SectionEditor({
     sectionType === "reviews" ? (config as ReviewsConfig | undefined) : undefined;
 
   return (
-    <form action={formAction} className="mt-7">
+    <form ref={formRef} action={formAction} className="mt-7">
       <input type="hidden" name="id" value={section?.id ?? ""} />
       <input type="hidden" name="sectionType" value={sectionType} />
+      {draftState.draftId ? (
+        <input type="hidden" name="draftId" value={draftState.draftId} />
+      ) : null}
 
       {state.status === "error" ? (
         <div className="mb-5">
@@ -930,7 +950,7 @@ export function SectionEditor({
               <Input
                 id="section-title"
                 name="title"
-                defaultValue={section?.title ?? ""}
+                defaultValue={draftString(seed, "title", section?.title ?? "")}
                 maxLength={140}
                 placeholder="New this season"
               />
@@ -941,7 +961,7 @@ export function SectionEditor({
                 name="subtitle"
                 rows={2}
                 maxLength={300}
-                defaultValue={section?.subtitle ?? ""}
+                defaultValue={draftString(seed, "subtitle", section?.subtitle ?? "")}
                 placeholder="A short line beneath the heading."
               />
             </Field>
@@ -953,7 +973,11 @@ export function SectionEditor({
                   type="number"
                   min="0"
                   step="1"
-                  defaultValue={section?.sort_order ?? 0}
+                  defaultValue={draftString(
+                    seed,
+                    "sortOrder",
+                    String(section?.sort_order ?? 0),
+                  )}
                 />
               </Field>
               <Field label="Starts" htmlFor="section-starts">
@@ -961,7 +985,11 @@ export function SectionEditor({
                   id="section-starts"
                   name="startsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(section?.starts_at)}
+                  defaultValue={draftString(
+                    seed,
+                    "startsAt",
+                    toDateTimeInput(section?.starts_at),
+                  )}
                 />
               </Field>
               <Field label="Ends" htmlFor="section-ends">
@@ -969,7 +997,11 @@ export function SectionEditor({
                   id="section-ends"
                   name="endsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(section?.ends_at)}
+                  defaultValue={draftString(
+                    seed,
+                    "endsAt",
+                    toDateTimeInput(section?.ends_at),
+                  )}
                 />
               </Field>
             </div>
@@ -977,12 +1009,13 @@ export function SectionEditor({
               <Checkbox
                 name="isActive"
                 label="Show this section on the homepage"
-                defaultChecked={section?.is_active ?? true}
+                defaultChecked={draftFlag(seed, "isActive", section?.is_active ?? true)}
               />
             </div>
           </Panel>
 
           <Panel bodyClassName="space-y-3">
+            {section ? null : <DraftStatusBar draft={draftState} />}
             <SubmitButton className="w-full" pendingLabel="Saving section">
               {section ? "Save section" : "Add section"}
             </SubmitButton>
@@ -1007,14 +1040,32 @@ export function SectionEditor({
   );
 }
 
-export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
+export function PopupForm({
+  popup,
+  draft,
+}: {
+  popup?: PopupOffer | null;
+  draft?: { id: string; payload: DraftPayload } | null;
+}) {
   const [state, formAction] = useActionState(savePopupAction, INITIAL_FORM_STATE);
-  const [imageUrl, setImageUrl] = useState(popup?.image_url ?? "");
+  const seed = draft?.payload ?? null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [imageUrl, setImageUrl] = useState(
+    draftString(seed, "imageUrl", popup?.image_url ?? ""),
+  );
+  const draftState = useDraftAutosave(formRef, {
+    kind: "popup",
+    initialDraftId: draft?.id ?? null,
+    enabled: !popup,
+  });
 
   return (
-    <form action={formAction} className="mt-7">
+    <form ref={formRef} action={formAction} className="mt-7">
       <input type="hidden" name="id" value={popup?.id ?? ""} />
       <input type="hidden" name="imageUrl" value={imageUrl} />
+      {draftState.draftId ? (
+        <input type="hidden" name="draftId" value={draftState.draftId} />
+      ) : null}
 
       {state.status === "error" ? (
         <div className="mb-5">
@@ -1029,7 +1080,7 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
               <Input
                 id="popup-headline"
                 name="headline"
-                defaultValue={popup?.headline ?? ""}
+                defaultValue={draftString(seed, "headline", popup?.headline ?? "")}
                 maxLength={140}
                 placeholder="A little something for your first order"
                 required
@@ -1041,7 +1092,7 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                 name="body"
                 rows={4}
                 maxLength={600}
-                defaultValue={popup?.body ?? ""}
+                defaultValue={draftString(seed, "body", popup?.body ?? "")}
                 placeholder="Take 10% off your first order with the code below."
               />
             </Field>
@@ -1050,7 +1101,7 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                 <Input
                   id="popup-coupon"
                   name="couponCode"
-                  defaultValue={popup?.coupon_code ?? ""}
+                  defaultValue={draftString(seed, "couponCode", popup?.coupon_code ?? "")}
                   maxLength={32}
                   placeholder="WELCOME10"
                   className="uppercase"
@@ -1063,14 +1114,14 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                   type="number"
                   min="0"
                   step="1"
-                  defaultValue={popup?.priority ?? 0}
+                  defaultValue={draftString(seed, "priority", String(popup?.priority ?? 0))}
                 />
               </Field>
               <Field label="Button label" htmlFor="popup-cta">
                 <Input
                   id="popup-cta"
                   name="ctaLabel"
-                  defaultValue={popup?.cta_label ?? ""}
+                  defaultValue={draftString(seed, "ctaLabel", popup?.cta_label ?? "")}
                   maxLength={60}
                   placeholder="Shop the edit"
                 />
@@ -1079,7 +1130,7 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                 <Input
                   id="popup-cta-href"
                   name="ctaHref"
-                  defaultValue={popup?.cta_href ?? ""}
+                  defaultValue={draftString(seed, "ctaHref", popup?.cta_href ?? "")}
                   maxLength={300}
                   placeholder="/shop"
                 />
@@ -1106,14 +1157,22 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                   min="0"
                   max="120"
                   step="1"
-                  defaultValue={popup?.delay_seconds ?? 5}
+                  defaultValue={draftString(
+                    seed,
+                    "delaySeconds",
+                    String(popup?.delay_seconds ?? 5),
+                  )}
                 />
               </Field>
               <Field label="Frequency" htmlFor="popup-frequency">
                 <Select
                   id="popup-frequency"
                   name="frequency"
-                  defaultValue={popup?.frequency ?? "once_per_day"}
+                  defaultValue={draftString(
+                    seed,
+                    "frequency",
+                    popup?.frequency ?? "once_per_day",
+                  )}
                 >
                   <option value="once_per_visit">Once per visit</option>
                   <option value="once_per_day">Once per day</option>
@@ -1125,7 +1184,11 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                   id="popup-starts"
                   name="startsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(popup?.starts_at)}
+                  defaultValue={draftString(
+                    seed,
+                    "startsAt",
+                    toDateTimeInput(popup?.starts_at),
+                  )}
                 />
               </Field>
               <Field label="Ends" htmlFor="popup-ends">
@@ -1133,7 +1196,7 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
                   id="popup-ends"
                   name="endsAt"
                   type="datetime-local"
-                  defaultValue={toDateTimeInput(popup?.ends_at)}
+                  defaultValue={draftString(seed, "endsAt", toDateTimeInput(popup?.ends_at))}
                 />
               </Field>
             </div>
@@ -1141,12 +1204,13 @@ export function PopupForm({ popup }: { popup?: PopupOffer | null }) {
               <Checkbox
                 name="isActive"
                 label="Popup is active"
-                defaultChecked={popup?.is_active ?? true}
+                defaultChecked={draftFlag(seed, "isActive", popup?.is_active ?? true)}
               />
             </div>
           </Panel>
 
           <Panel bodyClassName="space-y-3">
+            {popup ? null : <DraftStatusBar draft={draftState} />}
             <SubmitButton className="w-full" pendingLabel="Saving popup">
               {popup ? "Save popup" : "Create popup"}
             </SubmitButton>

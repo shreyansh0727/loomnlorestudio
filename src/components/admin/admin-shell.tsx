@@ -7,6 +7,7 @@ import {
   Boxes,
   Building2,
   ExternalLink,
+  FileText,
   FolderTree,
   LayoutDashboard,
   LogOut,
@@ -37,6 +38,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin", label: "Overview", icon: LayoutDashboard },
       { href: "/admin/orders", label: "Orders", icon: ReceiptText },
+      { href: "/admin/drafts", label: "Drafts", icon: FileText },
     ],
   },
   {

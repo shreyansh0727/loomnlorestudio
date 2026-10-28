@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Plus, Trash2 } from "lucide-react";
 import {
@@ -8,9 +8,14 @@ import {
   saveProductAction,
 } from "@/lib/actions/admin/catalog";
 import { INITIAL_FORM_STATE } from "@/lib/form-state";
-import type { Category, Product } from "@/lib/types";
+import type { Category, DraftPayload, Product } from "@/lib/types";
 import { PRODUCT_UNITS } from "@/lib/constants";
+import { draftFlag, draftJson, draftString } from "@/lib/drafts";
 import { parseRupeesToPaise, paiseToRupeeInput } from "@/lib/utils";
+import {
+  DraftStatusBar,
+  useDraftAutosave,
+} from "@/components/admin/draft-autosave";
 import { Button } from "@/components/ui/button";
 import {
   Checkbox,
@@ -64,19 +69,66 @@ function toEditorVariants(product?: Product | null): EditorVariant[] {
     }));
 }
 
+interface DraftVariantPayload {
+  label?: unknown;
+  sku?: unknown;
+  stockQty?: unknown;
+  retailOverride?: unknown;
+  wholesaleOverride?: unknown;
+  isActive?: unknown;
+}
+
+function variantsFromDraft(payload: DraftPayload): EditorVariant[] {
+  const raw = draftJson<DraftVariantPayload[]>(payload, "variants", []);
+  if (!raw.length) return toEditorVariants(null);
+  return raw.map((variant, index) => ({
+    key: `draft-${index}`,
+    id: null,
+    label: typeof variant.label === "string" ? variant.label : "",
+    sku: typeof variant.sku === "string" ? variant.sku : "",
+    stockQty: String(Number(variant.stockQty) || 0),
+    retailOverride: paiseToRupeeInput(
+      typeof variant.retailOverride === "number" ? variant.retailOverride : null,
+    ),
+    wholesaleOverride: paiseToRupeeInput(
+      typeof variant.wholesaleOverride === "number" ? variant.wholesaleOverride : null,
+    ),
+    isActive: variant.isActive !== false,
+  }));
+}
+
 export function ProductEditor({
   product,
   categories,
+  draft,
 }: {
   product?: Product | null;
   categories: Category[];
+  draft?: { id: string; payload: DraftPayload } | null;
 }) {
   const [state, formAction] = useActionState(saveProductAction, INITIAL_FORM_STATE);
-  const [images, setImages] = useState<string[]>(product?.images ?? []);
-  const [tagsText, setTagsText] = useState((product?.tags ?? []).join(", "));
-  const [variants, setVariants] = useState<EditorVariant[]>(() =>
-    toEditorVariants(product),
+  const seed = draft?.payload ?? null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [images, setImages] = useState<string[]>(() =>
+    seed
+      ? draftJson<string[]>(seed, "images", []).filter(
+          (image) => typeof image === "string" && image.trim() !== "",
+        )
+      : (product?.images ?? []),
   );
+  const [tagsText, setTagsText] = useState(
+    seed
+      ? draftJson<string[]>(seed, "tags", []).join(", ")
+      : (product?.tags ?? []).join(", "),
+  );
+  const [variants, setVariants] = useState<EditorVariant[]>(() =>
+    seed ? variantsFromDraft(seed) : toEditorVariants(product),
+  );
+  const draftState = useDraftAutosave(formRef, {
+    kind: "product",
+    initialDraftId: draft?.id ?? null,
+    enabled: !product,
+  });
 
   const tags = Array.from(
     new Set(
@@ -131,8 +183,11 @@ export function ProductEditor({
   }
 
   return (
-    <form action={formAction} className="mt-7">
+    <form ref={formRef} action={formAction} className="mt-7">
       <input type="hidden" name="id" value={product?.id ?? ""} />
+      {draftState.draftId ? (
+        <input type="hidden" name="draftId" value={draftState.draftId} />
+      ) : null}
       <input type="hidden" name="images" value={JSON.stringify(images)} />
       <input type="hidden" name="tags" value={JSON.stringify(tags)} />
       <input type="hidden" name="variants" value={JSON.stringify(variantsPayload)} />
@@ -167,7 +222,7 @@ export function ProductEditor({
                 <Input
                   id="name"
                   name="name"
-                  defaultValue={product?.name ?? ""}
+                  defaultValue={draftString(seed, "name", product?.name ?? "")}
                   maxLength={140}
                   placeholder="Rose Garden Scrunchie"
                   required
@@ -181,7 +236,7 @@ export function ProductEditor({
                 <Input
                   id="slug"
                   name="slug"
-                  defaultValue={product?.slug ?? ""}
+                  defaultValue={draftString(seed, "slug", product?.slug ?? "")}
                   placeholder="rose-garden-scrunchie"
                 />
               </Field>
@@ -189,7 +244,7 @@ export function ProductEditor({
                 <Select
                   id="categoryId"
                   name="categoryId"
-                  defaultValue={product?.category_id ?? ""}
+                  defaultValue={draftString(seed, "categoryId", product?.category_id ?? "")}
                   required
                 >
                   <option value="">Choose a category</option>
@@ -210,7 +265,11 @@ export function ProductEditor({
                 <Input
                   id="shortDescription"
                   name="shortDescription"
-                  defaultValue={product?.short_description ?? ""}
+                  defaultValue={draftString(
+                    seed,
+                    "shortDescription",
+                    product?.short_description ?? "",
+                  )}
                   maxLength={240}
                   placeholder="A softened linen with a quiet, slubby texture."
                 />
@@ -226,7 +285,11 @@ export function ProductEditor({
                   name="description"
                   rows={9}
                   maxLength={8000}
-                  defaultValue={product?.description ?? ""}
+                  defaultValue={draftString(
+                    seed,
+                    "description",
+                    product?.description ?? "",
+                  )}
                 />
               </Field>
             </div>
@@ -365,7 +428,11 @@ export function ProductEditor({
                 id="retailPrice"
                 name="retailPrice"
                 inputMode="decimal"
-                defaultValue={paiseToRupeeInput(product?.retail_price)}
+                defaultValue={draftString(
+                  seed,
+                  "retailPrice",
+                  paiseToRupeeInput(product?.retail_price),
+                )}
                 placeholder="2450"
                 required
               />
@@ -376,7 +443,11 @@ export function ProductEditor({
                   id="compareAtPrice"
                   name="compareAtPrice"
                   inputMode="decimal"
-                  defaultValue={paiseToRupeeInput(product?.compare_at_price)}
+                  defaultValue={draftString(
+                    seed,
+                    "compareAtPrice",
+                    paiseToRupeeInput(product?.compare_at_price),
+                  )}
                   placeholder="Optional"
                 />
               </Field>
@@ -389,7 +460,11 @@ export function ProductEditor({
                   id="wholesalePrice"
                   name="wholesalePrice"
                   inputMode="decimal"
-                  defaultValue={paiseToRupeeInput(product?.wholesale_price)}
+                  defaultValue={draftString(
+                    seed,
+                    "wholesalePrice",
+                    paiseToRupeeInput(product?.wholesale_price),
+                  )}
                   placeholder="Optional"
                 />
               </Field>
@@ -402,11 +477,15 @@ export function ProductEditor({
                   type="number"
                   min="1"
                   step="1"
-                  defaultValue={product?.moq ?? 1}
+                  defaultValue={draftString(seed, "moq", String(product?.moq ?? 1))}
                 />
               </Field>
               <Field label="Sold by" htmlFor="unit">
-                <Select id="unit" name="unit" defaultValue={product?.unit ?? "piece"}>
+                <Select
+                  id="unit"
+                  name="unit"
+                  defaultValue={draftString(seed, "unit", product?.unit ?? "piece")}
+                >
                   {PRODUCT_UNITS.map((unit) => (
                     <option key={unit.value} value={unit.value}>
                       {unit.label}
@@ -443,14 +522,39 @@ export function ProductEditor({
               </div>
             ) : null}
             <div className="space-y-2.5 border-t border-line pt-4">
-              <Checkbox name="isActive" label="Visible on the storefront" defaultChecked={product?.is_active ?? true} />
-              <Checkbox name="isFeatured" label="Featured in curated rails" defaultChecked={product?.is_featured ?? false} />
-              <Checkbox name="isNewArrival" label="Mark as a new arrival" defaultChecked={product?.is_new_arrival ?? false} />
-              <Checkbox name="isBestSeller" label="Mark as a best seller" defaultChecked={product?.is_best_seller ?? false} />
+              <Checkbox
+                name="isActive"
+                label="Visible on the storefront"
+                defaultChecked={draftFlag(seed, "isActive", product?.is_active ?? true)}
+              />
+              <Checkbox
+                name="isFeatured"
+                label="Featured in curated rails"
+                defaultChecked={draftFlag(seed, "isFeatured", product?.is_featured ?? false)}
+              />
+              <Checkbox
+                name="isNewArrival"
+                label="Mark as a new arrival"
+                defaultChecked={draftFlag(
+                  seed,
+                  "isNewArrival",
+                  product?.is_new_arrival ?? false,
+                )}
+              />
+              <Checkbox
+                name="isBestSeller"
+                label="Mark as a best seller"
+                defaultChecked={draftFlag(
+                  seed,
+                  "isBestSeller",
+                  product?.is_best_seller ?? false,
+                )}
+              />
             </div>
           </Panel>
 
           <Panel bodyClassName="space-y-3">
+            {product ? null : <DraftStatusBar draft={draftState} />}
             <SubmitButton className="w-full" pendingLabel="Saving product">
               {product ? "Save changes" : "Create product"}
             </SubmitButton>

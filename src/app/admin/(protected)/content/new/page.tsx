@@ -2,23 +2,31 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getAdminCategories, getAdminProducts } from "@/lib/data/admin";
+import { getAdminDraft } from "@/lib/data/admin-drafts";
 import { AdminPageHeader } from "@/components/admin/ui";
 import { SectionEditor, NewSectionTypePicker } from "@/components/admin/content-forms";
+import { FormMessage } from "@/components/ui/form";
+import { draftString } from "@/lib/drafts";
 import { HOMEPAGE_SECTION_TYPES, type HomepageSectionType } from "@/lib/types";
 import { HOMEPAGE_SECTION_LABELS } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Add homepage section" };
 
+function asSectionType(value: string | undefined): HomepageSectionType | null {
+  return (HOMEPAGE_SECTION_TYPES as readonly string[]).includes(value ?? "")
+    ? (value as HomepageSectionType)
+    : null;
+}
+
 export default async function NewSectionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ type?: string }>;
+  searchParams: Promise<{ type?: string; draft?: string }>;
 }) {
   const params = await searchParams;
-  const requested = params.type;
-  const type = (HOMEPAGE_SECTION_TYPES as readonly string[]).includes(requested ?? "")
-    ? (requested as HomepageSectionType)
-    : null;
+  const draftId = (params.draft ?? "").trim();
+  const draft = draftId ? await getAdminDraft(draftId, "section") : null;
+  const type = asSectionType(params.type) ?? asSectionType(draftString(draft?.payload, "sectionType"));
 
   const [categories, products] = type
     ? await Promise.all([getAdminCategories(), getAdminProducts()])
@@ -28,10 +36,18 @@ export default async function NewSectionPage({
     <div>
       <AdminPageHeader
         eyebrow="Storefront"
-        title={type ? `Add ${HOMEPAGE_SECTION_LABELS[type].toLowerCase()}` : "Add a section"}
+        title={
+          type
+            ? draft
+              ? `Continue ${HOMEPAGE_SECTION_LABELS[type].toLowerCase()} draft`
+              : `Add ${HOMEPAGE_SECTION_LABELS[type].toLowerCase()}`
+            : "Add a section"
+        }
         description={
           type
-            ? "Compose the section, then place it in the homepage order."
+            ? draft
+              ? "Your unfinished section is back in place. It only appears on the homepage once you add it."
+              : "Compose the section, then place it in the homepage order. Unfinished work is kept as a draft."
             : "Choose the kind of section you want to add to the homepage."
         }
         actions={
@@ -45,6 +61,15 @@ export default async function NewSectionPage({
         }
       />
 
+      {draftId && !draft ? (
+        <div className="mt-6">
+          <FormMessage
+            tone="info"
+            message="That draft is no longer available. Starting a new section instead."
+          />
+        </div>
+      ) : null}
+
       {type ? (
         <SectionEditor
           sectionType={type}
@@ -57,6 +82,7 @@ export default async function NewSectionPage({
             name: product.name,
             category_id: product.category_id,
           }))}
+          draft={draft ? { id: draft.id, payload: draft.payload } : null}
         />
       ) : (
         <NewSectionTypePicker />

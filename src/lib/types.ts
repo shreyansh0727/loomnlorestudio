@@ -518,6 +518,20 @@ export interface OfferCard {
   meta?: string;
 }
 
+export type AdminDraftKind = "product" | "coupon" | "combo" | "section" | "popup";
+
+export type DraftPayload = Record<string, string | boolean>;
+
+export interface AdminDraft {
+  id: string;
+  kind: AdminDraftKind;
+  label: string;
+  payload: DraftPayload;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Viewer {
   user: {
     id: string;
